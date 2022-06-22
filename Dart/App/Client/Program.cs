@@ -8,7 +8,7 @@ namespace Client
         {
             IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostEntry.AddressList[0];
-            ClientInstance client = new ClientInstance(ipAddress, 100);
+            Network.ClientInstance client = new Network.ClientInstance(ipAddress, 100);
             client.Connect();
 
             Console.Read();

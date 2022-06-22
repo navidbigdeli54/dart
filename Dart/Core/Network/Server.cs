@@ -2,7 +2,7 @@
 using System.Text;
 using System.Net.Sockets;
 
-namespace Server
+namespace Network
 {
     public class ServerInstance
     {

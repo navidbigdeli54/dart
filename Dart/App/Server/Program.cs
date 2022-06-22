@@ -8,7 +8,7 @@ namespace Server
         {
             IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostEntry.AddressList[0];
-            ServerInstance serverInstance = new ServerInstance(ipAddress, 100);
+            Network.ServerInstance serverInstance = new Network.ServerInstance(ipAddress, 100);
             serverInstance.Listen();
 
             Console.Read();
