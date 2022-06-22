@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using System.Net.Sockets;
+using System.Text.Json.Nodes;
 
 namespace Network
 {
@@ -12,11 +13,15 @@ namespace Network
         private readonly Socket _serverSocket;
 
         private readonly List<Socket> _clientSockets = new List<Socket>();
+
+        private readonly IRemoteProcedures _remoteProcedures;
         #endregion
 
         #region Constructors
-        public ServerInstance(IPAddress ipAddress, int port, int blacklog = 1)
+        public ServerInstance(IRemoteProcedures remoteProcedures, IPAddress ipAddress, int port, int blacklog = 1)
         {
+            _remoteProcedures = remoteProcedures;
+
             _endpoint = new IPEndPoint(ipAddress, port);
 
             _serverSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -57,7 +62,11 @@ namespace Network
 
                 byte[] recivedBytes = stateObject.Buffer.Take(recievedLenght).ToArray();
 
-                Console.WriteLine(Encoding.ASCII.GetString(recivedBytes));
+                string json = Encoding.ASCII.GetString(recivedBytes);
+                JsonNode jsonNode = JsonNode.Parse(json);
+                string procedure = jsonNode["Procedure"].ToString();
+                JsonObject parameters = jsonNode["Parameters"].AsObject();
+                _remoteProcedures.Invoke(procedure, parameters);
             }
         }
         #endregion
