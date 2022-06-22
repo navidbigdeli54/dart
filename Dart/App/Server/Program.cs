@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Network;
+using System.Net;
 
 namespace Server
 {
@@ -8,7 +9,7 @@ namespace Server
         {
             IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostEntry.AddressList[0];
-            Network.ServerInstance serverInstance = new Network.ServerInstance(ipAddress, 100);
+            ServerInstance serverInstance = new Network.ServerInstance(ipAddress, 100);
             serverInstance.Listen();
 
             Console.Read();

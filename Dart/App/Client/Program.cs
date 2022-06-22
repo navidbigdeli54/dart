@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Network;
+using System.Net;
 
 namespace Client
 {
@@ -8,7 +9,7 @@ namespace Client
         {
             IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = ipHostEntry.AddressList[0];
-            Network.ClientInstance client = new Network.ClientInstance(ipAddress, 100);
+            ClientInstance client = new Network.ClientInstance(ipAddress, 100);
             client.Connect();
 
             Console.Read();
