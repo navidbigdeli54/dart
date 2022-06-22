@@ -1,4 +1,5 @@
 ﻿using Network;
+using System.Text.Json.Nodes;
 
 namespace Test.Network
 {
@@ -28,6 +29,22 @@ namespace Test.Network
         }
 
         [Test]
+        public void InvokingSingleParameterProcedureWithJsonTest()
+        {
+            DummyRemoteSingleParameterProcedures remoteProcedures = new DummyRemoteSingleParameterProcedures();
+
+            string parameter = Guid.NewGuid().ToString();
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject["parameter"] = parameter;
+
+            ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", jsonObject);
+
+            Assert.IsTrue(remoteProcedures.IsCalled);
+            Assert.AreEqual(parameter, remoteProcedures.Parameter);
+        }
+
+        [Test]
         public void InvokingTwoeParameterProcedureTest()
         {
             DummyRemoteTwoDifferentParameterProcedures remoteProcedures = new DummyRemoteTwoDifferentParameterProcedures();
@@ -35,6 +52,25 @@ namespace Test.Network
             int firstParameter = Random.Shared.Next(0, int.MaxValue);
             bool secondParameter = Random.Shared.Next(0, 1) % 2 == 0;
             ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", new object[] { firstParameter, secondParameter });
+
+            Assert.IsTrue(remoteProcedures.IsCalled);
+            Assert.AreEqual(firstParameter, remoteProcedures.FirstParameter);
+            Assert.AreEqual(secondParameter, remoteProcedures.SecondParameter);
+        }
+
+        [Test]
+        public void InvokingTwoeParameterProcedureWithJsonTest()
+        {
+            DummyRemoteTwoDifferentParameterProcedures remoteProcedures = new DummyRemoteTwoDifferentParameterProcedures();
+
+            int firstParameter = Random.Shared.Next(0, int.MaxValue);
+            bool secondParameter = Random.Shared.Next(0, 1) % 2 == 0;
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject["first"] = firstParameter;
+            jsonObject["second"] = secondParameter;
+
+            ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", jsonObject);
 
             Assert.IsTrue(remoteProcedures.IsCalled);
             Assert.AreEqual(firstParameter, remoteProcedures.FirstParameter);
