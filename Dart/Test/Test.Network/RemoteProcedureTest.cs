@@ -36,9 +36,15 @@ namespace Test.Network
             string parameter = Guid.NewGuid().ToString();
 
             JsonObject jsonObject = new JsonObject();
-            jsonObject["parameter"] = parameter;
+            jsonObject["Procedure"] = "DummyProcedure";
+            JsonArray parameterArray = new JsonArray();
+            JsonObject parameterObject = new JsonObject();
+            parameterObject["Name"] = "parameter";
+            parameterObject["Value"] = parameter;
+            parameterArray.Add(parameterObject);
+            jsonObject["Parameters"] = parameterArray;
 
-            ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", jsonObject);
+            ((IRemoteProcedures)remoteProcedures).Invoke(jsonObject);
 
             Assert.IsTrue(remoteProcedures.IsCalled);
             Assert.AreEqual(parameter, remoteProcedures.Parameter);
@@ -67,10 +73,19 @@ namespace Test.Network
             bool secondParameter = Random.Shared.Next(0, 1) % 2 == 0;
 
             JsonObject jsonObject = new JsonObject();
-            jsonObject["first"] = firstParameter;
-            jsonObject["second"] = secondParameter;
+            jsonObject["Procedure"] = "DummyProcedure";
+            JsonArray parameterArray = new JsonArray();
+            JsonObject firstParameterObject = new JsonObject();
+            firstParameterObject["Name"] = "first";
+            firstParameterObject["Value"] = firstParameter;
+            parameterArray.Add(firstParameterObject);
+            JsonObject secondParameterObject = new JsonObject();
+            secondParameterObject["Name"] = "second";
+            secondParameterObject["Value"] = secondParameter;
+            parameterArray.Add(secondParameterObject);
+            jsonObject["Parameters"] = parameterArray;
 
-            ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", jsonObject);
+            ((IRemoteProcedures)remoteProcedures).Invoke(jsonObject);
 
             Assert.IsTrue(remoteProcedures.IsCalled);
             Assert.AreEqual(firstParameter, remoteProcedures.FirstParameter);

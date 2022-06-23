@@ -10,7 +10,7 @@ namespace Network
 
         void Invoke(string method, object[] parameters);
 
-        void Invoke(string method, JsonObject jsonObject);
+        void Invoke(JsonObject jsonObject);
     }
 
     public abstract class RemoteProcedures : IRemoteProcedures
@@ -50,18 +50,31 @@ namespace Network
             }
         }
 
-        void IRemoteProcedures.Invoke(string method, JsonObject jsonObject)
+        void IRemoteProcedures.Invoke(JsonObject jsonObject)
         {
-            if (_procedures.TryGetValue(method, out MethodInfo methodInfo))
+            string methodName = jsonObject["Procedure"].ToString();
+
+            if (_procedures.TryGetValue(methodName, out MethodInfo methodInfo))
             {
                 ParameterInfo[] parameterInfos = methodInfo.GetParameters();
                 object[] parameters = new object[parameterInfos.Length];
+                JsonArray parametersJsonArray = jsonObject["Parameters"].AsArray();
+
                 for (int i = 0; i < parameterInfos.Length; ++i)
                 {
                     ParameterInfo parameterInfo = parameterInfos[i];
-                    JsonNode parameterJsonNode = jsonObject[parameterInfo.Name];
-                    TypeConverter converter = TypeDescriptor.GetConverter(parameterInfo.ParameterType);
-                    parameters[i] = converter.ConvertFrom(parameterJsonNode.ToString());
+
+                    for (int j = 0; j < parametersJsonArray.Count; ++j)
+                    {
+                        JsonObject parameterObject = parametersJsonArray[j].AsObject();
+                        string parameterObjectName = parameterObject["Name"].ToString();
+                        if (parameterObjectName == parameterInfo.Name)
+                        {
+                            TypeConverter converter = TypeDescriptor.GetConverter(parameterInfo.ParameterType);
+                            string parameterValue = parameterObject["Value"].ToString();
+                            parameters[i] = converter.ConvertFrom(parameterValue);
+                        }
+                    }
                 }
 
                 methodInfo?.Invoke(this, parameters);
