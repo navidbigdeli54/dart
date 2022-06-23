@@ -1,5 +1,8 @@
 ﻿using Network;
 using System.Net;
+using Server.Infrastructure.BL;
+using System.Collections.Generic;
+using Server.Domain;
 
 namespace Server
 {
@@ -25,6 +28,22 @@ namespace Server
         static void Main()
         {
             ServerInstance.Start();
+
+            LeaderboadBL leaderboadBL = new LeaderboadBL();
+
+            while (true)
+            {
+                Thread.Sleep(1000);
+                Console.Clear();
+                Console.WriteLine($"# \t                 Id                  \tScore");
+
+                IReadOnlyList<LeaderBoardEntry> leaderboardEntries = leaderboadBL.GetAll();
+                for (int i = 0; i < leaderboardEntries.Count; ++i)
+                {
+                    var entry = leaderboardEntries[i];
+                    Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
+                }
+            }
 
             Console.Read();
         }

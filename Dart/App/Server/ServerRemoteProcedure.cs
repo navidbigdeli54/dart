@@ -1,7 +1,6 @@
 ﻿using Network;
 using System.Net;
 using Server.Infrastructure.BL;
-using Server.Domain;
 
 namespace Server
 {
@@ -25,19 +24,11 @@ namespace Server
             Program.ServerInstance.Send(clientEndPoint, procedure);
         }
 
-        public void DartThrowed(string userId, int score)
+        public void DartThrowed(Guid userId, int score)
         {
             LeaderboadBL leaderboadBL = new LeaderboadBL();
 
-            leaderboadBL.AddScore(Guid.Parse(userId), score);
-
-            Console.Clear();
-
-            IReadOnlyList<LeaderBoardEntry> entries = leaderboadBL.GetAll();
-            for (int i = 0; i < entries.Count; i++)
-            {
-                Console.WriteLine($"{entries[i].Rank}\t {entries[i].Score}");
-            }
+            leaderboadBL.AddScore(userId, score);
         }
     }
 }
