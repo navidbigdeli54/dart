@@ -31,10 +31,39 @@ namespace Network
         #endregion
 
         #region Public Methods
-        public void Listen()
+        public void Open()
         {
-            Console.WriteLine("Starting server ...");
             _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), new StateObject(_serverSocket));
+        }
+
+        public void Send(IPEndPoint endPoint, Procedure procedure)
+        {
+            Socket? client = _clientSockets.Where(x => x.RemoteEndPoint.Equals(endPoint)).SingleOrDefault();
+            if (client != null)
+            {
+                if (client.Connected)
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
+
+                    StateObject sendStateObject = new StateObject(client);
+                    client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), sendStateObject);
+                }
+            }
+        }
+
+        public void Send(Procedure procedure)
+        {
+            byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
+
+            for (int i = 0; i < _clientSockets.Count; ++i)
+            {
+                Socket client = _clientSockets[i];
+                if (client.Connected)
+                {
+                    StateObject sendStateObject = new StateObject(client);
+                    client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), sendStateObject);
+                }
+            }
         }
         #endregion
 
@@ -46,11 +75,10 @@ namespace Network
             Socket clientSocket = _serverSocket.EndAccept(asyncResult);
 
             _clientSockets.Add(clientSocket);
+            _remoteProcedures.Invoke(new Procedure("OnConnected", new Parameter[] { new Parameter("remoteEndPoint", $"{clientSocket.RemoteEndPoint}") }));
 
             StateObject stateObject = new StateObject(clientSocket);
             clientSocket.BeginReceive(stateObject.Buffer, 0, stateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), stateObject);
-
-            Console.WriteLine("client connected!");
         }
 
         private void ReceiveCallback(IAsyncResult asyncResult)
@@ -62,11 +90,26 @@ namespace Network
 
                 byte[] recivedBytes = stateObject.Buffer.Take(recievedLenght).ToArray();
 
-                string json = Encoding.ASCII.GetString(recivedBytes);
-                JsonNode jsonNode = JsonNode.Parse(json);
-                string procedure = jsonNode["Procedure"].ToString();
-                JsonObject parameters = jsonNode["Parameters"].AsObject();
-                _remoteProcedures.Invoke(procedure, parameters);
+                string strigifiedJson = Encoding.ASCII.GetString(recivedBytes);
+
+                JsonObject jsonObject = JsonNode.Parse(strigifiedJson).AsObject();
+
+                Procedure procedure = new Procedure(jsonObject);
+
+                _remoteProcedures.Invoke(procedure);
+            }
+        }
+
+        private void BeginRecieve(IAsyncResult asyncResult)
+        {
+            StateObject? stateObject = asyncResult.AsyncState as StateObject;
+            if (stateObject != null)
+            {
+                int recievedLenght = stateObject.Socket.EndReceive(asyncResult);
+
+                byte[] recivedBytes = stateObject.Buffer.Take(recievedLenght).ToArray();
+
+                Console.WriteLine(Encoding.ASCII.GetString(recivedBytes));
             }
         }
         #endregion
