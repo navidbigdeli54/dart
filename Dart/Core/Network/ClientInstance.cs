@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using System.Net.Sockets;
 using System.Text;
+using System.Net.Sockets;
 using System.Text.Json.Nodes;
 
 namespace Network
@@ -57,36 +57,53 @@ namespace Network
 
         public void Send(Procedure procedure)
         {
-            if (_socket.Connected == false)
+            try
             {
-                Console.WriteLine("Socket is not connected!");
-                return;
+                if (_socket.Connected == false) throw new Exception("Client is not connected!");
+
+                byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
+
+                _socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), _socket);
             }
-
-            byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
-
-            _socket.Send(buffer, SocketFlags.None);
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
+
         #endregion
 
         #region Private Methods
         private void BeginRecieve(IAsyncResult asyncResult)
         {
-            StateObject recieveStateObject = new StateObject(_socket);
-            recieveStateObject.Socket.BeginReceive(recieveStateObject.Buffer, 0, recieveStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), recieveStateObject);
-
             StateObject? stateObject = asyncResult.AsyncState as StateObject;
             if (stateObject != null)
             {
-                int recievedLenght = stateObject.Socket.EndReceive(asyncResult);
+                Socket clientSocket = stateObject.Socket;
+
+                int recievedLenght = clientSocket.EndReceive(asyncResult);
 
                 byte[] recivedBytes = stateObject.Buffer.Take(recievedLenght).ToArray();
 
-                JsonObject jsonObject = JsonNode.Parse(Encoding.UTF8.GetString(recivedBytes)).AsObject();
+                string content = Encoding.UTF8.GetString(recivedBytes);
+
+                JsonObject jsonObject = JsonNode.Parse(content).AsObject();
 
                 Procedure procedure = new Procedure(jsonObject);
 
                 _remoteProcedures.Invoke(procedure);
+
+                StateObject nextStateObject = new StateObject(clientSocket);
+                _socket.BeginReceive(nextStateObject.Buffer, 0, nextStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), nextStateObject);
+            }
+        }
+
+        private void SendCallback(IAsyncResult asyncResult)
+        {
+            Socket? socket = asyncResult.AsyncState as Socket;
+            if(socket != null)
+            {
+                socket.EndSend(asyncResult);
             }
         }
         #endregion
