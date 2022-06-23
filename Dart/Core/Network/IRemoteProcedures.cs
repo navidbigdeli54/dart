@@ -10,7 +10,7 @@ namespace Network
 
         void Invoke(string method, object[] parameters);
 
-        void Invoke(JsonObject jsonObject);
+        void Invoke(Procedure procedure);
     }
 
     public abstract class RemoteProcedures : IRemoteProcedures
@@ -50,36 +50,92 @@ namespace Network
             }
         }
 
-        void IRemoteProcedures.Invoke(JsonObject jsonObject)
+        void IRemoteProcedures.Invoke(Procedure procedure)
         {
-            string methodName = jsonObject["Procedure"].ToString();
 
-            if (_procedures.TryGetValue(methodName, out MethodInfo methodInfo))
+            if (_procedures.TryGetValue(procedure.Name, out MethodInfo methodInfo))
             {
-                ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-                object[] parameters = new object[parameterInfos.Length];
-                JsonArray parametersJsonArray = jsonObject["Parameters"].AsArray();
-
-                for (int i = 0; i < parameterInfos.Length; ++i)
-                {
-                    ParameterInfo parameterInfo = parameterInfos[i];
-
-                    for (int j = 0; j < parametersJsonArray.Count; ++j)
-                    {
-                        JsonObject parameterObject = parametersJsonArray[j].AsObject();
-                        string parameterObjectName = parameterObject["Name"].ToString();
-                        if (parameterObjectName == parameterInfo.Name)
-                        {
-                            TypeConverter converter = TypeDescriptor.GetConverter(parameterInfo.ParameterType);
-                            string parameterValue = parameterObject["Value"].ToString();
-                            parameters[i] = converter.ConvertFrom(parameterValue);
-                        }
-                    }
-                }
-
-                methodInfo?.Invoke(this, parameters);
+                methodInfo?.Invoke(this, procedure.Parameters.Select(x => x.Value).ToArray());
             }
         }
         #endregion
+    }
+
+    public class Procedure
+    {
+        public string Name { get; }
+
+        public Parameter[] Parameters { get; }
+
+        public Procedure(string name, Parameter[] parameters)
+        {
+            Name = name;
+            Parameters = parameters;
+        }
+
+        public Procedure(JsonObject jsonObject)
+        {
+            Name = jsonObject["Name"].ToString();
+
+            JsonArray parameterArray = jsonObject["Parameters"].AsArray();
+            Parameters = new Parameter[parameterArray.Count];
+            for (int i = 0; i < parameterArray.Count; ++i)
+            {
+                JsonObject parameterJsonObject = parameterArray[i].AsObject();
+                Parameters[i] = new Parameter(parameterJsonObject);
+            }
+        }
+
+        public override string ToString()
+        {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject["Name"] = Name;
+
+            JsonArray parameterArray = new JsonArray();
+            for (int i = 0; i < Parameters.Length; ++i)
+            {
+                parameterArray.Add(Parameters[i].ToJson());
+            }
+            jsonObject["Parameters"] = parameterArray;
+
+            return jsonObject.ToJsonString();
+        }
+    }
+
+    public class Parameter
+    {
+        public string Name { get; }
+
+        public object Value { get; }
+
+        public Parameter(string name, object value)
+        {
+            Name = name;
+            Value = value;
+        }
+
+        public Parameter(JsonObject jsonObject)
+        {
+            Name = jsonObject["Name"].ToString();
+            string typeName = jsonObject["Type"].ToString();
+            Type type = Type.GetType(typeName);
+            TypeConverter converter = TypeDescriptor.GetConverter(type);
+            string stringifiedValue = jsonObject["Value"].ToString();
+            Value = converter.ConvertFrom(stringifiedValue);
+        }
+
+        public override string ToString()
+        {
+            return ToJson().ToJsonString();
+        }
+
+        public JsonObject ToJson()
+        {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject["Name"] = Name;
+            jsonObject["Type"] = Value.GetType().FullName;
+            jsonObject["Value"] = Value.ToString();
+            return jsonObject;
+        }
     }
 }

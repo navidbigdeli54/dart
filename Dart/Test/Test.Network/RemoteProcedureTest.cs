@@ -33,21 +33,11 @@ namespace Test.Network
         {
             DummyRemoteSingleParameterProcedures remoteProcedures = new DummyRemoteSingleParameterProcedures();
 
-            string parameter = Guid.NewGuid().ToString();
-
-            JsonObject jsonObject = new JsonObject();
-            jsonObject["Procedure"] = "DummyProcedure";
-            JsonArray parameterArray = new JsonArray();
-            JsonObject parameterObject = new JsonObject();
-            parameterObject["Name"] = "parameter";
-            parameterObject["Value"] = parameter;
-            parameterArray.Add(parameterObject);
-            jsonObject["Parameters"] = parameterArray;
-
-            ((IRemoteProcedures)remoteProcedures).Invoke(jsonObject);
+            Parameter parameter = new Parameter("parameter", Guid.NewGuid().ToString());
+            ((IRemoteProcedures)remoteProcedures).Invoke(new Procedure("DummyProcedure", new Parameter[] { parameter }));
 
             Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(parameter, remoteProcedures.Parameter);
+            Assert.AreEqual(parameter.Value, remoteProcedures.Parameter);
         }
 
         [Test]
@@ -69,27 +59,13 @@ namespace Test.Network
         {
             DummyRemoteTwoDifferentParameterProcedures remoteProcedures = new DummyRemoteTwoDifferentParameterProcedures();
 
-            int firstParameter = Random.Shared.Next(0, int.MaxValue);
-            bool secondParameter = Random.Shared.Next(0, 1) % 2 == 0;
-
-            JsonObject jsonObject = new JsonObject();
-            jsonObject["Procedure"] = "DummyProcedure";
-            JsonArray parameterArray = new JsonArray();
-            JsonObject firstParameterObject = new JsonObject();
-            firstParameterObject["Name"] = "first";
-            firstParameterObject["Value"] = firstParameter;
-            parameterArray.Add(firstParameterObject);
-            JsonObject secondParameterObject = new JsonObject();
-            secondParameterObject["Name"] = "second";
-            secondParameterObject["Value"] = secondParameter;
-            parameterArray.Add(secondParameterObject);
-            jsonObject["Parameters"] = parameterArray;
-
-            ((IRemoteProcedures)remoteProcedures).Invoke(jsonObject);
+            Parameter firstParameter = new Parameter("first", Random.Shared.Next(0, int.MaxValue));
+            Parameter secondParameter = new Parameter("second", Random.Shared.Next(0, 1) % 2 == 0);
+            ((IRemoteProcedures)remoteProcedures).Invoke(new Procedure("DummyProcedure", new Parameter[] { firstParameter, secondParameter }));
 
             Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(firstParameter, remoteProcedures.FirstParameter);
-            Assert.AreEqual(secondParameter, remoteProcedures.SecondParameter);
+            Assert.AreEqual(firstParameter.Value, remoteProcedures.FirstParameter);
+            Assert.AreEqual(secondParameter.Value, remoteProcedures.SecondParameter);
         }
 
         [Test]
@@ -106,6 +82,25 @@ namespace Test.Network
             ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure");
 
             Assert.IsFalse(remoteProcedures.IsCalled);
+        }
+
+        [Test]
+        public void ProcedureTest()
+        {
+            Parameter firstParameter = new Parameter("first", Random.Shared.Next(0, int.MaxValue));
+            Parameter secondParameter = new Parameter("second", Random.Shared.Next(0, 1) % 2 == 0);
+            Procedure procedure = new Procedure("DummyProcedure", new Parameter[] { firstParameter, secondParameter });
+
+            string strigifiedProcedure = procedure.ToString();
+
+            Procedure parsedProcedure = new Procedure(JsonNode.Parse(strigifiedProcedure).AsObject());
+
+            Assert.AreEqual(procedure.Name, parsedProcedure.Name);
+            Assert.AreEqual(procedure.Parameters.Length, parsedProcedure.Parameters.Length);
+            Assert.AreEqual(procedure.Parameters[0].Name, parsedProcedure.Parameters[0].Name);
+            Assert.AreEqual(procedure.Parameters[0].Value, parsedProcedure.Parameters[0].Value);
+            Assert.AreEqual(procedure.Parameters[1].Name, parsedProcedure.Parameters[1].Name);
+            Assert.AreEqual(procedure.Parameters[1].Value, parsedProcedure.Parameters[1].Value);
         }
         #endregion
 
