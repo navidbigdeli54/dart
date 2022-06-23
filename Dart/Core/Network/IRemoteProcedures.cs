@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿using System.Reflection;
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 
 namespace Network
@@ -19,7 +19,7 @@ namespace Network
         private readonly Dictionary<string, MethodInfo> _procedures = new Dictionary<string, MethodInfo>();
         #endregion
 
-        #region Protected Methods
+        #region Constructors
         public RemoteProcedures()
         {
             Type type = GetType();
@@ -30,6 +30,13 @@ namespace Network
                 MethodInfo methodInfo = methods[i];
                 _procedures.Add(methodInfo.Name, methodInfo);
             }
+        }
+        #endregion
+
+        #region Public Methods
+        public virtual void OnConnected(string remoteEndPoint)
+        {
+            Console.WriteLine($"Client {remoteEndPoint} connected!");
         }
         #endregion
 
