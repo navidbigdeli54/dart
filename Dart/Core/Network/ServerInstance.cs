@@ -2,6 +2,7 @@
 using System.Text;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
+using System.Collections.Concurrent;
 
 namespace Network
 {
@@ -12,7 +13,7 @@ namespace Network
 
         private readonly Socket _serverSocket;
 
-        private readonly List<Socket> _clientSockets = new List<Socket>();
+        private readonly ConcurrentBag<Socket> _clientSockets = new ConcurrentBag<Socket>();
 
         private readonly IRemoteProcedures _remoteProcedures;
         #endregion
@@ -57,11 +58,13 @@ namespace Network
 
             for (int i = 0; i < _clientSockets.Count; ++i)
             {
-                Socket client = _clientSockets[i];
-                if (client.Connected)
+                foreach(Socket client in _clientSockets)
                 {
-                    StateObject sendStateObject = new StateObject(client);
-                    client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), sendStateObject);
+                    if (client.Connected)
+                    {
+                        StateObject sendStateObject = new StateObject(client);
+                        client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(BeginRecieve), sendStateObject);
+                    }
                 }
             }
         }
@@ -70,7 +73,8 @@ namespace Network
         #region Private Methods
         private void AcceptCallback(IAsyncResult asyncResult)
         {
-            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), asyncResult.AsyncState);
+            StateObject nextStateObject = new StateObject(_serverSocket);
+            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), nextStateObject);
 
             Socket clientSocket = _serverSocket.EndAccept(asyncResult);
 
@@ -86,6 +90,9 @@ namespace Network
             StateObject? stateObject = asyncResult.AsyncState as StateObject;
             if (stateObject != null)
             {
+                StateObject nextStateObject = new StateObject(stateObject.Socket);
+                stateObject.Socket.BeginReceive(nextStateObject.Buffer, 0, nextStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), nextStateObject);
+
                 int recievedLenght = stateObject.Socket.EndReceive(asyncResult);
 
                 byte[] recivedBytes = stateObject.Buffer.Take(recievedLenght).ToArray();

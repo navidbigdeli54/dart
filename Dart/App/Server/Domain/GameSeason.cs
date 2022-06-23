@@ -9,9 +9,7 @@
 
         public User User { get; set; }
 
-        public List<int> Scores { get; set; }
-
-        public int TotalScore => Scores.Sum();
+        public List<int> Scores { get; set; } = new List<int>();
         #endregion
     }
 }

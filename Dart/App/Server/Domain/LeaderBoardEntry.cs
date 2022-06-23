@@ -9,7 +9,7 @@
 
         public int Rank { get; set; }
 
-        public int Score => GameSeason.TotalScore;
+        public int Score { get; set; }
         #endregion
     }
 }

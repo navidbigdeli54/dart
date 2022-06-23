@@ -26,6 +26,16 @@ namespace Server.Infrastructure.BL
             return Guid.Empty;
         }
 
+        public void AddScore(Guid userId, int score)
+        {
+            GameSeasonBL gameSeasonBL = new GameSeasonBL();
+            GameSeason? gameSeason = gameSeasonBL.AddScore(userId, score);
+            if (gameSeason != null)
+            {
+                _leaderboardDALProxy.UpdateScore(gameSeason.Id, gameSeason.Scores.Sum());
+            }
+        }
+
         public IReadOnlyList<LeaderBoardEntry> GetAll()
         {
             return _leaderboardDALProxy.GetAll();

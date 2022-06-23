@@ -55,7 +55,7 @@ namespace Network
             }
         }
 
-        public async Task Send(byte[] buffer)
+        public void Send(Procedure procedure)
         {
             if (_socket.Connected == false)
             {
@@ -63,7 +63,9 @@ namespace Network
                 return;
             }
 
-            await _socket.SendAsync(buffer, SocketFlags.None);
+            byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
+
+            _socket.Send(buffer, SocketFlags.None);
         }
         #endregion
 

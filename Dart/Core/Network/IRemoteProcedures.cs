@@ -59,7 +59,6 @@ namespace Network
 
         void IRemoteProcedures.Invoke(Procedure procedure)
         {
-
             if (_procedures.TryGetValue(procedure.Name, out MethodInfo methodInfo))
             {
                 methodInfo?.Invoke(this, procedure.Parameters.Select(x => x.Value).ToArray());
