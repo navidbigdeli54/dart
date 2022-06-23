@@ -24,7 +24,7 @@ namespace Server
 
         static void Main()
         {
-            ServerInstance.Open();
+            ServerInstance.Start();
 
             Console.Read();
         }
