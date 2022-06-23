@@ -18,12 +18,10 @@ namespace Network
         private readonly IRemoteProcedures _remoteProcedures;
 
         private readonly ConcurrentBag<Socket> _clientSockets = new ConcurrentBag<Socket>();
-
-        public ManualResetEvent _allDone = new ManualResetEvent(false);
         #endregion
 
         #region Constructors
-        public ServerInstance(IRemoteProcedures remoteProcedures, IPAddress ipAddress, int port, int backlog = 100)
+        public ServerInstance(IRemoteProcedures remoteProcedures, IPAddress ipAddress, int port, int backlog = 1)
         {
             _remoteProcedures = remoteProcedures;
 
@@ -43,14 +41,7 @@ namespace Network
                 _serverSocket.Bind(_endpoint);
                 _serverSocket.Listen(_backlog);
 
-                while (true)
-                {
-                    _allDone.Reset();
-
-                    _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
-
-                    _allDone.WaitOne();
-                }
+                _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
             }
             catch (Exception exception)
             {
@@ -92,11 +83,11 @@ namespace Network
         #region Private Methods
         private void AcceptCallback(IAsyncResult asyncResult)
         {
-            _allDone.Set();
-
             Socket? serverSocket = asyncResult.AsyncState as Socket;
             if (serverSocket != null)
             {
+                _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
+
                 Socket clientSocket = _serverSocket.EndAccept(asyncResult);
 
                 _clientSockets.Add(clientSocket);
@@ -114,21 +105,23 @@ namespace Network
             {
                 Socket clientSocket = stateObject.Socket;
 
-                int recievedLenght = clientSocket.EndReceive(asyncResult);
-
-                if (recievedLenght > 0)
+                if (clientSocket.Connected)
                 {
+                    int recievedLenght = clientSocket.EndReceive(asyncResult);
 
-                    string content = Encoding.ASCII.GetString(stateObject.Buffer, 0, recievedLenght);
+                    if (recievedLenght > 0)
+                    {
+                        string content = Encoding.ASCII.GetString(stateObject.Buffer, 0, recievedLenght);
 
-                    JsonObject jsonObject = JsonNode.Parse(content).AsObject();
+                        JsonObject jsonObject = JsonNode.Parse(content).AsObject();
 
-                    Procedure procedure = new Procedure(jsonObject);
+                        Procedure procedure = new Procedure(jsonObject);
 
-                    _remoteProcedures.Invoke(procedure);
+                        _remoteProcedures.Invoke(procedure);
 
-                    StateObject nextStateObject = new StateObject(clientSocket);
-                    clientSocket.BeginReceive(nextStateObject.Buffer, 0, nextStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), nextStateObject);
+                        StateObject nextStateObject = new StateObject(clientSocket);
+                        clientSocket.BeginReceive(nextStateObject.Buffer, 0, nextStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), nextStateObject);
+                    }
                 }
             }
         }
