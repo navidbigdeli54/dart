@@ -2,6 +2,7 @@
 using System.Net;
 using Server.Domain;
 using Server.Infrastructure.BL;
+using Server.Application;
 
 namespace Server
 {
@@ -26,25 +27,15 @@ namespace Server
 
         public static ApplicationContext ApplicationContext { get; } = new ApplicationContext();
 
+        public static ApplicationView ApplicationView { get; } = new ApplicationView();
+
         static void Main()
         {
             ServerInstance.Start();
 
-            LeaderboadBL leaderboadBL = new LeaderboadBL(ApplicationContext);
+            ApplicationView.DrawHeader();
 
-            while (true)
-            {
-                Thread.Sleep(1000);
-                Console.Clear();
-                Console.WriteLine($"# \t                 Id                  \tScore");
-
-                IReadOnlyList<LeaderBoardEntry> leaderboardEntries = leaderboadBL.GetAll();
-                for (int i = 0; i < leaderboardEntries.Count; ++i)
-                {
-                    var entry = leaderboardEntries[i];
-                    Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
-                }
-            }
+            Console.ReadLine();
         }
     }
 }

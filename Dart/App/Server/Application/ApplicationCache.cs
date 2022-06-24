@@ -1,4 +1,6 @@
-﻿namespace Server.Domain
+﻿using Server.Domain;
+
+namespace Server.Application
 {
     public class ApplicationCache
     {

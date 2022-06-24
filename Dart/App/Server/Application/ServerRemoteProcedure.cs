@@ -2,7 +2,7 @@
 using System.Net;
 using Server.Infrastructure.BL;
 
-namespace Server
+namespace Server.Application
 {
     internal class ServerRemoteProcedure : RemoteProcedures
     {
@@ -33,6 +33,8 @@ namespace Server
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
             leaderboadBL.AddScore(userId, score);
+
+            Program.ApplicationView.DisplayLeaderboard(leaderboadBL.GetAll());
         }
     }
 }

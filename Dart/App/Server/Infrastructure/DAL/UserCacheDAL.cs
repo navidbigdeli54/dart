@@ -1,4 +1,5 @@
-﻿using Server.Domain;
+﻿using Server.Application;
+using Server.Domain;
 
 namespace Server.Infrastructure.DAL
 {
