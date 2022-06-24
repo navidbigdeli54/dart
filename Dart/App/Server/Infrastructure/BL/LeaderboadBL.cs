@@ -8,14 +8,14 @@ namespace Server.Infrastructure.BL
         #region Fields
         private readonly ApplicationContext _applicationContext;
 
-        private readonly LeaderboardDALProxy _leaderboardDALProxy;
+        private readonly LeaderboardCacheDAL _leaderboardDALProxy;
         #endregion
 
         #region Constructors
         public LeaderboadBL(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
-            _leaderboardDALProxy = new LeaderboardDALProxy(applicationContext);
+            _leaderboardDALProxy = new LeaderboardCacheDAL(applicationContext);
         }
         #endregion
 

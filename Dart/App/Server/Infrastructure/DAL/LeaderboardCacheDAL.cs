@@ -2,14 +2,14 @@
 
 namespace Server.Infrastructure.DAL
 {
-    public class LeaderboardDALProxy
+    public class LeaderboardCacheDAL
     {
         #region Fields
         private readonly ApplicationContext _aplicationContext;
         #endregion
 
         #region Constructors
-        public LeaderboardDALProxy(ApplicationContext applicationContext)
+        public LeaderboardCacheDAL(ApplicationContext applicationContext)
         {
             _aplicationContext = applicationContext;
         }

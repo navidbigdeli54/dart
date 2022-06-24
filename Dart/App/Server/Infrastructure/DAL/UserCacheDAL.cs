@@ -2,14 +2,14 @@
 
 namespace Server.Infrastructure.DAL
 {
-    public class UserDALProxy
+    public class UserCacheDAL
     {
         #region Fields
         private ApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public UserDALProxy(ApplicationContext applicationContext)
+        public UserCacheDAL(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }

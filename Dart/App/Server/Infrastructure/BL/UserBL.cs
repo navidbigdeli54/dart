@@ -6,13 +6,13 @@ namespace Server.Infrastructure.BL
     public class UserBL
     {
         #region Fields
-        private readonly UserDALProxy _userDAL;
+        private readonly UserCacheDAL _userDAL;
         #endregion
 
         #region Constructors
         public UserBL(ApplicationContext applicationContext)
         {
-            _userDAL = new UserDALProxy(applicationContext);
+            _userDAL = new UserCacheDAL(applicationContext);
         }
         #endregion
 

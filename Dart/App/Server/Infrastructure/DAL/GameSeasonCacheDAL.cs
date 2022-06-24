@@ -2,14 +2,14 @@
 
 namespace Server.Infrastructure.DAL
 {
-    public class GameSeasonDALProxy
+    public class GameSeasonCacheDAL
     {
         #region Fields
         private readonly ApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public GameSeasonDALProxy(ApplicationContext applicationContext)
+        public GameSeasonCacheDAL(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }

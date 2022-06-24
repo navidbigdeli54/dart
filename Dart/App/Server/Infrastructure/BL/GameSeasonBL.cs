@@ -8,14 +8,14 @@ namespace Server.Infrastructure.BL
         #region Fields
         private readonly ApplicationContext _applicationContext;
 
-        private readonly GameSeasonDALProxy _gameSeasonDAL;
+        private readonly GameSeasonCacheDAL _gameSeasonDAL;
         #endregion
 
         #region Constructors
         public GameSeasonBL(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
-            _gameSeasonDAL = new GameSeasonDALProxy(applicationContext);
+            _gameSeasonDAL = new GameSeasonCacheDAL(applicationContext);
         }
         #endregion
 
@@ -32,7 +32,7 @@ namespace Server.Infrastructure.BL
 
         public Guid Add(Guid userGuid)
         {
-            UserDALProxy userDALProxy = new UserDALProxy(_applicationContext);
+            UserCacheDAL userDALProxy = new UserCacheDAL(_applicationContext);
             User? user = userDALProxy.Get(userGuid);
 
             if (user != null)
