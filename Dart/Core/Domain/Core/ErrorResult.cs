@@ -1,20 +1,30 @@
-﻿namespace Server.Domain.Core
+﻿namespace Domain.Core
 {
-    public class Result<T> : IResult<T>
+    public class ErrorResult<T> : IResult<T>
     {
         #region Constructors
-        public Result()
+        public ErrorResult()
         {
         }
 
-        public Result(T message)
+        public ErrorResult(string error)
+        {
+            ((IResult)this).Errors.Add(error);
+        }
+
+        public ErrorResult(IList<string> errors)
+        {
+            ((IResult)this).Errors.AddRange(errors);
+        }
+
+        public ErrorResult(string error, T message) : this(error)
         {
             ((IResult<T>)this).Message = message;
         }
         #endregion
 
         #region IResult Implementation
-        bool IResult.IsSuccessful => ((IResult<T>)this).Errors.Count == 0;
+        bool IResult.IsSuccessful => false;
 
         List<string> IResult.Errors { get; } = new List<string>();
 
@@ -31,6 +41,6 @@
 
         #region IResult<T> Implementation
         T IResult<T>.Message { get; set; }
-        #endregion
     }
+    #endregion
 }

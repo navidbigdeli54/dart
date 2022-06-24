@@ -1,6 +1,6 @@
-﻿using Server.Application;
-using Server.Domain.Core;
-using Server.Domain.Model;
+﻿using Domain.Core;
+using Domain.Model;
+using Server.Application;
 
 namespace Server.Infrastructure.DAL
 {

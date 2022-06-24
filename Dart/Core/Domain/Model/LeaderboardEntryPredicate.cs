@@ -1,8 +1,8 @@
-﻿namespace Server.Domain.Model
+﻿namespace Domain.Model
 {
     public class LeaderboardEntryPredicate
     {
-        public static Predicate<LeaderBoardEntry> FindUpperRank(LeaderBoardEntry entry)
+        public static Predicate<LeaderboardEntry> FindUpperRank(LeaderboardEntry entry)
         {
             return x => entry.Score <= x.Score;
         }

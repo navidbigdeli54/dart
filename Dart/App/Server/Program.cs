@@ -1,7 +1,5 @@
 ﻿using Network;
 using System.Net;
-using Server.Domain;
-using Server.Infrastructure.BL;
 using Server.Application;
 
 namespace Server
@@ -18,7 +16,7 @@ namespace Server
                 {
                     IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
                     IPAddress ipAddress = ipHostEntry.AddressList[0];
-                    _serverInstance = new ServerInstance(new ServerRemoteProcedure(), ipAddress, 100);
+                    _serverInstance = new ServerInstance(new ApplicationRemoteProcedures(), ipAddress, 100);
                 }
 
                 return _serverInstance;

@@ -2,13 +2,17 @@
 
 namespace Network
 {
-    internal class StateObject
+    public class StateObject
     {
-        public const int BUFFER_SIZE = 1024;
+        #region Fields
+        public const int BUFFER_SIZE = short.MaxValue;
+        #endregion
 
-        public readonly byte[] Buffer = new byte[BUFFER_SIZE];
+        #region Properties
+        public byte[] Buffer { get; } = new byte[BUFFER_SIZE];
 
-        public readonly Socket Socket;
+        public Socket Socket { get; }
+        #endregion
 
         public StateObject(Socket socket)
         {

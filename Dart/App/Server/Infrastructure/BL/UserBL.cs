@@ -1,6 +1,6 @@
-﻿using Server.Application;
-using Server.Domain.Model;
-using Server.Domain.Core;
+﻿using Domain.Core;
+using Domain.Model;
+using Server.Application;
 using Server.Infrastructure.DAL;
 
 namespace Server.Infrastructure.BL

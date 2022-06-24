@@ -23,19 +23,19 @@ namespace Client
 
         public void Start()
         {
-            for (int i = 0; i < MAX_THROW; ++i)
-            {
-                Throw();
-
-                Thread.Sleep(THROW_INTERVAL);
-            }
+            Task.Run(Throw);
         }
 
-        private void Throw()
+        private async Task Throw()
         {
-            int currentScore = CalculateScore();
+            for (int i = 0; i < MAX_THROW; ++i)
+            {
+                int currentScore = CalculateScore();
 
-            SendToServer(currentScore);
+                SendToServer(currentScore);
+
+                await Task.Delay(THROW_INTERVAL);
+            }
         }
 
         private int CalculateScore()

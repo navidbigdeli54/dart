@@ -1,6 +1,6 @@
 ﻿using Domain.Model;
 
-namespace Server.Application
+namespace Client.Application
 {
     public class ApplicationView
     {
@@ -11,7 +11,7 @@ namespace Server.Application
             Console.WriteLine($"# \t                 Id                  \tScore");
         }
 
-        public void DisplayLeaderboard(IReadOnlyList<ImmutableLeaderboardEntry> leaderboard)
+        public void DisplayLeaderboard(IReadOnlyList<ImmutableUserLeaderboardEntry> leaderboard)
         {
             DrawHeader();
 
@@ -20,14 +20,14 @@ namespace Server.Application
         #endregion
 
         #region Private Methods
-        private static void DrawLeaderboardList(IReadOnlyList<ImmutableLeaderboardEntry> leaderboard)
+        private static void DrawLeaderboardList(IReadOnlyList<ImmutableUserLeaderboardEntry> leaderboard)
         {
             for (int i = 0; i < leaderboard.Count; ++i)
             {
                 var entry = leaderboard[i];
-                Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
+                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.LeaderboardEntry.Id} \t {entry.LeaderboardEntry.Score}");
             }
-        } 
+        }
         #endregion
     }
 }

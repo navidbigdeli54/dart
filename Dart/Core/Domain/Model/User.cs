@@ -1,4 +1,4 @@
-﻿namespace Server.Domain.Model
+﻿namespace Domain.Model
 {
     public class User
     {

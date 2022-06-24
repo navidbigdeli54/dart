@@ -1,4 +1,4 @@
-﻿using Server.Domain.Model;
+﻿using Domain.Model;
 
 namespace Server.Application
 {
@@ -8,6 +8,6 @@ namespace Server.Application
 
         public List<GameSeason> GameSeason { get; } = new List<GameSeason>(100);
 
-        public List<LeaderBoardEntry> Leaderboard { get; } = new List<LeaderBoardEntry>(100);
+        public List<LeaderboardEntry> Leaderboard { get; } = new List<LeaderboardEntry>(100);
     }
 }

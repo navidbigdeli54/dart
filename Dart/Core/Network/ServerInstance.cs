@@ -58,27 +58,17 @@ namespace Network
             Socket? client = _clientSockets.SingleOrDefault(x => x.RemoteEndPoint.Equals(endPoint));
             if (client != null)
             {
-                if (client.Connected)
-                {
-                    byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
-
-                    client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), client);
-                }
+                Send(client, procedure);
             }
         }
 
         public void Send(Procedure procedure)
         {
-            byte[] buffer = Encoding.ASCII.GetBytes(procedure.ToString());
-
             for (int i = 0; i < _clientSockets.Count; ++i)
             {
                 foreach (Socket client in _clientSockets)
                 {
-                    if (client.Connected)
-                    {
-                        client.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), client);
-                    }
+                    Send(client, procedure);
                 }
             }
         }
@@ -115,12 +105,12 @@ namespace Network
 
                     if (recievedLenght > 0)
                     {
-                        string content = Encoding.ASCII.GetString(stateObject.Buffer, 0, recievedLenght);
+                        string payloadContent = Encoding.ASCII.GetString(stateObject.Buffer, 0, Payload.PAYLOAD_SIZE);
+                        Payload payload = new Payload(JsonNode.Parse(payloadContent).AsObject());
 
+                        string content = Encoding.ASCII.GetString(stateObject.Buffer, Payload.PAYLOAD_SIZE, payload.Lenght);
                         JsonObject jsonObject = JsonNode.Parse(content).AsObject();
-
                         Procedure procedure = new Procedure(jsonObject);
-
                         _remoteProcedures.Invoke(procedure);
 
                         StateObject nextStateObject = new StateObject(clientSocket);
@@ -130,12 +120,32 @@ namespace Network
             }
         }
 
+        private void Send(Socket client, Procedure procedure)
+        {
+            if (client.Connected)
+            {
+                List<byte> buffer = new List<byte>(StateObject.BUFFER_SIZE);
+                byte[] serializedProcedureBytes = Encoding.ASCII.GetBytes(procedure.ToString());
+                if (serializedProcedureBytes.Length <= StateObject.BUFFER_SIZE - Payload.PAYLOAD_SIZE)
+                {
+                    Payload payload = new Payload(serializedProcedureBytes.Length);
+                    buffer.AddRange(Encoding.ASCII.GetBytes(payload.ToJson().ToJsonString()));
+                    buffer.AddRange(serializedProcedureBytes);
+                    client.BeginSend(buffer.ToArray(), 0, buffer.Count, SocketFlags.None, new AsyncCallback(SendCallback), client);
+                }
+                else
+                {
+
+                }
+            }
+        }
+
         private void SendCallback(IAsyncResult asyncResult)
         {
             Socket? clientSocket = asyncResult.AsyncState as Socket;
             if (clientSocket != null)
             {
-                clientSocket.EndSend(asyncResult);
+                int byteSent = clientSocket.EndSend(asyncResult);
             }
         }
         #endregion

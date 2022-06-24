@@ -1,6 +1,6 @@
-﻿namespace Server.Domain.Model
+﻿namespace Domain.Model
 {
-    public class LeaderBoardEntry
+    public class LeaderboardEntry
     {
         #region Properties
         public Guid Id { get; set; }

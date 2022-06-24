@@ -1,5 +1,5 @@
+using Domain.Model;
 using Server.Application;
-using Server.Domain.Model;
 using Server.Infrastructure.BL;
 
 namespace Test.BL
@@ -26,7 +26,7 @@ namespace Test.BL
             Guid user2Leaderboard = leaderboadBL.Add(user2GameSeason).Message;
             Guid user3Leaderboard = leaderboadBL.Add(user3GameSeason).Message;
 
-            IReadOnlyList<ImmutableLeaderBoardEntry> leaderBoardEntries = leaderboadBL.GetAll();
+            IReadOnlyList<ImmutableLeaderboardEntry> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.That(3, Is.EqualTo(leaderBoardEntries.Count));
             Assert.That(user1, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId));
             Assert.That(user2, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId));
@@ -61,7 +61,7 @@ namespace Test.BL
             leaderboadBL.AddScore(user2, 25);
             leaderboadBL.AddScore(user3, 15);
 
-            IReadOnlyList<ImmutableLeaderBoardEntry> leaderBoardEntries = leaderboadBL.GetAll();
+            IReadOnlyList<ImmutableLeaderboardEntry> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.That(3, Is.EqualTo(leaderBoardEntries.Count));
             Assert.That(user2, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId));
             Assert.That(user3, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId));
@@ -96,7 +96,7 @@ namespace Test.BL
             leaderboadBL.AddScore(user2, 25);
             leaderboadBL.AddScore(user3, 15);
 
-            IReadOnlyList<ImmutableLeaderBoardEntry> leaderBoardEntries = leaderboadBL.GetAll();
+            IReadOnlyList<ImmutableLeaderboardEntry> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.That(3, Is.EqualTo(leaderBoardEntries.Count));
             Assert.That(user2, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId));
             Assert.That(user3, Is.EqualTo(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId));

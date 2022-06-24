@@ -1,4 +1,4 @@
-﻿namespace Server.Domain.Core
+﻿namespace Domain.Core
 {
     public interface IResult
     {
