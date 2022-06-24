@@ -25,6 +25,7 @@ namespace Network
         public Payload(JsonObject jsonObject)
         {
             Lenght = int.Parse(jsonObject[nameof(Lenght)].ToString());
+            RemainingLenght = Lenght;
         }
         #endregion
 
