@@ -47,21 +47,17 @@ namespace Server.Infrastructure.DAL
             {
                 entry.Score = score;
 
-                int previousIndex = entry.Rank - 1;
-
                 _aplicationContext.ApplicationCache.Leaderboard.Remove(entry);
 
-                int newIndex = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(x => x.Score < entry.Score);
-                if (newIndex < 0)
-                {
-                    newIndex = 0;
-                }
+                int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
 
-                _aplicationContext.ApplicationCache.Leaderboard.Insert(newIndex, entry);
+                _aplicationContext.ApplicationCache.Leaderboard.Insert(indexToAdd, entry);
 
-                int indexToUpdateFrom = previousIndex > newIndex ? previousIndex : newIndex;
+                int previousIndex = entry.Rank - 1;
 
-                for (int i = indexToUpdateFrom; i < _aplicationContext.ApplicationCache.Leaderboard.Count; ++i)
+                int updateIndex = previousIndex > indexToAdd ? indexToAdd : previousIndex;
+
+                for (int i = updateIndex; i < _aplicationContext.ApplicationCache.Leaderboard.Count; ++i)
                 {
                     _aplicationContext.ApplicationCache.Leaderboard[i].Rank = i + 1;
                 }
