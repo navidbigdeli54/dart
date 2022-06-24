@@ -30,7 +30,7 @@ namespace Server.Infrastructure.DAL
         {
             entry.Id = Guid.NewGuid();
 
-            int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
+            int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindLastIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
 
             _aplicationContext.ApplicationCache.Leaderboard.Insert(indexToAdd, entry);
 
@@ -49,7 +49,7 @@ namespace Server.Infrastructure.DAL
 
                 _aplicationContext.ApplicationCache.Leaderboard.Remove(entry);
 
-                int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
+                int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindLastIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
 
                 _aplicationContext.ApplicationCache.Leaderboard.Insert(indexToAdd, entry);
 
