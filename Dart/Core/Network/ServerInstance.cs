@@ -6,6 +6,10 @@ using System.Collections.Concurrent;
 
 namespace Network
 {
+    /*
+     * TODO:
+     * this should be disposable!
+     */
     public class ServerInstance
     {
         #region Fields
@@ -86,8 +90,6 @@ namespace Network
             Socket? serverSocket = asyncResult.AsyncState as Socket;
             if (serverSocket != null)
             {
-                _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
-
                 Socket clientSocket = _serverSocket.EndAccept(asyncResult);
 
                 _clientSockets.Add(clientSocket);
@@ -95,6 +97,8 @@ namespace Network
 
                 StateObject stateObject = new StateObject(clientSocket);
                 clientSocket.BeginReceive(stateObject.Buffer, 0, stateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), stateObject);
+
+                _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
             }
         }
 
