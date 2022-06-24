@@ -10,7 +10,7 @@ namespace Network
 
         private readonly ConcurrentQueue<Procedure> _remoteProcequresQueue = new ConcurrentQueue<Procedure>();
 
-        private bool _isProcesingQueue = false;
+        private readonly object lockObject = new object();
         #endregion
 
         #region Constructors
@@ -38,55 +38,48 @@ namespace Network
         void IRemoteProcedures.Invoke(string method)
         {
             _remoteProcequresQueue.Enqueue(new Procedure(method, null));
-            if (_isProcesingQueue == false)
-            {
-                ProcessQueue();
-            }
+
+            ProcessQueue();
         }
 
         void IRemoteProcedures.Invoke(string method, object[] parameters)
         {
             _remoteProcequresQueue.Enqueue(new Procedure(method, parameters.Select(x => new Parameter(string.Empty, x)).ToArray()));
-            if (_isProcesingQueue == false)
-            {
-                ProcessQueue();
-            }
+
+            ProcessQueue();
         }
 
         void IRemoteProcedures.Invoke(Procedure procedure)
         {
             _remoteProcequresQueue.Enqueue(procedure);
-            if (_isProcesingQueue == false)
-            {
-                ProcessQueue();
-            }
+
+            ProcessQueue();
         }
         #endregion
 
         #region Private Methods
         private void ProcessQueue()
         {
-            _isProcesingQueue = true;
-
-            while (_remoteProcequresQueue.Count > 0)
+            lock (lockObject)
             {
-                if (_remoteProcequresQueue.TryDequeue(out Procedure? procedure))
+                while (_remoteProcequresQueue.Count > 0)
                 {
-                    if (_registeredRemoteProcedures.TryGetValue(procedure.Name, out MethodInfo? methodInfo))
+                    if (_remoteProcequresQueue.TryDequeue(out Procedure? procedure))
                     {
-                        try
+                        if (_registeredRemoteProcedures.TryGetValue(procedure.Name, out MethodInfo? methodInfo))
                         {
-                            methodInfo?.Invoke(this, procedure.Parameters.Select(x => x.Value).ToArray());
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
+                            try
+                            {
+                                methodInfo?.Invoke(this, procedure.Parameters.Select(x => x.Value).ToArray());
+                            }
+                            catch (Exception exception)
+                            {
+                                Console.WriteLine(exception);
+                            }
                         }
                     }
                 }
             }
-
-            _isProcesingQueue = false;
         }
         #endregion
     }
