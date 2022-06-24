@@ -4,18 +4,29 @@ namespace Server.Infrastructure.DAL
 {
     public class UserDALProxy
     {
-        private static readonly List<User> _users = new List<User>();
+        #region Fields
+        private ApplicationContext _applicationContext;
+        #endregion
+
+        #region Constructors
+        public UserDALProxy(ApplicationContext applicationContext)
+        {
+            _applicationContext = applicationContext;
+        }
+        #endregion
+
+        #region Public Methods
+        public User? Get(Guid id)
+        {
+            return _applicationContext.ApplicationCache.User.Where(x => x.Id == id).SingleOrDefault();
+        }
 
         public void Add(User user)
         {
             user.Id = Guid.NewGuid();
 
-            _users.Add(user);
-        }
-
-        public User? Get(Guid id)
-        {
-            return _users.Where(x => x.Id == id).SingleOrDefault();
-        }
+            _applicationContext.ApplicationCache.User.Add(user);
+        } 
+        #endregion
     }
 }

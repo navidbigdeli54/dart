@@ -8,13 +8,17 @@ namespace Server
     {
         public override void OnConnected(string remoteEndPoint)
         {
-            UserBL userBL = new UserBL();
-            Guid userId = userBL.Add(remoteEndPoint);
+            /*
+             * TODO:
+             * Client should send the username here!
+             */
+            UserBL userBL = new UserBL(Program.ApplicationContext);
+            Guid userId = userBL.Add(string.Empty, remoteEndPoint);
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL();
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
             Guid gameSeasonId = gameSeasonBL.Add(userId);
 
-            LeaderboadBL leaderboadBL = new LeaderboadBL();
+            LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
             leaderboadBL.Add(gameSeasonId);
 
             IPEndPoint clientEndPoint = IPEndPoint.Parse(remoteEndPoint);
@@ -26,7 +30,7 @@ namespace Server
 
         public void DartThrowed(Guid userId, int score)
         {
-            LeaderboadBL leaderboadBL = new LeaderboadBL();
+            LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
             leaderboadBL.AddScore(userId, score);
         }

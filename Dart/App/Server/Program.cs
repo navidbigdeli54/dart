@@ -1,8 +1,7 @@
 ﻿using Network;
 using System.Net;
-using Server.Infrastructure.BL;
-using System.Collections.Generic;
 using Server.Domain;
+using Server.Infrastructure.BL;
 
 namespace Server
 {
@@ -25,11 +24,13 @@ namespace Server
             }
         }
 
+        public static ApplicationContext ApplicationContext { get; } = new ApplicationContext();
+
         static void Main()
         {
             ServerInstance.Start();
 
-            LeaderboadBL leaderboadBL = new LeaderboadBL();
+            LeaderboadBL leaderboadBL = new LeaderboadBL(ApplicationContext);
 
             while (true)
             {
@@ -44,8 +45,6 @@ namespace Server
                     Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
                 }
             }
-
-            Console.Read();
         }
     }
 }

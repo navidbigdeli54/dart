@@ -4,34 +4,40 @@ namespace Server.Infrastructure.DAL
 {
     public class LeaderboardDALProxy
     {
-        private static readonly List<LeaderBoardEntry> _leaderboard = new List<LeaderBoardEntry>();
+        #region Fields
+        private readonly ApplicationContext _aplicationContext;
+        #endregion
+
+        #region Constructors
+        public LeaderboardDALProxy(ApplicationContext applicationContext)
+        {
+            _aplicationContext = applicationContext;
+        }
+        #endregion
+
+        #region Public Methods
+        public IReadOnlyList<LeaderBoardEntry> GetAll()
+        {
+            return _aplicationContext.ApplicationCache.Leaderboard;
+        }
 
         public LeaderBoardEntry? GetByGameSeasonId(Guid gameSeasonId)
         {
-            return _leaderboard.Where(x => x.GameSeason.Id == gameSeasonId).SingleOrDefault();
+            return _aplicationContext.ApplicationCache.Leaderboard.Where(x => x.GameSeason?.Id == gameSeasonId).SingleOrDefault();
         }
 
         public void Add(LeaderBoardEntry entry)
         {
-            /*
-             * TODO:
-             * Do binary search instead of linear!
-             */
-
             entry.Id = Guid.NewGuid();
 
-            int indexToAdd = 0;
-            for (int i = 0; i < _leaderboard.Count; ++i)
+            int indexToAdd = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(LeaderboardEntryPredicate.FindUpperRank(entry)) + 1;
+
+            _aplicationContext.ApplicationCache.Leaderboard.Insert(indexToAdd, entry);
+
+            for (int i = indexToAdd; i < _aplicationContext.ApplicationCache.Leaderboard.Count; ++i)
             {
-                if (_leaderboard[i].Score < entry.Score)
-                {
-                    indexToAdd = i;
-                }
+                _aplicationContext.ApplicationCache.Leaderboard[i].Rank = i + 1;
             }
-
-            entry.Rank = indexToAdd + 1;
-
-            _leaderboard.Insert(indexToAdd, entry);
         }
 
         public void UpdateScore(Guid gameSeasonId, int score)
@@ -41,26 +47,26 @@ namespace Server.Infrastructure.DAL
             {
                 entry.Score = score;
 
-                _leaderboard.Remove(entry);
+                int previousIndex = entry.Rank - 1;
 
-                int indexToAdd = 0;
-                for (int i = 0; i < _leaderboard.Count; ++i)
+                _aplicationContext.ApplicationCache.Leaderboard.Remove(entry);
+
+                int newIndex = _aplicationContext.ApplicationCache.Leaderboard.FindIndex(x => x.Score < entry.Score);
+                if (newIndex < 0)
                 {
-                    if (_leaderboard[i].Score > entry.Score)
-                    {
-                        indexToAdd = i;
-                    }
+                    newIndex = 0;
                 }
 
-                entry.Rank = indexToAdd + 1;
+                _aplicationContext.ApplicationCache.Leaderboard.Insert(newIndex, entry);
 
-                _leaderboard.Insert(indexToAdd, entry);
+                int indexToUpdateFrom = previousIndex > newIndex ? previousIndex : newIndex;
+
+                for (int i = indexToUpdateFrom; i < _aplicationContext.ApplicationCache.Leaderboard.Count; ++i)
+                {
+                    _aplicationContext.ApplicationCache.Leaderboard[i].Rank = i + 1;
+                }
             }
         }
-
-        public IReadOnlyList<LeaderBoardEntry> GetAll()
-        {
-            return _leaderboard;
-        }
+        #endregion
     }
 }

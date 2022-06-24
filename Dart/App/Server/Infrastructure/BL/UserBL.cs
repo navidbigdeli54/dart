@@ -5,18 +5,30 @@ namespace Server.Infrastructure.BL
 {
     public class UserBL
     {
-        private static readonly UserDALProxy userDAL = new UserDALProxy();
+        #region Fields
+        private readonly UserDALProxy _userDAL;
+        #endregion
 
-        public Guid Add(string endPoint)
+        #region Constructors
+        public UserBL(ApplicationContext applicationContext)
+        {
+            _userDAL = new UserDALProxy(applicationContext);
+        }
+        #endregion
+
+        #region Public Methods
+        public Guid Add(string username, string endPoint)
         {
             User user = new User()
             {
+                Username = username,
                 EndPoint = endPoint
             };
 
-            userDAL.Add(user);
+            _userDAL.Add(user);
 
             return user.Id;
         }
+        #endregion
     }
 }

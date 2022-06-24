@@ -5,11 +5,34 @@ namespace Server.Infrastructure.BL
 {
     public class GameSeasonBL
     {
-        public static readonly GameSeasonDALProxy _gameSeasonDAL = new GameSeasonDALProxy();
+        #region Fields
+        private readonly ApplicationContext _applicationContext;
+
+        private readonly GameSeasonDALProxy _gameSeasonDAL;
+        #endregion
+
+        #region Constructors
+        public GameSeasonBL(ApplicationContext applicationContext)
+        {
+            _applicationContext = applicationContext;
+            _gameSeasonDAL = new GameSeasonDALProxy(applicationContext);
+        }
+        #endregion
+
+        #region Public Methods
+        public GameSeason? Get(Guid gameSeasonId)
+        {
+            return _gameSeasonDAL.Get(gameSeasonId);
+        }
+
+        public GameSeason? GetByUserId(Guid userId)
+        {
+            return _gameSeasonDAL.GetByUserId(userId);
+        }
 
         public Guid Add(Guid userGuid)
         {
-            UserDALProxy userDALProxy = new UserDALProxy();
+            UserDALProxy userDALProxy = new UserDALProxy(_applicationContext);
             User? user = userDALProxy.Get(userGuid);
 
             if (user != null)
@@ -28,16 +51,6 @@ namespace Server.Infrastructure.BL
             return Guid.Empty;
         }
 
-        public GameSeason? Get(Guid gameSeasonId)
-        {
-            return _gameSeasonDAL.Get(gameSeasonId);
-        }
-
-        public GameSeason? GetByUserId(Guid userId)
-        {
-            return _gameSeasonDAL.GetByUserId(userId);
-        }
-
         public GameSeason? AddScore(Guid userId, int score)
         {
             GameSeason? gameSeason = GetByUserId(userId);
@@ -48,5 +61,6 @@ namespace Server.Infrastructure.BL
 
             return gameSeason;
         }
+        #endregion
     }
 }
