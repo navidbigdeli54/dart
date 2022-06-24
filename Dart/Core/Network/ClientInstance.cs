@@ -1,10 +1,13 @@
 ﻿using System.Net;
-using System.Text;
 using System.Net.Sockets;
 
 namespace Network
 {
-    public class ClientInstance : SocketCallback
+    /*
+     * TODO:
+     * this should be disposable!
+     */
+    public class ClientInstance : SocketCallbacks
     {
         #region Fields
         private IPEndPoint _remoteEndPoint;
@@ -52,17 +55,7 @@ namespace Network
 
         public void Send(Procedure procedure)
         {
-            try
-            {
-                if (_socket.Connected)
-                {
-                    Send(_socket, procedure);
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-            }
+            Send(_socket, procedure);
         }
         #endregion
     }

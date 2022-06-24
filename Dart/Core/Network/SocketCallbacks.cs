@@ -4,14 +4,14 @@ using System.Text.Json.Nodes;
 
 namespace Network
 {
-    public abstract class SocketCallback
+    public abstract class SocketCallbacks
     {
         #region Fields
         protected IRemoteProcedures _remoteProcedures;
         #endregion
 
         #region Constructors
-        public SocketCallback(IRemoteProcedures remoteProcedures)
+        public SocketCallbacks(IRemoteProcedures remoteProcedures)
         {
             _remoteProcedures = remoteProcedures;
         }
@@ -77,12 +77,19 @@ namespace Network
         {
             if (client.Connected)
             {
-                List<byte> buffer = new List<byte>(StateObject.BUFFER_SIZE);
-                byte[] serializedProcedureBytes = Encoding.ASCII.GetBytes(procedure.ToString());
-                Payload payload = new Payload(serializedProcedureBytes.Length);
-                buffer.AddRange(Encoding.ASCII.GetBytes(payload.ToJson().ToJsonString()));
-                buffer.AddRange(serializedProcedureBytes);
-                client.BeginSend(buffer.ToArray(), 0, buffer.Count, SocketFlags.None, new AsyncCallback(SendCallback), client);
+                try
+                {
+                    List<byte> buffer = new List<byte>(StateObject.BUFFER_SIZE);
+                    byte[] serializedProcedureBytes = Encoding.ASCII.GetBytes(procedure.ToString());
+                    Payload payload = new Payload(serializedProcedureBytes.Length);
+                    buffer.AddRange(Encoding.ASCII.GetBytes(payload.ToJson().ToJsonString()));
+                    buffer.AddRange(serializedProcedureBytes);
+                    client.BeginSend(buffer.ToArray(), 0, buffer.Count, SocketFlags.None, new AsyncCallback(SendCallback), client);
+                }
+                catch (Exception exception)
+                {
+                    Console.Write(exception);
+                }
             }
         }
 
@@ -91,7 +98,14 @@ namespace Network
             Socket? socket = asyncResult.AsyncState as Socket;
             if (socket != null)
             {
-                socket.EndSend(asyncResult);
+                try
+                {
+                    socket.EndSend(asyncResult);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
             }
         }
         #endregion

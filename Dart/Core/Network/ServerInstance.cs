@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text;
 using System.Net.Sockets;
 using System.Collections.Concurrent;
 
@@ -9,7 +8,7 @@ namespace Network
      * TODO:
      * this should be disposable!
      */
-    public class ServerInstance : SocketCallback
+    public class ServerInstance : SocketCallbacks
     {
         #region Fields
         private readonly int _backlog;
@@ -84,15 +83,6 @@ namespace Network
                 clientSocket.BeginReceive(stateObject.Buffer, 0, stateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), stateObject);
 
                 _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), _serverSocket);
-            }
-        }
-
-        private void SendCallback(IAsyncResult asyncResult)
-        {
-            Socket? clientSocket = asyncResult.AsyncState as Socket;
-            if (clientSocket != null)
-            {
-                clientSocket.EndSend(asyncResult);
             }
         }
         #endregion

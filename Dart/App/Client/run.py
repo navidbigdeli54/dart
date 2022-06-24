@@ -1,6 +1,6 @@
 import os
 import time;
 
-for x in range(2):
+for x in range(10):
 	os.system("start CMD.exe /C dotnet run")
-	time.sleep(1)
+	time.sleep(5)
