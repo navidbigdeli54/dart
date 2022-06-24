@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using System.Text;
 
 namespace Network
 {
@@ -14,7 +13,7 @@ namespace Network
 
         public Socket Socket { get; }
 
-        public StringBuilder StringBuilder { get; } = new StringBuilder();
+        public List<byte> RecivedBytes = new List<byte>();
 
         public Payload Payload { get; set; }
         #endregion

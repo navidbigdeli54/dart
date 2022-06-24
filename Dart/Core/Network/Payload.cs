@@ -10,22 +10,22 @@ namespace Network
         #endregion
 
         #region Properties
-        public int Lenght { get; }
+        public int Length { get; }
 
-        public int RemainingLenght { get; set; }
+        public int RemainingLength { get; set; }
         #endregion
 
         #region Constructors
-        public Payload(int lenght)
+        public Payload(int length)
         {
-            Lenght = lenght;
-            RemainingLenght = Lenght;
+            Length = length;
+            RemainingLength = Length;
         }
 
         public Payload(JsonObject jsonObject)
         {
-            Lenght = int.Parse(jsonObject[nameof(Lenght)].ToString());
-            RemainingLenght = Lenght;
+            Length = int.Parse(jsonObject[nameof(Length)].ToString());
+            RemainingLength = Length;
         }
         #endregion
 
@@ -33,7 +33,7 @@ namespace Network
         public JsonObject ToJson()
         {
             JsonObject jsonObject = new JsonObject();
-            jsonObject[nameof(Lenght)] = Lenght.ToString("D5");
+            jsonObject[nameof(Length)] = Length.ToString("D5");
             return jsonObject;
         }
         #endregion

@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text;
 using System.Net.Sockets;
-using System.Text.Json.Nodes;
 using System.Collections.Concurrent;
 
 namespace Network
@@ -10,7 +9,7 @@ namespace Network
      * TODO:
      * this should be disposable!
      */
-    public class ServerInstance
+    public class ServerInstance : SocketCallback
     {
         #region Fields
         private readonly int _backlog;
@@ -19,16 +18,12 @@ namespace Network
 
         private readonly IPEndPoint _endpoint;
 
-        private readonly IRemoteProcedures _remoteProcedures;
-
         private readonly ConcurrentBag<Socket> _clientSockets = new ConcurrentBag<Socket>();
         #endregion
 
         #region Constructors
-        public ServerInstance(IRemoteProcedures remoteProcedures, IPAddress ipAddress, int port, int backlog = 1)
+        public ServerInstance(IRemoteProcedures remoteProcedures, IPAddress ipAddress, int port, int backlog = 1) : base(remoteProcedures)
         {
-            _remoteProcedures = remoteProcedures;
-
             _backlog = backlog;
 
             _endpoint = new IPEndPoint(ipAddress, port);
@@ -92,60 +87,12 @@ namespace Network
             }
         }
 
-        private void ReceiveCallback(IAsyncResult asyncResult)
-        {
-            StateObject? stateObject = asyncResult.AsyncState as StateObject;
-            if (stateObject != null)
-            {
-                Socket clientSocket = stateObject.Socket;
-
-                if (clientSocket.Connected)
-                {
-                    int recievedLenght = clientSocket.EndReceive(asyncResult);
-
-                    if (recievedLenght > 0)
-                    {
-                        string payloadContent = Encoding.ASCII.GetString(stateObject.Buffer, 0, Payload.PAYLOAD_SIZE);
-                        Payload payload = new Payload(JsonNode.Parse(payloadContent).AsObject());
-
-                        string content = Encoding.ASCII.GetString(stateObject.Buffer, Payload.PAYLOAD_SIZE, payload.Lenght);
-                        JsonObject jsonObject = JsonNode.Parse(content).AsObject();
-                        Procedure procedure = new Procedure(jsonObject);
-                        _remoteProcedures.Invoke(procedure);
-
-                        StateObject nextStateObject = new StateObject(clientSocket);
-                        clientSocket.BeginReceive(nextStateObject.Buffer, 0, nextStateObject.Buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), nextStateObject);
-                    }
-                }
-            }
-        }
-
-        private void Send(Socket client, Procedure procedure)
-        {
-            if (client.Connected)
-            {
-                List<byte> buffer = new List<byte>(StateObject.BUFFER_SIZE);
-                byte[] serializedProcedureBytes = Encoding.ASCII.GetBytes(procedure.ToString());
-                if (serializedProcedureBytes.Length <= StateObject.BUFFER_SIZE - Payload.PAYLOAD_SIZE)
-                {
-                    Payload payload = new Payload(serializedProcedureBytes.Length);
-                    buffer.AddRange(Encoding.ASCII.GetBytes(payload.ToJson().ToJsonString()));
-                    buffer.AddRange(serializedProcedureBytes);
-                    client.BeginSend(buffer.ToArray(), 0, buffer.Count, SocketFlags.None, new AsyncCallback(SendCallback), client);
-                }
-                else
-                {
-
-                }
-            }
-        }
-
         private void SendCallback(IAsyncResult asyncResult)
         {
             Socket? clientSocket = asyncResult.AsyncState as Socket;
             if (clientSocket != null)
             {
-                int byteSent = clientSocket.EndSend(asyncResult);
+                clientSocket.EndSend(asyncResult);
             }
         }
         #endregion
