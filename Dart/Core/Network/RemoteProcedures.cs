@@ -70,7 +70,7 @@ namespace Network
                         {
                             try
                             {
-                                methodInfo?.Invoke(this, procedure.Parameters.Select(x => x.Value).ToArray());
+                                methodInfo?.Invoke(this, procedure.Parameters?.Select(x => x.Value)?.ToArray());
                             }
                             catch (Exception exception)
                             {
