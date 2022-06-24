@@ -1,5 +1,6 @@
 ﻿using Server.Application;
-using Server.Domain;
+using Server.Domain.Core;
+using Server.Domain.Model;
 
 namespace Server.Infrastructure.DAL
 {
@@ -24,22 +25,35 @@ namespace Server.Infrastructure.DAL
 
         public GameSeason? GetByUserId(Guid userId)
         {
-            return _applicationContext.ApplicationCache.GameSeason.Where(x => x.User.Id == userId).SingleOrDefault();
+            return _applicationContext.ApplicationCache.GameSeason.Where(x => x.UserId == userId).SingleOrDefault();
         }
 
-        public void Add(GameSeason gameSeason)
+        public IResult<Guid> Add(GameSeason gameSeason)
         {
-            gameSeason.Id = Guid.NewGuid();
-
-            _applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
+            try
+            {
+                gameSeason.Id = Guid.NewGuid();
+                _applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
+                return new Result<Guid>(gameSeason.Id);
+            }
+            catch (Exception exception)
+            {
+                return new ErrorResult<Guid>(new List<string> { "Can't add game season!", exception.Message });
+            }
         }
 
-        public void AddScore(Guid gameSeasonId, int score)
+        public IResult AddScore(Guid gameSeasonId, int score)
         {
             GameSeason? gameSeason = Get(gameSeasonId);
             if (gameSeason != null)
             {
                 gameSeason.Scores.Add(score);
+
+                return new Result<object>();
+            }
+            else
+            {
+                return new ErrorResult<object>($"Can't find GameSeason by `{gameSeasonId}` id!");
             }
         }
         #endregion

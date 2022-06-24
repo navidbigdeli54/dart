@@ -1,4 +1,4 @@
-﻿namespace Server.Domain
+﻿namespace Server.Domain.Model
 {
     public class GameSeason
     {
@@ -7,7 +7,7 @@
 
         public DateTime CreationDate { get; set; }
 
-        public User User { get; set; }
+        public Guid UserId { get; set; }
 
         public List<int> Scores { get; set; } = new List<int>();
         #endregion

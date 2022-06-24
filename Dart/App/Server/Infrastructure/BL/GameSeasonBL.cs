@@ -1,5 +1,6 @@
 ﻿using Server.Application;
-using Server.Domain;
+using Server.Domain.Core;
+using Server.Domain.Model;
 using Server.Infrastructure.DAL;
 
 namespace Server.Infrastructure.BL
@@ -21,46 +22,60 @@ namespace Server.Infrastructure.BL
         #endregion
 
         #region Public Methods
-        public GameSeason? Get(Guid gameSeasonId)
+        public ImmutableGameSeason Get(Guid gameSeasonId)
         {
-            return _gameSeasonDAL.Get(gameSeasonId);
+            GameSeason? gameSeason = _gameSeasonDAL.Get(gameSeasonId);
+            if (gameSeason != null)
+            {
+                return new ImmutableGameSeason(gameSeason);
+            }
+
+            return default;
         }
 
-        public GameSeason? GetByUserId(Guid userId)
+        public ImmutableGameSeason GetByUserId(Guid userId)
         {
-            return _gameSeasonDAL.GetByUserId(userId);
+            GameSeason? gameSeason = _gameSeasonDAL.GetByUserId(userId);
+            if (gameSeason != null)
+            {
+                return new ImmutableGameSeason(gameSeason);
+            }
+
+            return default;
         }
 
-        public Guid Add(Guid userGuid)
+        public IResult<Guid> Add(Guid userId)
         {
-            UserCacheDAL userDALProxy = new UserCacheDAL(_applicationContext);
-            User? user = userDALProxy.Get(userGuid);
+            UserBL userBL = new UserBL(_applicationContext);
+            ImmutableUser user = userBL.Get(userId);
 
-            if (user != null)
+            if (user.IsValid)
             {
                 GameSeason gameSeason = new GameSeason
                 {
                     CreationDate = DateTime.UtcNow,
-                    User = user
+                    UserId = user.Id
                 };
 
-                _gameSeasonDAL.Add(gameSeason);
-
-                return gameSeason.Id;
+                return _gameSeasonDAL.Add(gameSeason);
             }
 
-            return Guid.Empty;
+            return new ErrorResult<Guid>($"Can't find User by `{userId}` id!");
         }
 
-        public GameSeason? AddScore(Guid userId, int score)
+        public IResult AddNewScore(Guid userId, int score)
         {
-            GameSeason? gameSeason = GetByUserId(userId);
-            if (gameSeason != null && gameSeason.Scores.Count < 10 && gameSeason.CreationDate - DateTime.UtcNow < TimeSpan.FromMinutes(2))
+            ImmutableGameSeason gameSeason = GetByUserId(userId);
+            if (gameSeason.IsValid && gameSeason.Scores.Count < 10 && gameSeason.CreationDate - DateTime.UtcNow < TimeSpan.FromMinutes(2))
             {
                 _gameSeasonDAL.AddScore(gameSeason.Id, score);
-            }
 
-            return gameSeason;
+                return new Result<object>();
+            }
+            else
+            {
+                return new ErrorResult<object>("Can't add new score!");
+            }
         }
         #endregion
     }

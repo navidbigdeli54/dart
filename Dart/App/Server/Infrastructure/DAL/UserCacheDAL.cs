@@ -1,5 +1,6 @@
 ﻿using Server.Application;
-using Server.Domain;
+using Server.Domain.Core;
+using Server.Domain.Model;
 
 namespace Server.Infrastructure.DAL
 {
@@ -22,12 +23,20 @@ namespace Server.Infrastructure.DAL
             return _applicationContext.ApplicationCache.User.Where(x => x.Id == id).SingleOrDefault();
         }
 
-        public void Add(User user)
+        public IResult<Guid> Add(User user)
         {
-            user.Id = Guid.NewGuid();
+            try
+            {
+                user.Id = Guid.NewGuid();
+                _applicationContext.ApplicationCache.User.Add(user);
 
-            _applicationContext.ApplicationCache.User.Add(user);
-        } 
+                return new Result<Guid>(user.Id);
+            }
+            catch (Exception exception)
+            {
+                return new ErrorResult<Guid>(new List<string> { "Can't add new user!", exception.Message });
+            }
+        }
         #endregion
     }
 }

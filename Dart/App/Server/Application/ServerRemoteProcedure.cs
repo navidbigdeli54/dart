@@ -1,6 +1,7 @@
 ﻿using Network;
 using System.Net;
 using Server.Infrastructure.BL;
+using Server.Domain.Core;
 
 namespace Server.Application
 {
@@ -13,19 +14,25 @@ namespace Server.Application
              * Client should send the username here!
              */
             UserBL userBL = new UserBL(Program.ApplicationContext);
-            Guid userId = userBL.Add(string.Empty, remoteEndPoint);
+            IResult<Guid> addUserResult = userBL.Add(string.Empty, remoteEndPoint);
+            if (addUserResult.IsSuccessful)
+            {
+                GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
+                IResult<Guid> gameSeasonResult = gameSeasonBL.Add(addUserResult.Message);
+                if (gameSeasonResult.IsSuccessful)
+                {
+                    LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
+                    IResult addLeaderboardResult = leaderboadBL.Add(gameSeasonResult.Message);
+                    if (addLeaderboardResult.IsSuccessful)
+                    {
+                        IPEndPoint clientEndPoint = IPEndPoint.Parse(remoteEndPoint);
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
-            Guid gameSeasonId = gameSeasonBL.Add(userId);
+                        Procedure procedure = new Procedure("Connected", new Parameter[] { new Parameter("userId", addUserResult.Message.ToString()) });
 
-            LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
-            leaderboadBL.Add(gameSeasonId);
-
-            IPEndPoint clientEndPoint = IPEndPoint.Parse(remoteEndPoint);
-
-            Procedure procedure = new Procedure("Connected", new Parameter[] { new Parameter("userId", userId.ToString()) });
-
-            Program.ServerInstance.Send(clientEndPoint, procedure);
+                        Program.ServerInstance.Send(clientEndPoint, procedure);
+                    }
+                }
+            }
         }
 
         public void DartThrowed(Guid userId, int score)

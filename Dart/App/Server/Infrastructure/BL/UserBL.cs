@@ -1,5 +1,6 @@
 ﻿using Server.Application;
-using Server.Domain;
+using Server.Domain.Model;
+using Server.Domain.Core;
 using Server.Infrastructure.DAL;
 
 namespace Server.Infrastructure.BL
@@ -18,7 +19,18 @@ namespace Server.Infrastructure.BL
         #endregion
 
         #region Public Methods
-        public Guid Add(string username, string endPoint)
+        public ImmutableUser Get(Guid userId)
+        {
+            User? user = _userDAL.Get(userId);
+            if (user != null)
+            {
+                return new ImmutableUser(user);
+            }
+
+            return default;
+        }
+
+        public IResult<Guid> Add(string username, string endPoint)
         {
             User user = new User()
             {
@@ -26,10 +38,9 @@ namespace Server.Infrastructure.BL
                 EndPoint = endPoint
             };
 
-            _userDAL.Add(user);
-
-            return user.Id;
+            return _userDAL.Add(user);
         }
         #endregion
     }
 }
+

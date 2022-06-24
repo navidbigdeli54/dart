@@ -1,5 +1,6 @@
 ﻿using Server.Application;
-using Server.Domain;
+using Server.Domain.Core;
+using Server.Domain.Model;
 using Server.Infrastructure.DAL;
 
 namespace Server.Infrastructure.BL
@@ -9,49 +10,63 @@ namespace Server.Infrastructure.BL
         #region Fields
         private readonly ApplicationContext _applicationContext;
 
-        private readonly LeaderboardCacheDAL _leaderboardDALProxy;
+        private readonly LeaderboardCacheDAL _leaderboardCacheDAL;
         #endregion
 
         #region Constructors
         public LeaderboadBL(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
-            _leaderboardDALProxy = new LeaderboardCacheDAL(applicationContext);
+            _leaderboardCacheDAL = new LeaderboardCacheDAL(applicationContext);
         }
         #endregion
 
         #region Public Methods
-        public IReadOnlyList<LeaderBoardEntry> GetAll()
+        public IReadOnlyList<ImmutableLeaderBoardEntry> Get(int count)
         {
-            return _leaderboardDALProxy.GetAll();
+            return _leaderboardCacheDAL.Get(count).Select(x => new ImmutableLeaderBoardEntry(x)).ToList();
         }
 
-        public Guid Add(Guid gameSeasonId)
+        public IReadOnlyList<ImmutableLeaderBoardEntry> GetAll()
+        {
+            return _leaderboardCacheDAL.GetAll().Select(x => new ImmutableLeaderBoardEntry(x)).ToList();
+        }
+
+        public IResult<Guid> Add(Guid gameSeasonId)
         {
             GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            GameSeason? gameSeason = gameSeasonBL.Get(gameSeasonId);
-            if (gameSeason != null)
+            ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
+            if (gameSeason.IsValid)
             {
                 LeaderBoardEntry leaderBoardEntry = new LeaderBoardEntry
                 {
-                    GameSeason = gameSeason
+                    GameSeasonId = gameSeason.Id
                 };
 
-                _leaderboardDALProxy.Add(leaderBoardEntry);
-
-                return leaderBoardEntry.Id;
+                return _leaderboardCacheDAL.Add(leaderBoardEntry);
             }
-
-            return Guid.Empty;
+            else
+            {
+                return new ErrorResult<Guid>($"Can't find a GameSeason by `{gameSeasonId}` id.");
+            }
         }
 
-        public void AddScore(Guid userId, int score)
+        public IResult AddScore(Guid userId, int score)
         {
             GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            GameSeason? gameSeason = gameSeasonBL.AddScore(userId, score);
-            if (gameSeason != null)
+            IResult result = gameSeasonBL.AddNewScore(userId, score);
+
+            if (result.IsSuccessful)
             {
-                _leaderboardDALProxy.UpdateScore(gameSeason.Id, gameSeason.Scores.Sum());
+                ImmutableGameSeason gameSeason = gameSeasonBL.GetByUserId(userId);
+
+                _leaderboardCacheDAL.UpdateScore(gameSeason.Id, gameSeason.Scores.Sum());
+
+                return new Result<object>();
+            }
+            else
+            {
+                return result;
             }
         }
         #endregion

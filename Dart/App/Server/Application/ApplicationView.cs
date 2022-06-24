@@ -1,4 +1,4 @@
-﻿using Server.Domain;
+﻿using Server.Domain.Model;
 
 namespace Server.Application
 {
@@ -11,7 +11,7 @@ namespace Server.Application
             Console.WriteLine($"# \t                 Id                  \tScore");
         }
 
-        public void DisplayLeaderboard(IReadOnlyList<LeaderBoardEntry> leaderboard)
+        public void DisplayLeaderboard(IReadOnlyList<ImmutableLeaderBoardEntry> leaderboard)
         {
             DrawHeader();
 
@@ -20,7 +20,7 @@ namespace Server.Application
         #endregion
 
         #region Private Methods
-        private static void DrawLeaderboardList(IReadOnlyList<LeaderBoardEntry> leaderboard)
+        private static void DrawLeaderboardList(IReadOnlyList<ImmutableLeaderBoardEntry> leaderboard)
         {
             for (int i = 0; i < leaderboard.Count; ++i)
             {
