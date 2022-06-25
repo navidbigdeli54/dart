@@ -12,4 +12,15 @@
         public List<int> Scores { get; set; } = new List<int>();
         #endregion
     }
+
+    public class Score
+    {
+        #region Properties
+        public int Id { get; set; }
+
+        public Guid GameSeasonId { get; set; }
+
+        public int Point { get; set; }
+        #endregion
+    }
 }

@@ -13,6 +13,13 @@ namespace Core.EF
         public DbSet<LeaderboardEntry> Leaderboard { get; set; }
         #endregion
 
+        #region Constructors
+        public EFContext()
+        {
+
+        }
+        #endregion
+
         #region Protected Methods
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
