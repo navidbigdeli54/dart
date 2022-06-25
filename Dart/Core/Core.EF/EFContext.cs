@@ -13,17 +13,11 @@ namespace Core.EF
         public DbSet<LeaderboardEntry> Leaderboard { get; set; }
         #endregion
 
-        #region Constructors
-        public EFContext()
-        {
-
-        }
-        #endregion
-
         #region Protected Methods
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=DartDB;Username=postgres");
+            //Surely we should not put connection string in the app!
+            optionsBuilder.UseNpgsql("Host=localhost;Database=DartDB;Username=postgres;Password=abcd1234");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,13 +28,19 @@ namespace Core.EF
             modelBuilder.Entity<GameSeason>()
                 .HasOne<User>()
                 .WithOne()
-                .HasForeignKey<GameSeason>(x=>x.UserId)
+                .HasForeignKey<GameSeason>(x => x.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<Score>()
+                .HasOne<GameSeason>()
+                .WithMany()
+                .HasForeignKey(x => x.GameSeasonId)
                 .IsRequired();
 
             modelBuilder.Entity<LeaderboardEntry>()
                 .HasOne<GameSeason>()
                 .WithOne()
-                .HasForeignKey<LeaderboardEntry>(x=>x.GameSeasonId)
+                .HasForeignKey<LeaderboardEntry>(x => x.GameSeasonId)
                 .IsRequired();
         }
         #endregion
