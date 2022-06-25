@@ -10,6 +10,8 @@ namespace Core.EF
 
         public DbSet<GameSeason> GameSeasons { get; set; }
 
+        public DbSet<Score> Scores { get; set; }
+
         public DbSet<LeaderboardEntry> Leaderboard { get; set; }
         #endregion
 
@@ -25,18 +27,21 @@ namespace Core.EF
             modelBuilder.Entity<User>()
                 .HasKey(x => x.Id);
 
+            modelBuilder.Entity<GameSeason>().HasKey(x => x.Id);
             modelBuilder.Entity<GameSeason>()
                 .HasOne<User>()
                 .WithOne()
                 .HasForeignKey<GameSeason>(x => x.UserId)
                 .IsRequired();
 
+            modelBuilder.Entity<Score>().HasKey(x => x.Id);
             modelBuilder.Entity<Score>()
                 .HasOne<GameSeason>()
                 .WithMany()
                 .HasForeignKey(x => x.GameSeasonId)
                 .IsRequired();
 
+            modelBuilder.Entity<LeaderboardEntry>().HasKey(x => x.Id);
             modelBuilder.Entity<LeaderboardEntry>()
                 .HasOne<GameSeason>()
                 .WithOne()
