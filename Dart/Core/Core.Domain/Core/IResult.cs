@@ -1,4 +1,4 @@
-﻿namespace Domain.Core
+﻿namespace Core.Domain.Core
 {
     public interface IResult
     {

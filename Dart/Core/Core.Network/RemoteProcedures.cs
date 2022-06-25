@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Collections.Concurrent;
 
-namespace Network
+namespace Core.Network
 {
     public abstract class RemoteProcedures : IRemoteProcedures
     {

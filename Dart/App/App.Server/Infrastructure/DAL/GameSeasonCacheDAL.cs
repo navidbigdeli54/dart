@@ -1,17 +1,16 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
+﻿using Core.Domain.Core;
+using Core.Domain.Model;
 
-namespace Server.Infrastructure.DAL
+namespace App.Server.Infrastructure.DAL
 {
     public class GameSeasonCacheDAL
     {
         #region Fields
-        private readonly ApplicationContext _applicationContext;
+        private readonly IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public GameSeasonCacheDAL(ApplicationContext applicationContext)
+        public GameSeasonCacheDAL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
@@ -39,21 +38,6 @@ namespace Server.Infrastructure.DAL
             catch (Exception exception)
             {
                 return new ErrorResult<Guid>(new List<string> { "Can't add game season!", exception.Message });
-            }
-        }
-
-        public IResult AddScore(Guid gameSeasonId, int score)
-        {
-            GameSeason? gameSeason = Get(gameSeasonId);
-            if (gameSeason != null)
-            {
-                gameSeason.Scores.Add(score);
-
-                return new Result<object>();
-            }
-            else
-            {
-                return new ErrorResult<object>($"Can't find GameSeason by `{gameSeasonId}` id!");
             }
         }
         #endregion

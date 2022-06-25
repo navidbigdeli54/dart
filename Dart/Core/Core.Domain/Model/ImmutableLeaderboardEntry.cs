@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace Domain.Model
+namespace Core.Domain.Model
 {
     public struct ImmutableLeaderboardEntry
     {

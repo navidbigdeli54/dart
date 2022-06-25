@@ -1,8 +1,8 @@
-﻿using Domain.Model;
-using Network;
+﻿using Core.Domain.Model;
+using Core.Network;
 using System.Text.Json.Nodes;
 
-namespace Client.Application
+namespace App.Client.Application
 {
     public class ApplicatoinRemoteProcedures : RemoteProcedures
     {

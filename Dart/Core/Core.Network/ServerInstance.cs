@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Collections.Concurrent;
 
-namespace Network
+namespace Core.Network
 {
     /*
      * TODO:

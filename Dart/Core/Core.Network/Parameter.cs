@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Nodes;
 
-namespace Network
+namespace Core.Network
 {
     public class Parameter
     {

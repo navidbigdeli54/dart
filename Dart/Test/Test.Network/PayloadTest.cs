@@ -1,4 +1,4 @@
-﻿using Network;
+﻿using Core.Network;
 using System.Text;
 
 namespace Test.Network

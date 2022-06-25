@@ -1,20 +1,19 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
-using Server.Infrastructure.DAL;
+﻿using Core.Domain.Core;
+using Core.Domain.Model;
+using App.Server.Infrastructure.DAL;
 
-namespace Server.Infrastructure.BL
+namespace App.Server.Infrastructure.BL
 {
     public class LeaderboadBL
     {
         #region Fields
-        private readonly ApplicationContext _applicationContext;
+        private readonly IApplicationContext _applicationContext;
 
         private readonly LeaderboardCacheDAL _leaderboardCacheDAL;
         #endregion
 
         #region Constructors
-        public LeaderboadBL(ApplicationContext applicationContext)
+        public LeaderboadBL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
             _leaderboardCacheDAL = new LeaderboardCacheDAL(applicationContext);
@@ -60,7 +59,9 @@ namespace Server.Infrastructure.BL
             {
                 ImmutableGameSeason gameSeason = gameSeasonBL.GetByUserId(userId);
 
-                _leaderboardCacheDAL.UpdateScore(gameSeason.Id, gameSeason.Scores.Sum());
+                ScoreBL scoreBL = new ScoreBL(_applicationContext);
+
+                _leaderboardCacheDAL.UpdateScore(gameSeason.Id, scoreBL.GetByGameSeasonId(gameSeason.Id).Select(x => x.Point).Sum());
 
                 return new Result<object>();
             }

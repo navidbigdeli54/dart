@@ -1,20 +1,19 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
-using Server.Infrastructure.DAL;
+﻿using Core.Domain.Core;
+using Core.Domain.Model;
+using App.Server.Infrastructure.DAL;
 
-namespace Server.Infrastructure.BL
+namespace App.Server.Infrastructure.BL
 {
     public class GameSeasonBL
     {
         #region Fields
-        private readonly ApplicationContext _applicationContext;
+        private readonly IApplicationContext _applicationContext;
 
         private readonly GameSeasonCacheDAL _gameSeasonDAL;
         #endregion
 
         #region Constructors
-        public GameSeasonBL(ApplicationContext applicationContext)
+        public GameSeasonBL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
             _gameSeasonDAL = new GameSeasonCacheDAL(applicationContext);
@@ -27,7 +26,10 @@ namespace Server.Infrastructure.BL
             GameSeason? gameSeason = _gameSeasonDAL.Get(gameSeasonId);
             if (gameSeason != null)
             {
-                return new ImmutableGameSeason(gameSeason);
+                ScoreBL scoreBL = new ScoreBL(_applicationContext);
+                IReadOnlyList<ImmutableScore> scores = scoreBL.GetByGameSeasonId(gameSeasonId);
+
+                return new ImmutableGameSeason(gameSeason, scores);
             }
 
             return default;
@@ -38,7 +40,10 @@ namespace Server.Infrastructure.BL
             GameSeason? gameSeason = _gameSeasonDAL.GetByUserId(userId);
             if (gameSeason != null)
             {
-                return new ImmutableGameSeason(gameSeason);
+                ScoreBL scoreBL = new ScoreBL(_applicationContext);
+                IReadOnlyList<ImmutableScore> scores = scoreBL.GetByGameSeasonId(gameSeason.Id);
+
+                return new ImmutableGameSeason(gameSeason, scores);
             }
 
             return default;
@@ -68,9 +73,8 @@ namespace Server.Infrastructure.BL
             ImmutableGameSeason gameSeason = GetByUserId(userId);
             if (gameSeason.IsValid && gameSeason.Scores.Count < 10 && gameSeason.CreationDate - DateTime.UtcNow < TimeSpan.FromMinutes(2))
             {
-                _gameSeasonDAL.AddScore(gameSeason.Id, score);
-
-                return new Result<object>();
+                ScoreBL scoreBL = new ScoreBL(_applicationContext);
+                return scoreBL.Add(gameSeason.Id, score);
             }
             else
             {

@@ -1,7 +1,6 @@
-﻿using Core.EF;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace EF
+namespace Core.EF
 {
     public class Program
     {

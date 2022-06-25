@@ -1,4 +1,4 @@
-﻿namespace Domain.Model
+﻿namespace Core.Domain.Model
 {
     public class User
     {

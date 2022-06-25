@@ -1,11 +1,11 @@
-﻿using Network;
-using System.Net;
-using Domain.Core;
-using Domain.Model;
+﻿using System.Net;
 using System.Text.Json.Nodes;
-using Server.Infrastructure.BL;
+using App.Server.Infrastructure.BL;
+using Core.Domain.Model;
+using Core.Domain.Core;
+using Core.Network;
 
-namespace Server.Application
+namespace App.Server.Application
 {
     internal class ApplicationRemoteProcedures : RemoteProcedures
     {

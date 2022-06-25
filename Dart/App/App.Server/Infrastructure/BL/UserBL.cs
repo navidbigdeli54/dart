@@ -1,9 +1,8 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
-using Server.Infrastructure.DAL;
+﻿using App.Server.Infrastructure.DAL;
+using Core.Domain.Core;
+using Core.Domain.Model;
 
-namespace Server.Infrastructure.BL
+namespace App.Server.Infrastructure.BL
 {
     public class UserBL
     {
@@ -12,7 +11,7 @@ namespace Server.Infrastructure.BL
         #endregion
 
         #region Constructors
-        public UserBL(ApplicationContext applicationContext)
+        public UserBL(IApplicationContext applicationContext)
         {
             _userDAL = new UserCacheDAL(applicationContext);
         }

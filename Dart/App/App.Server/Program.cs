@@ -1,8 +1,9 @@
-﻿using Network;
-using System.Net;
-using Server.Application;
+﻿using System.Net;
+using App.Server.Application;
+using Core.Domain.Core;
+using Core.Network;
 
-namespace Server
+namespace App.Server
 {
     public class Program
     {

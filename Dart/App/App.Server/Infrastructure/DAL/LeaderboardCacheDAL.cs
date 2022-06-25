@@ -1,17 +1,16 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
+﻿using Core.Domain.Core;
+using Core.Domain.Model;
 
-namespace Server.Infrastructure.DAL
+namespace App.Server.Infrastructure.DAL
 {
     public class LeaderboardCacheDAL
     {
         #region Fields
-        private readonly ApplicationContext _aplicationContext;
+        private readonly IApplicationContext _aplicationContext;
         #endregion
 
         #region Constructors
-        public LeaderboardCacheDAL(ApplicationContext applicationContext)
+        public LeaderboardCacheDAL(IApplicationContext applicationContext)
         {
             _aplicationContext = applicationContext;
         }

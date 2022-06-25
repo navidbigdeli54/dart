@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace Domain.Model
+namespace Core.Domain.Model
 {
     public struct ImmutableGameSeason
     {
@@ -11,18 +11,18 @@ namespace Domain.Model
 
         public Guid UserId { get; }
 
-        public IReadOnlyList<int> Scores { get; }
+        public IReadOnlyList<ImmutableScore> Scores { get; }
 
         public bool IsValid => Id != Guid.Empty;
         #endregion
 
         #region Constructors
-        public ImmutableGameSeason(GameSeason gameSeason)
+        public ImmutableGameSeason(GameSeason gameSeason, IReadOnlyList<ImmutableScore> scores)
         {
             Id = gameSeason.Id;
             CreationDate = gameSeason.CreationDate;
             UserId = gameSeason.UserId;
-            Scores = new List<int>(gameSeason.Scores);
+            Scores = scores;
         }
 
         public ImmutableGameSeason(JsonObject jsonObject)
@@ -31,11 +31,11 @@ namespace Domain.Model
             CreationDate = DateTime.Parse(jsonObject["CreationDate"].ToString());
             UserId = Guid.Parse(jsonObject["UserId"].ToString());
 
-            List<int> scores = new List<int>();
+            List<ImmutableScore> scores = new List<ImmutableScore>();
             JsonArray scoreArray = jsonObject["Scores"].AsArray();
             for (int i = 0; i < scoreArray.Count; ++i)
             {
-                scores.Add(int.Parse(scoreArray[i].ToString()));
+                scores.Add(new ImmutableScore(scoreArray[i].AsObject()));
             }
             Scores = scores;
         }
@@ -52,7 +52,7 @@ namespace Domain.Model
             JsonArray scoreArray = new JsonArray();
             for (int i = 0; i < Scores.Count; ++i)
             {
-                scoreArray.Add(Scores[i]);
+                scoreArray.Add(Scores[i].ToJson());
             }
             jsonObject["Scores"] = scoreArray;
             return jsonObject;

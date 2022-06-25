@@ -1,17 +1,16 @@
-﻿using Domain.Core;
-using Domain.Model;
-using Server.Application;
+﻿using Core.Domain.Core;
+using Core.Domain.Model;
 
-namespace Server.Infrastructure.DAL
+namespace App.Server.Infrastructure.DAL
 {
     public class UserCacheDAL
     {
         #region Fields
-        private ApplicationContext _applicationContext;
+        private IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public UserCacheDAL(ApplicationContext applicationContext)
+        public UserCacheDAL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }

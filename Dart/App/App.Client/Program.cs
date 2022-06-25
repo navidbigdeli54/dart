@@ -1,8 +1,8 @@
-﻿using Network;
-using System.Net;
-using Client.Application;
+﻿using System.Net;
+using Core.Network;
+using App.Client.Application;
 
-namespace Client
+namespace App.Client
 {
     public class Program
     {

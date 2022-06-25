@@ -1,6 +1,6 @@
-using Domain.Model;
-using Server.Application;
-using Server.Infrastructure.BL;
+using Core.Domain.Model;
+using Core.Domain.Core;
+using App.Server.Infrastructure.BL;
 
 namespace Test.BL
 {

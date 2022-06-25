@@ -1,4 +1,4 @@
-using Domain.Model;
+using Core.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.EF

@@ -1,6 +1,6 @@
-﻿using Domain.Model;
+﻿using Core.Domain.Model;
 
-namespace Server.Application
+namespace App.Server.Application
 {
     public class ApplicationView
     {
@@ -27,7 +27,7 @@ namespace Server.Application
                 var entry = leaderboard[i];
                 Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
             }
-        } 
+        }
         #endregion
     }
 }

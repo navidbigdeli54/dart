@@ -1,6 +1,6 @@
-﻿using Network;
+﻿using Core.Network;
 
-namespace Client
+namespace App.Client
 {
     public class Game
     {

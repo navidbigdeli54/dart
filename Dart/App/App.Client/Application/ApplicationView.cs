@@ -1,6 +1,6 @@
-﻿using Domain.Model;
+﻿using Core.Domain.Model;
 
-namespace Client.Application
+namespace App.Client.Application
 {
     public class ApplicationView
     {

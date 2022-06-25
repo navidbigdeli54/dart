@@ -1,6 +1,6 @@
-﻿using Domain.Model;
+﻿using Core.Domain.Model;
 
-namespace Server.Application
+namespace Core.Domain.Core
 {
     public class ApplicationCache
     {
@@ -9,5 +9,7 @@ namespace Server.Application
         public List<GameSeason> GameSeason { get; } = new List<GameSeason>(100);
 
         public List<LeaderboardEntry> Leaderboard { get; } = new List<LeaderboardEntry>(100);
+
+        public Dictionary<Guid, List<Score>> Score { get; } = new Dictionary<Guid, List<Score>>(100);
     }
 }
