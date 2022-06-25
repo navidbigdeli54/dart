@@ -17,7 +17,7 @@ namespace Core.Network
 
         private readonly IPEndPoint _endpoint;
 
-        private readonly ConcurrentBag<Socket> _clientSockets = new ConcurrentBag<Socket>();
+        private readonly ConcurrentDictionary<EndPoint, Socket> _clientSockets = new ConcurrentDictionary<EndPoint, Socket>();
         #endregion
 
         #region Constructors
@@ -49,8 +49,7 @@ namespace Core.Network
 
         public void Send(IPEndPoint endPoint, Procedure procedure)
         {
-            Socket? client = _clientSockets.SingleOrDefault(x => x.RemoteEndPoint.Equals(endPoint));
-            if (client != null)
+            if (_clientSockets.TryGetValue(endPoint, out Socket? client))
             {
                 Send(client, procedure);
             }
@@ -58,12 +57,10 @@ namespace Core.Network
 
         public void Send(Procedure procedure)
         {
-            for (int i = 0; i < _clientSockets.Count; ++i)
+            foreach (KeyValuePair<EndPoint, Socket> pair in _clientSockets)
             {
-                foreach (Socket client in _clientSockets)
-                {
-                    Send(client, procedure);
-                }
+                Socket client = pair.Value;
+                Send(client, procedure);
             }
         }
         #endregion
@@ -76,7 +73,12 @@ namespace Core.Network
             {
                 Socket clientSocket = _serverSocket.EndAccept(asyncResult);
 
-                _clientSockets.Add(clientSocket);
+                _clientSockets.AddOrUpdate(clientSocket.RemoteEndPoint, clientSocket, (remoteEndPoint, oldSocket) =>
+                {
+                    oldSocket.Close();
+
+                    return clientSocket;
+                });
                 _remoteProcedures.Invoke(new Procedure("OnConnected", new Parameter[] { new Parameter("remoteEndPoint", $"{clientSocket.RemoteEndPoint}") }));
 
                 StateObject stateObject = new StateObject(clientSocket);
