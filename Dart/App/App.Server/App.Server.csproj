@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.Domain\Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Core.BL\Core.BL.csproj" />
     <ProjectReference Include="..\..\Core\Core.Network\Core.Network.csproj" />
   </ItemGroup>
 

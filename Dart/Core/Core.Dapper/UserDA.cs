@@ -35,13 +35,13 @@ namespace Core.Dapper
             TODO:
             Paging needed here!
         */
-        public IEnumerable<User> GetAll()
+        public IReadOnlyList<User> GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<User>(query);
+                return connection.Query<User>(query).ToList();
             }
         }
 
@@ -54,7 +54,7 @@ namespace Core.Dapper
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = user.Id, Username = user.Username, EndPoint = user.EndPoint });
+                    connection.Query(query, new { Id = user.Id, Username = user.Username, EndPoint = user.EndPoint }, transaction);
 
                     transaction.Commit();
 

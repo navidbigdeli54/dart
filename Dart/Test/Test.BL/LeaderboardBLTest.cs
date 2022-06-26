@@ -1,6 +1,5 @@
+using Core.BL;
 using Core.Domain.Model;
-using Core.Domain.Core;
-using App.Server.Infrastructure.BL;
 
 namespace Test.BL
 {

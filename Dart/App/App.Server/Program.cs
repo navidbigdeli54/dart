@@ -1,7 +1,6 @@
 ﻿using System.Net;
-using App.Server.Application;
-using Core.Domain.Core;
 using Core.Network;
+using App.Server.Application;
 
 namespace App.Server
 {

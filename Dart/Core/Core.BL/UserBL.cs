@@ -1,8 +1,8 @@
-﻿using App.Server.Infrastructure.DAL;
+﻿using Core.Cache;
 using Core.Domain.Core;
 using Core.Domain.Model;
 
-namespace App.Server.Infrastructure.BL
+namespace Core.BL
 {
     public class UserBL
     {

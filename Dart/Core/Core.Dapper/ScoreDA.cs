@@ -31,17 +31,23 @@ namespace Core.Dapper
             }
         }
 
-        /*
-            TODO:
-            Paging needed here!
-        */
-        public IEnumerable<Score> GetByGameSeasonId(Guid gameSeasonId)
+        public IReadOnlyList<Score> GetAll()
+        {
+            string query = $"SELECT * FROM {TABLE_NAME};";
+
+            using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
+            {
+                return connection.Query<Score>(query).ToList();
+            }
+        }
+
+        public IReadOnlyList<Score> GetByGameSeasonId(Guid gameSeasonId)
         {
             string query = $"SELECT * FROM {TABLE_NAME} WHERE \"{nameof(Score.GameSeasonId)}\" = @{nameof(Score.GameSeasonId)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<Score>(query, new { GameSeasonId = gameSeasonId });
+                return connection.Query<Score>(query, new { GameSeasonId = gameSeasonId }).ToList();
             }
         }
 
@@ -54,7 +60,7 @@ namespace Core.Dapper
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = score.Id, CreationDate = score.CreationDate, GameSeasonId = score.GameSeasonId, Point = score.Point });
+                    connection.Query(query, new { Id = score.Id, CreationDate = score.CreationDate, GameSeasonId = score.GameSeasonId, Point = score.Point }, transaction);
 
                     transaction.Commit();
 

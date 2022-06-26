@@ -45,7 +45,7 @@ namespace Test.Dapper
             leaderboard.Rank = Random.Shared.Next(0, int.MaxValue);
 
             LeaderboardDA leaderboardDA = new LeaderboardDA(_applicationContext);
-            IResult result = leaderboardDA.Update(leaderboard);
+            IResult result = leaderboardDA.UpdateOrAdd(leaderboard);
             Assert.That(result.IsSuccessful, Is.True);
 
             Leaderboard retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);

@@ -1,8 +1,8 @@
 ﻿using Core.Domain.Core;
 using Core.Domain.Model;
-using App.Server.Infrastructure.DAL;
+using Core.Cache;
 
-namespace App.Server.Infrastructure.BL
+namespace Core.BL
 {
     public class GameSeasonBL
     {

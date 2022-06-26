@@ -11,7 +11,7 @@
 
         public int Point { get; set; }
 
-        public int IsDirty { get; set; }
+        public bool IsDirty { get; set; } = true;
         #endregion
     }
 }

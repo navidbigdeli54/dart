@@ -1,9 +1,10 @@
-﻿using Core.Domain.Core;
+﻿using Core.Dapper;
+using Core.Domain.Core;
 using Core.Domain.Model;
 
-namespace App.Server.Infrastructure.DAL
+namespace Core.Cache
 {
-    public class LeaderboardCacheDAL
+    public class LeaderboardCacheDAL : IDbSynchronizable
     {
         #region Fields
         private readonly IApplicationContext _aplicationContext;
@@ -85,6 +86,37 @@ namespace App.Server.Infrastructure.DAL
             catch (Exception exception)
             {
                 return new ErrorResult<object>(new List<string> { "Can't update score!", exception.Message });
+            }
+        }
+        #endregion
+
+        #region IDbSynchronizable Implementation
+        void IDbSynchronizable.Load()
+        {
+            LeaderboardDA leaderboardDA = new LeaderboardDA(_aplicationContext);
+            IReadOnlyList<Leaderboard> leaderboards = leaderboardDA.GetAll();
+            for (int i = 0; i < leaderboards.Count; ++i)
+            {
+                Leaderboard leaderboard = leaderboards[i];
+                _aplicationContext.ApplicationCache.Leaderboard.Add(leaderboard);
+                leaderboard.IsDirty = false;
+            }
+        }
+
+        void IDbSynchronizable.Save()
+        {
+            LeaderboardDA leaderboardDA = new LeaderboardDA(_aplicationContext);
+            for (int i = 0; i < _aplicationContext.ApplicationCache.Leaderboard.Count; ++i)
+            {
+                Leaderboard leaderboard = _aplicationContext.ApplicationCache.Leaderboard[i];
+                if (leaderboard.IsDirty)
+                {
+                    IResult result = leaderboardDA.UpdateOrAdd(leaderboard);
+                    if (result.IsSuccessful)
+                    {
+                        leaderboard.IsDirty = false;
+                    }
+                }
             }
         }
         #endregion

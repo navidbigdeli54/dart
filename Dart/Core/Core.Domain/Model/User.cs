@@ -8,6 +8,8 @@
         public string Username { get; set; }
 
         public string EndPoint { get; set; }
+
+        public bool IsDirty { get; set; } = true;
         #endregion
     }
 }

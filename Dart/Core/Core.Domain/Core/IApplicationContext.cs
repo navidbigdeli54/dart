@@ -5,5 +5,7 @@
         public string DBConnectionString { get; }
 
         public ApplicationCache ApplicationCache { get; }
+
+        public DatabaseSynchronizer DatabaseSynchronizer { get; }
     }
 }

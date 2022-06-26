@@ -31,17 +31,14 @@ namespace Core.Dapper
             }
         }
 
-        /*
-            TODO:
-            Paging needed here!
-        */
-        public IEnumerable<Leaderboard> GetAll()
+
+        public IReadOnlyList<Leaderboard> GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<Leaderboard>(query);
+                return connection.Query<Leaderboard>(query).ToList();
             }
         }
 
@@ -54,7 +51,7 @@ namespace Core.Dapper
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = leaderboard.Id, GameSeasonId = leaderboard.GameSeasonId, Score = leaderboard.Score, Rank = leaderboard.Rank });
+                    connection.Query(query, new { Id = leaderboard.Id, GameSeasonId = leaderboard.GameSeasonId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
 
                     transaction.Commit();
 
@@ -70,16 +67,28 @@ namespace Core.Dapper
             }
         }
 
-        public IResult Update(Leaderboard leaderboard)
+        public IResult UpdateOrAdd(Leaderboard leaderboard)
         {
-            string query = $"UPDATE {TABLE_NAME} SET \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)}, \"{nameof(Leaderboard.Rank)}\" = @{nameof(Leaderboard.Rank)} WHERE \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
+            string selectQuery = $"SELECT COUNT(\"{nameof(Leaderboard.Id)}\") FROM {TABLE_NAME} where \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
+
+            string addQuery = $"INSERT INTO {TABLE_NAME} (\"{nameof(Leaderboard.Id)}\", \"{nameof(Leaderboard.GameSeasonId)}\", \"{nameof(Leaderboard.Score)}\", \"{nameof(Leaderboard.Rank)}\") VALUES (@{nameof(Leaderboard.Id)}, @{nameof(Leaderboard.GameSeasonId)}, @{nameof(Leaderboard.Score)}, @{nameof(Leaderboard.Rank)});";
+
+            string updateQuery = $"UPDATE {TABLE_NAME} SET \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)}, \"{nameof(Leaderboard.Rank)}\" = @{nameof(Leaderboard.Rank)} WHERE \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = leaderboard.Id, Score = leaderboard.Score, Rank = leaderboard.Rank });
+                    int count = connection.QuerySingleOrDefault<int>(selectQuery, new { Id = leaderboard.Id });
+                    if (count == 0)
+                    {
+                        connection.Query(addQuery, new { Id = leaderboard.Id, GameSeasonId = leaderboard.GameSeasonId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
+                    }
+                    else
+                    {
+                        connection.Query(updateQuery, new { Id = leaderboard.Id, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
+                    }
 
                     transaction.Commit();
 
