@@ -12,12 +12,16 @@ namespace App.Client.Application
         {
             string[] names = { "Navid", "Zahra", "Shadi", "Hasan", "Negin", "Mohammad", "Laleh" };
 
+            string chosenName = names[Random.Shared.Next(0, names.Length)];
+
             Procedure procedure = new Procedure("RegisterUser", new Parameter[] {
-                new Parameter("username", names[Random.Shared.Next(0, names.Length)]),
+                new Parameter("username", chosenName),
                 new Parameter("remoteEndPoint", Program.ClientInstance.LocalEndPoint.ToString())
             });
 
             Program.ClientInstance.Send(procedure);
+
+            Console.Title = chosenName;
         }
 
         public void UserRegistered(string userId)
