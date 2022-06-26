@@ -31,6 +31,10 @@ namespace Core.Dapper
             }
         }
 
+        /*
+            TODO:
+            Paging needed here!
+        */
         public IEnumerable<User> GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
