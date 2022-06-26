@@ -15,36 +15,15 @@ namespace Test.Dapper
         [Test]
         public void AddScoreTest()
         {
-            User user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = Guid.NewGuid().ToString(),
-                EndPoint = "1.1.1.1:100"
-            };
-            UserDA userDA = new UserDA(_applicationContext);
-            IResult result = userDA.Add(user);
-            Assert.That(result.IsSuccessful, Is.True);
-
-            GameSeason gameSeason = new GameSeason
-            {
-                Id = Guid.NewGuid(),
-                UserId = user.Id,
-                CreationDate = DateTime.UtcNow
-            };
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            result = gameSeasonDA.Add(gameSeason);
-            Assert.That(result.IsSuccessful, Is.True);
-
             Score score = new Score
             {
                 Id = Guid.NewGuid(),
                 CreationDate = DateTime.UtcNow,
-                GameSeasonId = gameSeason.Id,
+                GameSeasonId = TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
                 Point = Random.Shared.Next(0, int.MaxValue)
             };
-
             ScoreDA scoreDA = new ScoreDA(_applicationContext);
-            result = scoreDA.Add(score);
+            IResult result = scoreDA.Add(score);
             Assert.That(result.IsSuccessful, Is.True);
 
             Score retrivedScore = scoreDA.Get(score.Id);
@@ -56,47 +35,12 @@ namespace Test.Dapper
         [Test]
         public void AddMultipleScoreTest()
         {
-            User user = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = Guid.NewGuid().ToString(),
-                EndPoint = "1.1.1.1:100"
-            };
-            UserDA userDA = new UserDA(_applicationContext);
-            IResult result = userDA.Add(user);
-            Assert.That(result.IsSuccessful, Is.True);
-
-            GameSeason gameSeason = new GameSeason
-            {
-                Id = Guid.NewGuid(),
-                UserId = user.Id,
-                CreationDate = DateTime.UtcNow
-            };
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            result = gameSeasonDA.Add(gameSeason);
-            Assert.That(result.IsSuccessful, Is.True);
-
-            Score score1 = new Score
-            {
-                Id = Guid.NewGuid(),
-                CreationDate = DateTime.UtcNow,
-                GameSeasonId = gameSeason.Id,
-                Point = Random.Shared.Next(0, int.MaxValue)
-            };
-
-            Score score2 = new Score
-            {
-                Id = Guid.NewGuid(),
-                CreationDate = DateTime.UtcNow,
-                GameSeasonId = gameSeason.Id,
-                Point = Random.Shared.Next(0, int.MaxValue)
-            };
+            User user = TestHelper.AddUser(_applicationContext);
+            GameSeason gameSeason = TestHelper.AddGameSeason(_applicationContext, user);
+            Score score1 = TestHelper.AddScore(_applicationContext, gameSeason);
+            Score score2 = TestHelper.AddScore(_applicationContext, gameSeason);
 
             ScoreDA scoreDA = new ScoreDA(_applicationContext);
-            result = scoreDA.Add(score1);
-            result = scoreDA.Add(score2);
-            Assert.That(result.IsSuccessful, Is.True);
-
             Assert.That(2, Is.EqualTo(scoreDA.GetByGameSeasonId(gameSeason.Id).Count()));
         }
         #endregion

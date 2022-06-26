@@ -72,7 +72,7 @@ namespace Core.Dapper
 
         public IResult Update(Leaderboard leaderboard)
         {
-            string query = $"UPDATE {TABLE_NAME} SET \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)}, \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)} WHERE \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
+            string query = $"UPDATE {TABLE_NAME} SET \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)}, \"{nameof(Leaderboard.Rank)}\" = @{nameof(Leaderboard.Rank)} WHERE \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {

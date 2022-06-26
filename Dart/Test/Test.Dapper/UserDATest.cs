@@ -1,4 +1,6 @@
+using Dapper;
 using Core.Dapper;
+using System.Data;
 using NUnit.Framework;
 using Core.Domain.Core;
 using Core.Domain.Model;
@@ -36,33 +38,15 @@ namespace Test.Dapper
         [Test]
         public void GetAllTest()
         {
-            User user1 = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = Guid.NewGuid().ToString(),
-                EndPoint = "1.1.1.1:100"
-            };
+            TestHelper.ClearTable(_applicationContext, nameof(User));
 
-            User user2 = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = Guid.NewGuid().ToString(),
-                EndPoint = "1.1.1.1:100"
-            };
-
-            User user3 = new User
-            {
-                Id = Guid.NewGuid(),
-                Username = Guid.NewGuid().ToString(),
-                EndPoint = "1.1.1.1:100"
-            };
+            TestHelper.AddUser(_applicationContext);
+            TestHelper.AddUser(_applicationContext);
+            TestHelper.AddUser(_applicationContext);
 
             UserDA userDA = new UserDA(_applicationContext);
-            userDA.Add(user1);
-            userDA.Add(user2);
-            userDA.Add(user3);
 
-            Assert.That(userDA.GetAll().Count(), Is.GreaterThan(3));
+            Assert.That(3, Is.EqualTo(userDA.GetAll().Count()));
         }
         #endregion
     }
