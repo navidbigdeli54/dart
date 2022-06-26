@@ -28,6 +28,8 @@ namespace Core.Cache
                 _aplicationContext.ApplicationCache.Leaderboard.Add(leaderboard);
                 leaderboard.IsDirty = false;
             }
+
+            _aplicationContext.ApplicationCache.Leaderboard.Sort();
         }
 
         void IDbSynchronizer.Save()

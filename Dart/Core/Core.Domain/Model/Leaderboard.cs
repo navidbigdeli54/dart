@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Model
 {
-    public class Leaderboard
+    public class Leaderboard : IComparable<Leaderboard>
     {
         #region Fields
         private Guid _id;
@@ -54,6 +54,15 @@
         }
 
         public bool IsDirty { get; set; } = true;
+        #endregion
+
+        #region IComparable<Leaderboard> Implementation
+        int IComparable<Leaderboard>.CompareTo(Leaderboard? other)
+        {
+            if (Rank > other.Rank) return 1;
+            else if (Rank < other.Rank) return -1;
+            else return 0;
+        }
         #endregion
     }
 }
