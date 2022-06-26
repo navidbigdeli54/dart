@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.EF.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20220626083040_InitialCreate")]
+    [Migration("20220626183529_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

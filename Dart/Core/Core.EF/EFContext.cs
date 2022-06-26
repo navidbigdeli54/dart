@@ -28,9 +28,11 @@ namespace Core.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>().Ignore(x => x.IsDirty);
             modelBuilder.Entity<User>().ToTable("tblUser");
 
             modelBuilder.Entity<GameSeason>().HasKey(x => x.Id);
+            modelBuilder.Entity<GameSeason>().Ignore(x => x.IsDirty);
             modelBuilder.Entity<GameSeason>().ToTable("tblGameSeason");
             modelBuilder.Entity<GameSeason>()
                 .HasOne<User>()

@@ -46,7 +46,7 @@ CREATE UNIQUE INDEX "IX_tblLeaderboard_GameSeasonId" ON "tblLeaderboard" ("GameS
 CREATE INDEX "IX_tblScore_GameSeasonId" ON "tblScore" ("GameSeasonId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220626083040_InitialCreate', '6.0.6');
+VALUES ('20220626183529_InitialCreate', '6.0.6');
 
 COMMIT;
 
