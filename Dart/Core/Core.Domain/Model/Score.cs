@@ -10,6 +10,8 @@
         public Guid GameSeasonId { get; set; }
 
         public int Point { get; set; }
+
+        public int IsDirty { get; set; }
         #endregion
     }
 }
