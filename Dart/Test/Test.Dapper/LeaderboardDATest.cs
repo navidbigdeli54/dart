@@ -54,6 +54,19 @@ namespace Test.Dapper
             Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
             Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
         }
+
+        [Test]
+        public void GetAllTest()
+        {
+            TestHelper.ClearTable(_applicationContext, nameof(Leaderboard));
+
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
+
+            LeaderboardDA leaderboardDA = new LeaderboardDA(_applicationContext);
+            Assert.That(3, Is.EqualTo(leaderboardDA.GetAll().Count()));
+        }
         #endregion
     }
 }
