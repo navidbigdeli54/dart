@@ -42,39 +42,21 @@ namespace App.Server.Application
 
         public void DartThrowed(Guid userId, int score)
         {
-            UserBL userBL = new UserBL(Program.ApplicationContext);
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
             IReadOnlyList<ImmutableLeaderboard> previousTop3 = leaderboadBL.Get(3);
 
             leaderboadBL.AddScore(userId, score);
 
-            UpdateServer(leaderboadBL, userBL, gameSeasonBL);
-
-            UpdateClient(leaderboadBL, previousTop3, userBL, gameSeasonBL);
+            UpdateClient(previousTop3);
         }
 
-        private static void UpdateServer(LeaderboadBL leaderboadBL, UserBL userBL, GameSeasonBL gameSeasonBL)
+        private static void UpdateClient(IReadOnlyList<ImmutableLeaderboard> previousTop3)
         {
-            List<ImmutableUserLeaderboard> entriesToShow = new List<ImmutableUserLeaderboard>();
-            IReadOnlyList<ImmutableLeaderboard> allEntries = leaderboadBL.GetAll();
-            for (int i = 0; i < allEntries.Count; i++)
-            {
-                ImmutableLeaderboard leaderBoardEntry = allEntries[i];
+            UserBL userBL = new UserBL(Program.ApplicationContext);
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
+            LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
-                ImmutableGameSeason gameSeason = gameSeasonBL.Get(leaderBoardEntry.GameSeasonId);
-
-                ImmutableUser user = userBL.Get(gameSeason.UserId);
-
-                entriesToShow.Add(new ImmutableUserLeaderboard(user, leaderBoardEntry));
-            }
-
-            Program.ApplicationView.DisplayLeaderboard(entriesToShow);
-        }
-
-        private static void UpdateClient(LeaderboadBL leaderboadBL, IReadOnlyList<ImmutableLeaderboard> previousTop3, UserBL userBL, GameSeasonBL gameSeasonBL)
-        {
             IReadOnlyList<ImmutableLeaderboard> currentTop3 = leaderboadBL.GetAll().Take(3).ToList();
             bool hasChanged = false;
             for (int i = 0; i < 3; ++i)

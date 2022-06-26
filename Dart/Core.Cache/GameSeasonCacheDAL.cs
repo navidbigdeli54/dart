@@ -1,10 +1,9 @@
-﻿using Core.Dapper;
-using Core.Domain.Core;
+﻿using Core.Domain.Core;
 using Core.Domain.Model;
 
 namespace Core.Cache
 {
-    public class GameSeasonCacheDAL : IDbSynchronizable
+    public class GameSeasonCacheDAL
     {
         #region Fields
         private readonly IApplicationContext _applicationContext;
@@ -39,34 +38,6 @@ namespace Core.Cache
             catch (Exception exception)
             {
                 return new ErrorResult<Guid>(new List<string> { "Can't add game season!", exception.Message });
-            }
-        }
-        #endregion
-
-        #region IDbSynchronizable Implementation
-        void IDbSynchronizable.Load()
-        {
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            IReadOnlyList<GameSeason> gameSeasons = gameSeasonDA.GetAll();
-            for (int i = 0; i < gameSeasons.Count; ++i)
-            {
-                GameSeason gameSeason = gameSeasons[i];
-                _applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
-                gameSeason.IsDirty = false;
-            }
-        }
-
-        void IDbSynchronizable.Save()
-        {
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            for (int i = 0; i < _applicationContext.ApplicationCache.GameSeason.Count; ++i)
-            {
-                GameSeason gameSeason = _applicationContext.ApplicationCache.GameSeason[i];
-                if (gameSeason.IsDirty)
-                {
-                    gameSeasonDA.Add(gameSeason);
-                    gameSeason.IsDirty = false;
-                }
             }
         }
         #endregion

@@ -3,18 +3,24 @@
     public class DatabaseSynchronizer
     {
         #region Fields
-        private IReadOnlyList<IDbSynchronizable> _dbSynchronizables;
+        private IReadOnlyList<IDbSynchronizer> _dbSynchronizables;
+
+        private readonly Timer _timer;
         #endregion
 
         #region Constructors
-        public DatabaseSynchronizer(IReadOnlyList<IDbSynchronizable> dbSynchronizables)
+        public DatabaseSynchronizer(IReadOnlyList<IDbSynchronizer> dbSynchronizables)
         {
             _dbSynchronizables = dbSynchronizables;
+
+            Load();
+
+            _timer = new Timer(Save, null, 0, 10000);
         }
         #endregion
 
-        #region Public Methods
-        public void Load()
+        #region Private Methods
+        private void Load()
         {
             for (int i = 0; i < _dbSynchronizables.Count; ++i)
             {
@@ -29,7 +35,7 @@
             }
         }
 
-        public void Save()
+        private void Save(object _)
         {
             for (int i = 0; i < _dbSynchronizables.Count; ++i)
             {

@@ -31,7 +31,7 @@ namespace App.Server
         {
             ServerInstance.Start();
 
-            ApplicationView.DrawHeader();
+            ApplicationView.DisplayLeaderboard();
 
             Console.ReadLine();
         }

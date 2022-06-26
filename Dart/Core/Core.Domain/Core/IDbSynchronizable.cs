@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Core
 {
-    public interface IDbSynchronizable
+    public interface IDbSynchronizer
     {
         void Load();
 

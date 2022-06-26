@@ -1,4 +1,5 @@
-﻿using Core.Domain.Core;
+﻿using Core.Cache;
+using Core.Domain.Core;
 
 namespace App.Server.Application
 {
@@ -15,7 +16,13 @@ namespace App.Server.Application
         {
             _applicationCache = new ApplicationCache();
 
-            _databaseSynchronizer = new DatabaseSynchronizer(new List<IDbSynchronizable>());
+            _databaseSynchronizer = new DatabaseSynchronizer(new List<IDbSynchronizer>
+            {
+                new UserDbSynchronizer(this),
+                new GameSeasonDbSynchronizer(this),
+                new LeaderboardDbSynchronizer(this),
+                new ScoreDbSynchronizer(this),
+            });
         }
         #endregion
 
@@ -23,7 +30,7 @@ namespace App.Server.Application
         /*
          * Surely we should not put connection string in the app!
          */
-        string IApplicationContext.DBConnectionString { get; } = "Host=localhost;Database=DartDB;Username=postgres";
+        string IApplicationContext.DBConnectionString { get; } = "Host=localhost;Database=DartDB;Username=postgres;Password=abcd1234;";
 
         ApplicationCache IApplicationContext.ApplicationCache { get; } = new ApplicationCache();
 
