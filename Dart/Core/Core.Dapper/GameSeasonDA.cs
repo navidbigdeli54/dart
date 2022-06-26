@@ -21,7 +21,7 @@ namespace Core.Dapper
         #endregion
 
         #region Public Methods
-        public GameSeason Get(int id)
+        public GameSeason Get(Guid id)
         {
             string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(GameSeason.Id)}\" = @{nameof(GameSeason.Id)};";
 
@@ -35,13 +35,13 @@ namespace Core.Dapper
             TODO:
             Paging needed here!
         */
-        public GameSeason GetAll()
+        public IEnumerable<GameSeason> GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.QuerySingleOrDefault<GameSeason>(query);
+                return connection.Query<GameSeason>(query);
             }
         }
 
