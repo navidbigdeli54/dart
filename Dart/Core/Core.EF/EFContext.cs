@@ -24,10 +24,11 @@ namespace Core.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasKey(x => x.Id);
+            modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>().ToTable("tblUser");
 
             modelBuilder.Entity<GameSeason>().HasKey(x => x.Id);
+            modelBuilder.Entity<GameSeason>().ToTable("tblGameSeason");
             modelBuilder.Entity<GameSeason>()
                 .HasOne<User>()
                 .WithOne()
@@ -35,6 +36,7 @@ namespace Core.EF
                 .IsRequired();
 
             modelBuilder.Entity<Score>().HasKey(x => x.Id);
+            modelBuilder.Entity<Score>().ToTable("tblScore");
             modelBuilder.Entity<Score>()
                 .HasOne<GameSeason>()
                 .WithMany()
@@ -42,6 +44,7 @@ namespace Core.EF
                 .IsRequired();
 
             modelBuilder.Entity<LeaderboardEntry>().HasKey(x => x.Id);
+            modelBuilder.Entity<LeaderboardEntry>().ToTable("tblLeaderboard");
             modelBuilder.Entity<LeaderboardEntry>()
                 .HasOne<GameSeason>()
                 .WithOne()

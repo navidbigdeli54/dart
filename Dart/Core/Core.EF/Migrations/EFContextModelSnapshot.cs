@@ -39,7 +39,7 @@ namespace Core.EF.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("GameSeasons");
+                    b.ToTable("tblGameSeason", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Model.LeaderboardEntry", b =>
@@ -62,7 +62,7 @@ namespace Core.EF.Migrations
                     b.HasIndex("GameSeasonId")
                         .IsUnique();
 
-                    b.ToTable("Leaderboard");
+                    b.ToTable("tblLeaderboard", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Model.Score", b =>
@@ -84,7 +84,7 @@ namespace Core.EF.Migrations
 
                     b.HasIndex("GameSeasonId");
 
-                    b.ToTable("Score");
+                    b.ToTable("tblScore", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Model.User", b =>
@@ -103,7 +103,7 @@ namespace Core.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("tblUser", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Model.GameSeason", b =>
