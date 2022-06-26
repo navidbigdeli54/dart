@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.EF.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20220626071818_InitialCreate")]
+    [Migration("20220626083040_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace Core.EF.Migrations
                     b.ToTable("tblGameSeason", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Domain.Model.LeaderboardEntry", b =>
+            modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,11 +117,11 @@ namespace Core.EF.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Domain.Model.LeaderboardEntry", b =>
+            modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
                 {
                     b.HasOne("Core.Domain.Model.GameSeason", null)
                         .WithOne()
-                        .HasForeignKey("Core.Domain.Model.LeaderboardEntry", "GameSeasonId")
+                        .HasForeignKey("Core.Domain.Model.Leaderboard", "GameSeasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

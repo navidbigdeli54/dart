@@ -42,7 +42,7 @@ namespace Core.EF.Migrations
                     b.ToTable("tblGameSeason", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Domain.Model.LeaderboardEntry", b =>
+            modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,11 +115,11 @@ namespace Core.EF.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Domain.Model.LeaderboardEntry", b =>
+            modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
                 {
                     b.HasOne("Core.Domain.Model.GameSeason", null)
                         .WithOne()
-                        .HasForeignKey("Core.Domain.Model.LeaderboardEntry", "GameSeasonId")
+                        .HasForeignKey("Core.Domain.Model.Leaderboard", "GameSeasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

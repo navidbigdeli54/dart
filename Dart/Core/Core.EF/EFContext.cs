@@ -36,6 +36,7 @@ namespace Core.EF
                 .IsRequired();
 
             modelBuilder.Entity<Score>().HasKey(x => x.Id);
+            modelBuilder.Entity<Score>().Ignore(x => x.IsDirty);
             modelBuilder.Entity<Score>().ToTable("tblScore");
             modelBuilder.Entity<Score>()
                 .HasOne<GameSeason>()
@@ -44,6 +45,7 @@ namespace Core.EF
                 .IsRequired();
 
             modelBuilder.Entity<Leaderboard>().HasKey(x => x.Id);
+            modelBuilder.Entity<Leaderboard>().Ignore(x => x.IsDirty);
             modelBuilder.Entity<Leaderboard>().ToTable("tblLeaderboard");
             modelBuilder.Entity<Leaderboard>()
                 .HasOne<GameSeason>()
