@@ -8,7 +8,7 @@ namespace App.Client.Application
         public void DrawHeader()
         {
             Console.Clear();
-            Console.WriteLine($"# \t                 Id                  \tScore");
+            Console.WriteLine($"# \t Name \tScore");
         }
 
         public void DisplayLeaderboard(IReadOnlyList<ImmutableUserLeaderboard> leaderboard)
@@ -24,8 +24,8 @@ namespace App.Client.Application
         {
             for (int i = 0; i < leaderboard.Count; ++i)
             {
-                var entry = leaderboard[i];
-                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.LeaderboardEntry.Id} \t {entry.LeaderboardEntry.Score}");
+                ImmutableUserLeaderboard entry = leaderboard[i];
+                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username} \t {entry.LeaderboardEntry.Score}");
             }
         }
         #endregion

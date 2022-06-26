@@ -8,10 +8,10 @@ namespace App.Server.Application
         public void DrawHeader()
         {
             Console.Clear();
-            Console.WriteLine($"# \t                 Id                  \tScore");
+            Console.WriteLine($"# \t Name \tScore");
         }
 
-        public void DisplayLeaderboard(IReadOnlyList<ImmutableLeaderboard> leaderboard)
+        public void DisplayLeaderboard(IReadOnlyList<ImmutableUserLeaderboard> leaderboard)
         {
             DrawHeader();
 
@@ -20,12 +20,12 @@ namespace App.Server.Application
         #endregion
 
         #region Private Methods
-        private static void DrawLeaderboardList(IReadOnlyList<ImmutableLeaderboard> leaderboard)
+        private static void DrawLeaderboardList(IReadOnlyList<ImmutableUserLeaderboard> leaderboard)
         {
             for (int i = 0; i < leaderboard.Count; ++i)
             {
-                var entry = leaderboard[i];
-                Console.WriteLine($"{entry.Rank}\t {entry.Id} \t {entry.Score}");
+                ImmutableUserLeaderboard entry = leaderboard[i];
+                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username} \t {entry.LeaderboardEntry.Score}");
             }
         }
         #endregion
