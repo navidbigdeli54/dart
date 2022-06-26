@@ -21,7 +21,7 @@ namespace Core.Dapper
         #endregion
 
         #region Public Methods
-        public Score Get(int id)
+        public Score Get(Guid id)
         {
             string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(Score.Id)}\" = @{nameof(Score.Id)};";
 
@@ -35,26 +35,26 @@ namespace Core.Dapper
             TODO:
             Paging needed here!
         */
-        public Score GetAll()
+        public IEnumerable<Score> GetByGameSeasonId(Guid gameSeasonId)
         {
-            string query = $"SELECT * FROM {TABLE_NAME};";
+            string query = $"SELECT * FROM {TABLE_NAME} WHERE \"{nameof(Score.GameSeasonId)}\" = @{nameof(Score.GameSeasonId)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.QuerySingleOrDefault<Score>(query);
+                return connection.Query<Score>(query, new { GameSeasonId = gameSeasonId });
             }
         }
 
         public IResult Add(Score score)
         {
-            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Score.Id)}\", \"{nameof(Score.GameSeasonId)}\", \"{nameof(Score.Point)}\") VALUES (@{nameof(Score.Id)}, @{nameof(Score.GameSeasonId)}, @{nameof(Score.Point)});";
+            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Score.Id)}\", \"{nameof(Score.CreationDate)}\", \"{nameof(Score.GameSeasonId)}\", \"{nameof(Score.Point)}\") VALUES (@{nameof(Score.Id)}, @{nameof(Score.CreationDate)}, @{nameof(Score.GameSeasonId)}, @{nameof(Score.Point)});";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = score.Id, GameSeasonId = score.GameSeasonId, Point = score.Point });
+                    connection.Query(query, new { Id = score.Id, CreationDate = score.CreationDate, GameSeasonId = score.GameSeasonId, Point = score.Point });
 
                     transaction.Commit();
 

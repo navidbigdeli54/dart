@@ -28,9 +28,9 @@ namespace Test.Dapper
 
             User retrivedUser = userDA.Get(user.Id);
 
-            Assert.That(retrivedUser.Id, Is.EqualTo(user.Id));
-            Assert.That(retrivedUser.Username, Is.EqualTo(user.Username));
-            Assert.That(retrivedUser.EndPoint, Is.EqualTo(user.EndPoint));
+            Assert.That(user.Id, Is.EqualTo(retrivedUser.Id));
+            Assert.That(user.Username, Is.EqualTo(retrivedUser.Username));
+            Assert.That(user.EndPoint, Is.EqualTo(retrivedUser.EndPoint));
         }
 
         [Test]
