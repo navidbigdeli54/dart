@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\App\App.Server\App.Server.csproj" />
-    <ProjectReference Include="..\..\App\Server\Server.csproj" />
   </ItemGroup>
 
 </Project>
