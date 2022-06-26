@@ -21,14 +21,14 @@ namespace App.Server.Infrastructure.BL
         #endregion
 
         #region Public Methods
-        public IReadOnlyList<ImmutableLeaderboardEntry> Get(int count)
+        public IReadOnlyList<ImmutableLeaderboard> Get(int count)
         {
-            return _leaderboardCacheDAL.Get(count).Select(x => new ImmutableLeaderboardEntry(x)).ToList();
+            return _leaderboardCacheDAL.Get(count).Select(x => new ImmutableLeaderboard(x)).ToList();
         }
 
-        public IReadOnlyList<ImmutableLeaderboardEntry> GetAll()
+        public IReadOnlyList<ImmutableLeaderboard> GetAll()
         {
-            return _leaderboardCacheDAL.GetAll().Select(x => new ImmutableLeaderboardEntry(x)).ToList();
+            return _leaderboardCacheDAL.GetAll().Select(x => new ImmutableLeaderboard(x)).ToList();
         }
 
         public IResult<Guid> Add(Guid gameSeasonId)
@@ -37,7 +37,7 @@ namespace App.Server.Infrastructure.BL
             ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
             if (gameSeason.IsValid)
             {
-                LeaderboardEntry leaderBoardEntry = new LeaderboardEntry
+                Leaderboard leaderBoardEntry = new Leaderboard
                 {
                     GameSeasonId = gameSeason.Id
                 };

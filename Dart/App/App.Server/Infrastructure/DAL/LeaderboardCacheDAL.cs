@@ -17,22 +17,22 @@ namespace App.Server.Infrastructure.DAL
         #endregion
 
         #region Public Methods
-        public IReadOnlyList<LeaderboardEntry> Get(int count)
+        public IReadOnlyList<Leaderboard> Get(int count)
         {
             return _aplicationContext.ApplicationCache.Leaderboard.Take(count).ToList();
         }
 
-        public IReadOnlyList<LeaderboardEntry> GetAll()
+        public IReadOnlyList<Leaderboard> GetAll()
         {
             return _aplicationContext.ApplicationCache.Leaderboard;
         }
 
-        public LeaderboardEntry? GetByGameSeasonId(Guid gameSeasonId)
+        public Leaderboard? GetByGameSeasonId(Guid gameSeasonId)
         {
             return _aplicationContext.ApplicationCache.Leaderboard.Where(x => x.GameSeasonId == gameSeasonId).SingleOrDefault();
         }
 
-        public IResult<Guid> Add(LeaderboardEntry entry)
+        public IResult<Guid> Add(Leaderboard entry)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace App.Server.Infrastructure.DAL
         {
             try
             {
-                LeaderboardEntry? entry = GetByGameSeasonId(gameSeasonId);
+                Leaderboard? entry = GetByGameSeasonId(gameSeasonId);
 
                 if (entry == null) throw new Exception($"Can't find GameSeason by `{gameSeasonId}` id!");
 

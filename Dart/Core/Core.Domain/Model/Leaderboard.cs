@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Model
 {
-    public class LeaderboardEntry
+    public class Leaderboard
     {
         #region Properties
         public Guid Id { get; set; }

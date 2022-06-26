@@ -41,13 +41,13 @@ namespace App.Server.Application
         {
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
-            IReadOnlyList<ImmutableLeaderboardEntry> previousTop3 = leaderboadBL.Get(3);
+            IReadOnlyList<ImmutableLeaderboard> previousTop3 = leaderboadBL.Get(3);
 
             leaderboadBL.AddScore(userId, score);
 
             Program.ApplicationView.DisplayLeaderboard(leaderboadBL.GetAll());
 
-            IReadOnlyList<ImmutableLeaderboardEntry> currentTop3 = leaderboadBL.Get(3);
+            IReadOnlyList<ImmutableLeaderboard> currentTop3 = leaderboadBL.Get(3);
 
             bool hasChanged = false;
             for (int i = 0; i < 3; ++i)
@@ -66,19 +66,19 @@ namespace App.Server.Application
                 ImmutableUser clientUser = userBL.Get(userId);
                 if (clientUser.IsValid)
                 {
-                    List<ImmutableUserLeaderboardEntry> leaderboardEntries = new List<ImmutableUserLeaderboardEntry>();
+                    List<ImmutableUserLeaderboard> leaderboardEntries = new List<ImmutableUserLeaderboard>();
 
                     GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
 
                     for (int i = 0; i < currentTop3.Count; ++i)
                     {
-                        ImmutableLeaderboardEntry leaderBoardEntry = currentTop3[i];
+                        ImmutableLeaderboard leaderBoardEntry = currentTop3[i];
 
                         ImmutableGameSeason gameSeason = gameSeasonBL.Get(leaderBoardEntry.GameSeasonId);
 
                         ImmutableUser user = userBL.Get(gameSeason.UserId);
 
-                        leaderboardEntries.Add(new ImmutableUserLeaderboardEntry(user, leaderBoardEntry));
+                        leaderboardEntries.Add(new ImmutableUserLeaderboard(user, leaderBoardEntry));
                     }
 
                     JsonObject jsonObject = new JsonObject();

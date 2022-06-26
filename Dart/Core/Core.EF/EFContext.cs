@@ -12,7 +12,7 @@ namespace Core.EF
 
         public DbSet<Score> Scores { get; set; }
 
-        public DbSet<LeaderboardEntry> Leaderboard { get; set; }
+        public DbSet<Leaderboard> Leaderboard { get; set; }
         #endregion
 
         #region Protected Methods
@@ -43,12 +43,12 @@ namespace Core.EF
                 .HasForeignKey(x => x.GameSeasonId)
                 .IsRequired();
 
-            modelBuilder.Entity<LeaderboardEntry>().HasKey(x => x.Id);
-            modelBuilder.Entity<LeaderboardEntry>().ToTable("tblLeaderboard");
-            modelBuilder.Entity<LeaderboardEntry>()
+            modelBuilder.Entity<Leaderboard>().HasKey(x => x.Id);
+            modelBuilder.Entity<Leaderboard>().ToTable("tblLeaderboard");
+            modelBuilder.Entity<Leaderboard>()
                 .HasOne<GameSeason>()
                 .WithOne()
-                .HasForeignKey<LeaderboardEntry>(x => x.GameSeasonId)
+                .HasForeignKey<Leaderboard>(x => x.GameSeasonId)
                 .IsRequired();
         }
         #endregion

@@ -2,7 +2,7 @@
 
 namespace Core.Domain.Model
 {
-    public struct ImmutableLeaderboardEntry
+    public struct ImmutableLeaderboard
     {
         #region Properties
         public Guid Id { get; }
@@ -17,7 +17,7 @@ namespace Core.Domain.Model
         #endregion
 
         #region Properties
-        public ImmutableLeaderboardEntry(LeaderboardEntry entry)
+        public ImmutableLeaderboard(Leaderboard entry)
         {
             Id = entry.Id;
             Score = entry.Score;
@@ -25,7 +25,7 @@ namespace Core.Domain.Model
             GameSeasonId = entry.GameSeasonId;
         }
 
-        public ImmutableLeaderboardEntry(JsonObject jsonObject)
+        public ImmutableLeaderboard(JsonObject jsonObject)
         {
             Id = Guid.Parse(jsonObject["Id"].ToString());
             GameSeasonId = Guid.Parse(jsonObject["GameSeasonId"].ToString());

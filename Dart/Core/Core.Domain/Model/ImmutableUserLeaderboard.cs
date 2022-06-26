@@ -2,25 +2,25 @@
 
 namespace Core.Domain.Model
 {
-    public struct ImmutableUserLeaderboardEntry
+    public struct ImmutableUserLeaderboard
     {
         #region Properties
         public ImmutableUser User { get; }
 
-        public ImmutableLeaderboardEntry LeaderboardEntry { get; }
+        public ImmutableLeaderboard LeaderboardEntry { get; }
         #endregion
 
         #region Constructors
-        public ImmutableUserLeaderboardEntry(ImmutableUser user, ImmutableLeaderboardEntry leaderboardEntry)
+        public ImmutableUserLeaderboard(ImmutableUser user, ImmutableLeaderboard leaderboardEntry)
         {
             User = user;
             LeaderboardEntry = leaderboardEntry;
         }
 
-        public ImmutableUserLeaderboardEntry(JsonObject jsonObject)
+        public ImmutableUserLeaderboard(JsonObject jsonObject)
         {
             User = new ImmutableUser(jsonObject["User"].AsObject());
-            LeaderboardEntry = new ImmutableLeaderboardEntry(jsonObject["LeaderboardEntry"].AsObject());
+            LeaderboardEntry = new ImmutableLeaderboard(jsonObject["LeaderboardEntry"].AsObject());
         }
         #endregion
 

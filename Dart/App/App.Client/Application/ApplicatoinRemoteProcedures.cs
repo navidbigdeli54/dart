@@ -19,11 +19,11 @@ namespace App.Client.Application
         {
             JsonObject jsonObject = JsonNode.Parse(leaderboard).AsObject();
 
-            List<ImmutableUserLeaderboardEntry> entries = new List<ImmutableUserLeaderboardEntry>();
+            List<ImmutableUserLeaderboard> entries = new List<ImmutableUserLeaderboard>();
             JsonArray entriesArray = jsonObject["Leaderboard"].AsArray();
             for (int i = 0; i < entriesArray.Count; ++i)
             {
-                entries.Add(new ImmutableUserLeaderboardEntry(entriesArray[i].AsObject()));
+                entries.Add(new ImmutableUserLeaderboard(entriesArray[i].AsObject()));
             }
 
             Program.ApplicationView.DisplayLeaderboard(entries);

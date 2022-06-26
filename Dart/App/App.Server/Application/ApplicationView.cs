@@ -11,7 +11,7 @@ namespace App.Server.Application
             Console.WriteLine($"# \t                 Id                  \tScore");
         }
 
-        public void DisplayLeaderboard(IReadOnlyList<ImmutableLeaderboardEntry> leaderboard)
+        public void DisplayLeaderboard(IReadOnlyList<ImmutableLeaderboard> leaderboard)
         {
             DrawHeader();
 
@@ -20,7 +20,7 @@ namespace App.Server.Application
         #endregion
 
         #region Private Methods
-        private static void DrawLeaderboardList(IReadOnlyList<ImmutableLeaderboardEntry> leaderboard)
+        private static void DrawLeaderboardList(IReadOnlyList<ImmutableLeaderboard> leaderboard)
         {
             for (int i = 0; i < leaderboard.Count; ++i)
             {
