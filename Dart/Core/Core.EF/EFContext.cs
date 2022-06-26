@@ -18,8 +18,11 @@ namespace Core.EF
         #region Protected Methods
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Surely we should not put connection string in the app!
+#if TEST
+            optionsBuilder.UseNpgsql("Host=localhost;Database=DartDBTest;Username=postgres;Password=abcd1234");
+#else
             optionsBuilder.UseNpgsql("Host=localhost;Database=DartDB;Username=postgres;Password=abcd1234");
+#endif
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,6 +56,6 @@ namespace Core.EF
                 .HasForeignKey<Leaderboard>(x => x.GameSeasonId)
                 .IsRequired();
         }
-        #endregion
+#endregion
     }
 }
