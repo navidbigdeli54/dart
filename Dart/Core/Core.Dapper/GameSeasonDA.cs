@@ -5,29 +5,29 @@ using Core.Domain.Model;
 
 namespace Core.Dapper
 {
-    public class UserDAL : BaseDA
+    public class GameSeasonDA : BaseDA
     {
         #region Fields
-        private const string TABLE_NAME = "public.\"tblUser\"";
+        private const string TABLE_NAME = "public.\"tblGameSeason\"";
 
         private IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public UserDAL(IApplicationContext applicationContext)
+        public GameSeasonDA(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
         #endregion
 
         #region Public Methods
-        public User Get(Guid id)
+        public GameSeason Get(int id)
         {
-            string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(User.Id)}\" = @{nameof(User.Id)};";
+            string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(GameSeason.Id)}\" = @{nameof(GameSeason.Id)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.QuerySingleOrDefault<User>(query, new { Id = id });
+                return connection.QuerySingleOrDefault<GameSeason>(query, new { Id = id });
             }
         }
 
@@ -35,26 +35,26 @@ namespace Core.Dapper
             TODO:
             Paging needed here!
         */
-        public IEnumerable<User> GetAll()
+        public GameSeason GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<User>(query);
+                return connection.QuerySingleOrDefault<GameSeason>(query);
             }
         }
 
-        public IResult Add(User user)
+        public IResult Add(GameSeason gameSeason)
         {
-            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(User.Id)}\", \"{nameof(User.Username)}\", \"{nameof(User.EndPoint)}\") VALUES (@{nameof(User.Id)}, @{nameof(User.Username)}, @{nameof(User.EndPoint)});";
+            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(GameSeason.Id)}\", \"{nameof(GameSeason.CreationDate)}\", \"{nameof(GameSeason.UserId)}\") VALUES (@{nameof(GameSeason.Id)}, @{nameof(GameSeason.CreationDate)}, @{nameof(GameSeason.UserId)});";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = user.Id, Username = user.Username, EndPoint = user.EndPoint });
+                    connection.Query(query, new { Id = gameSeason.Id, CreationDate = gameSeason.CreationDate, UserId = gameSeason.UserId });
 
                     transaction.Commit();
 
@@ -65,7 +65,7 @@ namespace Core.Dapper
                 {
                     transaction.Rollback();
                     Console.WriteLine(exception);
-                    return new ErrorResult<object>(new List<string> { "Can't add User", exception.ToString() });
+                    return new ErrorResult<object>(new List<string> { "Can't add game season", exception.ToString() });
                 }
             }
         }
