@@ -24,8 +24,8 @@ namespace Test.Network
             string parameter = Guid.NewGuid().ToString();
             ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", new object[] { parameter });
 
-            Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(parameter, remoteProcedures.Parameter);
+            Assert.That(remoteProcedures.IsCalled, Is.True);
+            Assert.That(parameter, Is.EqualTo(remoteProcedures.Parameter));
         }
 
         [Test]
@@ -36,8 +36,8 @@ namespace Test.Network
             Parameter parameter = new Parameter("parameter", Guid.NewGuid().ToString());
             ((IRemoteProcedures)remoteProcedures).Invoke(new Procedure("DummyProcedure", new Parameter[] { parameter }));
 
-            Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(parameter.Value, remoteProcedures.Parameter);
+            Assert.That(remoteProcedures.IsCalled, Is.True);
+            Assert.That(parameter.Value, Is.EqualTo(remoteProcedures.Parameter));
         }
 
         [Test]
@@ -49,9 +49,9 @@ namespace Test.Network
             bool secondParameter = Random.Shared.Next(0, 1) % 2 == 0;
             ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure", new object[] { firstParameter, secondParameter });
 
-            Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(firstParameter, remoteProcedures.FirstParameter);
-            Assert.AreEqual(secondParameter, remoteProcedures.SecondParameter);
+            Assert.That(remoteProcedures.IsCalled, Is.True);
+            Assert.That(firstParameter, Is.EqualTo(remoteProcedures.FirstParameter));
+            Assert.That(secondParameter, Is.EqualTo(remoteProcedures.SecondParameter));
         }
 
         [Test]
@@ -63,9 +63,9 @@ namespace Test.Network
             Parameter secondParameter = new Parameter("second", Random.Shared.Next(0, 1) % 2 == 0);
             ((IRemoteProcedures)remoteProcedures).Invoke(new Procedure("DummyProcedure", new Parameter[] { firstParameter, secondParameter }));
 
-            Assert.IsTrue(remoteProcedures.IsCalled);
-            Assert.AreEqual(firstParameter.Value, remoteProcedures.FirstParameter);
-            Assert.AreEqual(secondParameter.Value, remoteProcedures.SecondParameter);
+            Assert.That(remoteProcedures.IsCalled, Is.True);
+            Assert.That(firstParameter.Value, Is.EqualTo(remoteProcedures.FirstParameter));
+            Assert.That(secondParameter.Value, Is.EqualTo(remoteProcedures.SecondParameter));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace Test.Network
 
             ((IRemoteProcedures)remoteProcedures).Invoke("DummyProcedure");
 
-            Assert.IsFalse(remoteProcedures.IsCalled);
+            Assert.That(remoteProcedures.IsCalled, Is.False);
         }
 
         [Test]
@@ -95,70 +95,12 @@ namespace Test.Network
 
             Procedure parsedProcedure = new Procedure(JsonNode.Parse(strigifiedProcedure).AsObject());
 
-            Assert.AreEqual(procedure.Name, parsedProcedure.Name);
-            Assert.AreEqual(procedure.Parameters.Length, parsedProcedure.Parameters.Length);
-            Assert.AreEqual(procedure.Parameters[0].Name, parsedProcedure.Parameters[0].Name);
-            Assert.AreEqual(procedure.Parameters[0].Value, parsedProcedure.Parameters[0].Value);
-            Assert.AreEqual(procedure.Parameters[1].Name, parsedProcedure.Parameters[1].Name);
-            Assert.AreEqual(procedure.Parameters[1].Value, parsedProcedure.Parameters[1].Value);
-        }
-        #endregion
-
-        #region Nested Types
-        private class DummyRemoteParameterlessProcedures : RemoteProcedures
-        {
-            public bool IsCalled { get; private set; }
-
-            public void DummyProcedure()
-            {
-                IsCalled = true;
-            }
-        }
-
-        private class DummyRemoteSingleParameterProcedures : RemoteProcedures
-        {
-            public bool IsCalled { get; private set; }
-
-            public string Parameter { get; private set; }
-
-            public void DummyProcedure(string parameter)
-            {
-                IsCalled = true;
-                Parameter = parameter;
-            }
-        }
-
-        private class DummyRemoteTwoDifferentParameterProcedures : RemoteProcedures
-        {
-            public bool IsCalled { get; private set; }
-
-            public int FirstParameter { get; private set; }
-
-            public bool SecondParameter { get; private set; }
-
-            public void DummyProcedure(int first, bool second)
-            {
-                IsCalled = true;
-                FirstParameter = first;
-                SecondParameter = second;
-            }
-        }
-
-        private class DummyTwoRemoteProcedureWithTheSameName : RemoteProcedures
-        {
-            public void DummyProcedure() { }
-
-            public void DummyProcedure(string parameter) { }
-        }
-
-        private class DummyRemoteProcedurePrivateMethod : RemoteProcedures
-        {
-            public bool IsCalled { get; private set; }
-
-            private void DummyProcedure()
-            {
-                IsCalled = true;
-            }
+            Assert.That(procedure.Name, Is.EqualTo(parsedProcedure.Name));
+            Assert.That(procedure.Parameters.Length, Is.EqualTo(parsedProcedure.Parameters.Length));
+            Assert.That(procedure.Parameters[0].Name, Is.EqualTo(parsedProcedure.Parameters[0].Name));
+            Assert.That(procedure.Parameters[0].Value, Is.EqualTo(parsedProcedure.Parameters[0].Value));
+            Assert.That(procedure.Parameters[1].Name, Is.EqualTo(parsedProcedure.Parameters[1].Name));
+            Assert.That(procedure.Parameters[1].Value, Is.EqualTo(parsedProcedure.Parameters[1].Value));
         }
         #endregion
     }
