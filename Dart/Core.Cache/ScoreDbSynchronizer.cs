@@ -9,6 +9,7 @@ namespace Core.Cache
         #region Fields
         private readonly IApplicationContext _applicationContext;
         #endregion
+
         #region Constructors
 
         public ScoreDbSynchronizer(IApplicationContext applicationContext)
@@ -42,12 +43,15 @@ namespace Core.Cache
         void IDbSynchronizer.Save()
         {
             ScoreDA scoreDA = new ScoreDA(_applicationContext);
-            foreach (KeyValuePair<Guid, List<Score>> pair in _applicationContext.ApplicationCache.Score)
+
+            List<List<Score>> flattenedScores = _applicationContext.ApplicationCache.Score.Values.ToList();
+
+            for (int i = 0; i < flattenedScores.Count; ++i)
             {
-                List<Score> gameSeasonScores = pair.Value;
-                for (int i = 0; i < gameSeasonScores.Count; ++i)
+                List<Score> gameSeasonScores = flattenedScores[i];
+                for (int j = 0; j < gameSeasonScores.Count; ++j)
                 {
-                    Score score = gameSeasonScores[i];
+                    Score score = gameSeasonScores[j];
                     if (score.IsDirty)
                     {
                         IResult result = scoreDA.Add(score);
