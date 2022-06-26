@@ -8,7 +8,19 @@ namespace App.Client.Application
     {
         private Game _game;
 
-        public void Connected(string userId)
+        public void Connected()
+        {
+            string[] names = { "Navid", "Zahra", "Shadi", "Hasan", "Negin", "Mohammad", "Laleh" };
+
+            Procedure procedure = new Procedure("RegisterUser", new Parameter[] {
+                new Parameter("username", names[Random.Shared.Next(0, names.Length)]),
+                new Parameter("remoteEndPoint", Program.ClientInstance.LocalEndPoint.ToString())
+            });
+
+            Program.ClientInstance.Send(procedure);
+        }
+
+        public void UserRegistered(string userId)
         {
             _game = new Game(Guid.Parse(userId));
 

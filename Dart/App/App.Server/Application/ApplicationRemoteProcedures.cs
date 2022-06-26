@@ -1,9 +1,9 @@
 ﻿using System.Net;
+using Core.Network;
+using Core.Domain.Core;
+using Core.Domain.Model;
 using System.Text.Json.Nodes;
 using App.Server.Infrastructure.BL;
-using Core.Domain.Model;
-using Core.Domain.Core;
-using Core.Network;
 
 namespace App.Server.Application
 {
@@ -11,12 +11,15 @@ namespace App.Server.Application
     {
         public override void OnConnected(string remoteEndPoint)
         {
-            /*
-             * TODO:
-             * Client should send the username here!
-             */
+            Procedure procedure = new Procedure("Connected", new Parameter[0]);
+
+            Program.ServerInstance.Send(IPEndPoint.Parse(remoteEndPoint), procedure);
+        }
+
+        public void RegisterUser(string username, string remoteEndPoint)
+        {
             UserBL userBL = new UserBL(Program.ApplicationContext);
-            IResult<Guid> addUserResult = userBL.Add(string.Empty, remoteEndPoint);
+            IResult<Guid> addUserResult = userBL.Add(username, remoteEndPoint);
             if (addUserResult.IsSuccessful)
             {
                 GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
@@ -29,7 +32,7 @@ namespace App.Server.Application
                     {
                         IPEndPoint clientEndPoint = IPEndPoint.Parse(remoteEndPoint);
 
-                        Procedure procedure = new Procedure("Connected", new Parameter[] { new Parameter("userId", addUserResult.Message.ToString()) });
+                        Procedure procedure = new Procedure("UserRegistered", new Parameter[] { new Parameter("userId", addUserResult.Message.ToString()) });
 
                         Program.ServerInstance.Send(clientEndPoint, procedure);
                     }
