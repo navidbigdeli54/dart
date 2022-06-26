@@ -48,6 +48,8 @@ namespace App.Server.Application
 
             leaderboadBL.AddScore(userId, score);
 
+            Program.ApplicationView.DisplayLeaderboard();
+
             UpdateClient(previousTop3);
         }
 
