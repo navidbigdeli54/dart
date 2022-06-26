@@ -25,7 +25,7 @@ namespace App.Client.Application
             for (int i = 0; i < leaderboard.Count; ++i)
             {
                 ImmutableUserLeaderboard entry = leaderboard[i];
-                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username} \t {entry.LeaderboardEntry.Score}");
+                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username}\t {entry.LeaderboardEntry.Score}");
             }
         }
         #endregion

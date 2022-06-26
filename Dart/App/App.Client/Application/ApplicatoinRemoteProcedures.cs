@@ -10,7 +10,7 @@ namespace App.Client.Application
 
         public void Connected()
         {
-            string[] names = { "Navid", "Zahra", "Shadi", "Hasan", "Negin", "Mohammad", "Laleh" };
+            string[] names = { "Navid", "Zahra", "Shadi", "Hasan", "Negin", "Laleh" };
 
             string chosenName = names[Random.Shared.Next(0, names.Length)];
 

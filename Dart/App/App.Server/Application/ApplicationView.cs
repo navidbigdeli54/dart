@@ -18,7 +18,7 @@ namespace App.Server.Application
         private void DrawHeader()
         {
             Console.Clear();
-            Console.WriteLine($"# \t Name \tScore");
+            Console.WriteLine($"#\t Name\tScore");
         }
 
         private static void DrawLeaderboardList()
@@ -43,7 +43,7 @@ namespace App.Server.Application
             for (int i = 0; i < entriesToShow.Count; ++i)
             {
                 ImmutableUserLeaderboard entry = entriesToShow[i];
-                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username} \t {entry.LeaderboardEntry.Score}");
+                Console.WriteLine($"{entry.LeaderboardEntry.Rank}\t {entry.User.Username}\t {entry.LeaderboardEntry.Score}");
             }
         }
         #endregion
