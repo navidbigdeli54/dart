@@ -88,6 +88,32 @@ namespace Test.BL
         }
 
         [Test]
+        public void AddMultipleScoreTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+
+            int scoreSum = 0;
+            for (int i = 0; i < ImmutableGameSeason.MAX_SCORE_NUMBER; ++i)
+            {
+                int point = Random.Shared.Next(0, int.MaxValue / ImmutableGameSeason.MAX_SCORE_NUMBER);
+                IResult result = gameSeasonBL.AddNewScore(user.Id, point);
+                Assert.That(result.IsSuccessful, Is.True);
+                scoreSum +=point;
+            }
+
+            ImmutableGameSeason retrivedGameSeason = gameSeasonBL.Get(gameSeason.Id);
+            Assert.Multiple(() =>
+            {
+                Assert.That(retrivedGameSeason.Id, Is.EqualTo(gameSeason.Id));
+                Assert.That(retrivedGameSeason.Scores.Select(x => x.Point).Sum(), Is.EqualTo(scoreSum));
+            });
+        }
+
+        [Test]
         public void AddMoreThanAllowedScoreTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
