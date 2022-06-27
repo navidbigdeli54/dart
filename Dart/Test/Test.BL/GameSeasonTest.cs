@@ -27,6 +27,16 @@ namespace Test.BL
         }
 
         [Test]
+        public void AddGameSeasonWithoutUserTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            IResult<Guid> result = gameSeasonBL.Add(Guid.Empty);
+            Assert.That(result.IsSuccessful, Is.False);
+        }
+
+        [Test]
         public void AddGameSeasonForAUserTwiceTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
