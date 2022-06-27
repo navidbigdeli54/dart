@@ -56,13 +56,21 @@ namespace Core.BL
 
             if (user.IsValid)
             {
-                GameSeason gameSeason = new GameSeason
+                ImmutableGameSeason existedGameSeason = GetByUserId(user.Id);
+                if (existedGameSeason.IsValid == false)
                 {
-                    CreationDate = DateTime.UtcNow,
-                    UserId = user.Id
-                };
+                    GameSeason gameSeason = new GameSeason
+                    {
+                        CreationDate = DateTime.UtcNow,
+                        UserId = user.Id
+                    };
 
-                return _gameSeasonCache.Add(gameSeason);
+                    return _gameSeasonCache.Add(gameSeason);
+                }
+                else
+                {
+                    return new ErrorResult<Guid>($"Can't add game season because {userId} already has one!");
+                }
             }
 
             return new ErrorResult<Guid>($"Can't find User by `{userId}` id!");
