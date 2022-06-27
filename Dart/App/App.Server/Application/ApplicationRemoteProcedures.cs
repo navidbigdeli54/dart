@@ -7,7 +7,7 @@ using Core.BL;
 
 namespace App.Server.Application
 {
-    internal class ApplicationRemoteProcedures : RemoteProcedures
+    public class ApplicationRemoteProcedures : RemoteProcedures
     {
         public override void OnConnected(string remoteEndPoint)
         {

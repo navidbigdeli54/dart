@@ -1,5 +1,5 @@
-﻿using Core.Domain.Model;
-using Core.Network;
+﻿using Core.Network;
+using Core.Domain.Model;
 using System.Text.Json.Nodes;
 
 namespace App.Client.Application
