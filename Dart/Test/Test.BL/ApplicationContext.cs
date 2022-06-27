@@ -1,6 +1,8 @@
 using Core.Domain.Core;
 
 
+#nullable disable
+
 namespace Test.BL
 {
     public class ApplicationContext : IApplicationContext
