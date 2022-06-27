@@ -1,10 +1,32 @@
 using Core.BL;
+using Core.Domain.Core;
 using Core.Domain.Model;
 
 namespace Test.BL
 {
     public class LeaderboardBLTest
     {
+        [Test]
+        public void AddLeaderboardTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user1);
+
+            LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
+            IResult<Guid> result = leaderboadBL.Add(gameSeason.Id);
+            Assert.That(result.IsSuccessful, Is.True);
+
+            ImmutableLeaderboard leaderboard = leaderboadBL.Get(result.Message);
+            Assert.Multiple(() =>
+            {
+                Assert.That(leaderboard.Id, Is.EqualTo(result.Message));
+                Assert.That(leaderboard.GameSeasonId, Is.EqualTo(gameSeason.Id));
+                Assert.That(leaderboard.Rank, Is.EqualTo(1));
+                Assert.That(leaderboard.Score, Is.EqualTo(0));
+            });
+        }
+
         [Test]
         public void AddEntriesThatHasSameScoreTest()
         {
