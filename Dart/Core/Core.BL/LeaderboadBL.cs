@@ -67,10 +67,10 @@ namespace Core.BL
             }
         }
 
-        public IResult AddScore(Guid userId, int score)
+        public IResult AddScore(Guid userId, int point)
         {
             GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            IResult result = gameSeasonBL.AddNewScore(userId, score);
+            IResult result = gameSeasonBL.AddNewScore(userId, point);
 
             if (result.IsSuccessful)
             {

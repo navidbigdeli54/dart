@@ -101,6 +101,28 @@ namespace Test.BL
         }
 
         [Test]
+        public void AddPointTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSeason);
+
+            LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
+            int point = Random.Shared.Next(0, int.MaxValue);
+            leaderboadBL.AddScore(user.Id, point);
+
+            ImmutableLeaderboard retrivedGameSeason = leaderboadBL.Get(leaderboard.Id);
+            Assert.Multiple(() =>
+            {
+                Assert.That(retrivedGameSeason.Id, Is.EqualTo(leaderboard.Id));
+                Assert.That(retrivedGameSeason.GameSeasonId, Is.EqualTo(leaderboard.GameSeasonId));
+                Assert.That(retrivedGameSeason.Rank, Is.EqualTo(1));
+                Assert.That(retrivedGameSeason.Score, Is.EqualTo(point));
+            });
+        }
+
+        [Test]
         public void AddEntriesThatHasSameScoreTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
