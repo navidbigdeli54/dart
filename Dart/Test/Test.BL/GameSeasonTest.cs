@@ -66,5 +66,65 @@ namespace Test.BL
                 Assert.That(retrivedUGameSeason.Scores.Select(x => x.Point).Sum(), Is.EqualTo(gameSeason.Scores.Select(x => x.Point).Sum()));
             });
         }
+
+        [Test]
+        public void AddScoreTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            int point = Random.Shared.Next(0, int.MaxValue);
+            IResult result = gameSeasonBL.AddNewScore(user.Id, point);
+            Assert.That(result.IsSuccessful, Is.True);
+
+            ImmutableGameSeason retrivedGameSeason = gameSeasonBL.Get(gameSeason.Id);
+            Assert.Multiple(() =>
+            {
+                Assert.That(retrivedGameSeason.Id, Is.EqualTo(gameSeason.Id));
+                Assert.That(retrivedGameSeason.Scores.Select(x => x.Point).Sum(), Is.EqualTo(point));
+            });
+        }
+
+        [Test]
+        public void AddMoreThanAllowedScoreTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+
+            for (int i = 0; i < ImmutableGameSeason.MAX_SCORE_NUMBER; ++i)
+            {
+                int point = Random.Shared.Next(0, int.MaxValue / ImmutableGameSeason.MAX_SCORE_NUMBER);
+                IResult result = gameSeasonBL.AddNewScore(user.Id, point);
+                Assert.That(result.IsSuccessful, Is.True);
+            }
+
+            IResult error = gameSeasonBL.AddNewScore(user.Id, Random.Shared.Next(0, int.MaxValue));
+            Assert.That(error.IsSuccessful, Is.False);
+        }
+
+        [Test]
+        public void AddScoreAfterMaxAllowedTimeTest()
+        {
+            IApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+
+            GameSeason gameSeason = new GameSeason
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                CreationDate = DateTime.UtcNow.AddMinutes(-10)
+            };
+
+            applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
+
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            IResult error = gameSeasonBL.AddNewScore(user.Id, Random.Shared.Next(0, int.MaxValue));
+            Assert.That(error.IsSuccessful, Is.False);
+        }
     }
 }
