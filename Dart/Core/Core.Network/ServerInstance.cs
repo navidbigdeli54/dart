@@ -89,7 +89,6 @@ namespace Core.Network
                 {
                     if (_clientSockets.Remove(disconnectedClients[i], out Socket? socket))
                     {
-                        socket.Shutdown(SocketShutdown.Both);
                         socket.Close();
                     }
                 }
