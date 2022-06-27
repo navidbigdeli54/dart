@@ -32,5 +32,15 @@ namespace Test.BL
 
             return leaderboardBL.Get(result.Message);
         }
+
+        public static ImmutableScore AddScore(IApplicationContext applicationContext, ImmutableGameSeason gameSeason, int point)
+        {
+            ScoreBL scoreBL = new ScoreBL(applicationContext);
+            int randomPoint = Random.Shared.Next(0, int.MaxValue);
+            IResult<Guid> result = scoreBL.Add(gameSeason.Id, randomPoint);
+            Assert.That(result.IsSuccessful, Is.True);
+
+            return scoreBL.Get(result.Message);
+        }
     }
 }

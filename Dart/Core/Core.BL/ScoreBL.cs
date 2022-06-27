@@ -18,6 +18,17 @@ namespace Core.BL
         #endregion
 
         #region Public Methods
+        public ImmutableScore Get(Guid id)
+        {
+            Score? score = _scoreCache.Get(id);
+            if(score != null)
+            {
+                return new ImmutableScore(score);
+            }
+
+            return default;
+        }
+
         public IReadOnlyList<ImmutableScore> GetByGameSeasonId(Guid gameSeasonId)
         {
             return _scoreCache.GetByGameSeasonId(gameSeasonId).Select(x => new ImmutableScore(x)).ToList();

@@ -1,4 +1,5 @@
-﻿using Core.Domain.Core;
+﻿using System.Reflection;
+using Core.Domain.Core;
 using Core.Domain.Model;
 
 namespace Core.Cache
@@ -17,6 +18,21 @@ namespace Core.Cache
         #endregion
 
         #region Public Methods
+        public Score? Get(Guid id)
+        {
+            foreach (KeyValuePair<Guid, List<Score>> pair in _applicationContext.ApplicationCache.Score)
+            {
+                List<Score> scores = pair.Value;
+                Score? score = scores.SingleOrDefault(x => x.Id == id);
+                if (score != null)
+                {
+                    return score;
+                }
+            }
+
+            return null;
+        }
+
         public IReadOnlyList<Score> GetByGameSeasonId(Guid gameSeasonId)
         {
             if (_applicationContext.ApplicationCache.Score.TryGetValue(gameSeasonId, out List<Score>? scores))
