@@ -21,6 +21,17 @@ namespace Core.BL
         #endregion
 
         #region Public Methods
+        public ImmutableLeaderboard Get(Guid id)
+        {
+            Leaderboard? leaderboard = _leaderboardCache.Get(id);
+            if(leaderboard != null)
+            {
+                return new ImmutableLeaderboard(leaderboard);
+            }
+            
+            return default;
+        }
+
         public IReadOnlyList<ImmutableLeaderboard> Get(int count)
         {
             return _leaderboardCache.Get(count).Select(x => new ImmutableLeaderboard(x)).ToList();

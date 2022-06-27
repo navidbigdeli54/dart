@@ -17,6 +17,11 @@ namespace Core.Cache
         #endregion
 
         #region Public Methods
+        public Leaderboard? Get(Guid id)
+        {
+            return _aplicationContext.ApplicationCache.Leaderboard.SingleOrDefault(x=>x.Id == id);
+        }
+
         public IReadOnlyList<Leaderboard> Get(int count)
         {
             return _aplicationContext.ApplicationCache.Leaderboard.Take(count).ToList();
