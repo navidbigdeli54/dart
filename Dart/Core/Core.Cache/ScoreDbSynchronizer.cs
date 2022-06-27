@@ -26,14 +26,14 @@ namespace Core.Cache
             for (int i = 0; i < scores.Count; ++i)
             {
                 Score score = scores[i];
-                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSeasonId, out List<Score> gameSeasonScores))
+                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSessionId, out List<Score> gameSessionScores))
                 {
-                    gameSeasonScores.Add(score);
+                    gameSessionScores.Add(score);
                 }
                 else
                 {
-                    gameSeasonScores = new List<Score> { score };
-                    _applicationContext.ApplicationCache.Score.Add(score.GameSeasonId, gameSeasonScores);
+                    gameSessionScores = new List<Score> { score };
+                    _applicationContext.ApplicationCache.Score.Add(score.GameSessionId, gameSessionScores);
                 }
 
                 score.IsDirty = false;
@@ -48,10 +48,10 @@ namespace Core.Cache
 
             for (int i = 0; i < flattenedScores.Count; ++i)
             {
-                List<Score> gameSeasonScores = flattenedScores[i];
-                for (int j = 0; j < gameSeasonScores.Count; ++j)
+                List<Score> gameSessionScores = flattenedScores[i];
+                for (int j = 0; j < gameSessionScores.Count; ++j)
                 {
-                    Score score = gameSeasonScores[j];
+                    Score score = gameSessionScores[j];
                     if (score.IsDirty)
                     {
                         IResult result = scoreDA.Add(score);

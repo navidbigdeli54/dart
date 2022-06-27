@@ -15,29 +15,29 @@ namespace Test.BL
             return userBL.Get(result.Message);
         }
 
-        public static ImmutableGameSeason AddGameSeason(IApplicationContext applicationContext, ImmutableUser user)
+        public static ImmutableGameSession AddGameSession(IApplicationContext applicationContext, ImmutableUser user)
         {
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
-            IResult<Guid> result = gameSeasonBL.Add(user.Id);
+            GameSessionBL gameSessionBL = new GameSessionBL(applicationContext);
+            IResult<Guid> result = gameSessionBL.Add(user.Id);
             Assert.That(result.IsSuccessful, Is.True);
 
-            return gameSeasonBL.Get(result.Message);
+            return gameSessionBL.Get(result.Message);
         }
 
-        public static ImmutableLeaderboard AddLeaderboard(IApplicationContext applicationContext, ImmutableGameSeason gameSeason)
+        public static ImmutableLeaderboard AddLeaderboard(IApplicationContext applicationContext, ImmutableGameSession gameSession)
         {
             LeaderboadBL leaderboardBL = new LeaderboadBL(applicationContext);
-            IResult<Guid> result = leaderboardBL.Add(gameSeason.Id);
+            IResult<Guid> result = leaderboardBL.Add(gameSession.Id);
             Assert.That(result.IsSuccessful, Is.True);
 
             return leaderboardBL.Get(result.Message);
         }
 
-        public static ImmutableScore AddScore(IApplicationContext applicationContext, ImmutableGameSeason gameSeason, int point)
+        public static ImmutableScore AddScore(IApplicationContext applicationContext, ImmutableGameSession gameSession, int point)
         {
             ScoreBL scoreBL = new ScoreBL(applicationContext);
             int randomPoint = Random.Shared.Next(0, int.MaxValue);
-            IResult<Guid> result = scoreBL.Add(gameSeason.Id, randomPoint);
+            IResult<Guid> result = scoreBL.Add(gameSession.Id, randomPoint);
             Assert.That(result.IsSuccessful, Is.True);
 
             return scoreBL.Get(result.Message);

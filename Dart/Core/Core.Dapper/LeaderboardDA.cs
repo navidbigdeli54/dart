@@ -44,14 +44,14 @@ namespace Core.Dapper
 
         public IResult Add(Leaderboard leaderboard)
         {
-            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Leaderboard.Id)}\", \"{nameof(Leaderboard.GameSeasonId)}\", \"{nameof(Leaderboard.Score)}\", \"{nameof(Leaderboard.Rank)}\") VALUES (@{nameof(Leaderboard.Id)}, @{nameof(Leaderboard.GameSeasonId)}, @{nameof(Leaderboard.Score)}, @{nameof(Leaderboard.Rank)});";
+            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Leaderboard.Id)}\", \"{nameof(Leaderboard.GameSessionId)}\", \"{nameof(Leaderboard.Score)}\", \"{nameof(Leaderboard.Rank)}\") VALUES (@{nameof(Leaderboard.Id)}, @{nameof(Leaderboard.GameSessionId)}, @{nameof(Leaderboard.Score)}, @{nameof(Leaderboard.Rank)});";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = leaderboard.Id, GameSeasonId = leaderboard.GameSeasonId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
+                    connection.Query(query, new { Id = leaderboard.Id, GameSessionId = leaderboard.GameSessionId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
 
                     transaction.Commit();
 
@@ -71,7 +71,7 @@ namespace Core.Dapper
         {
             string selectQuery = $"SELECT COUNT(\"{nameof(Leaderboard.Id)}\") FROM {TABLE_NAME} where \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
 
-            string addQuery = $"INSERT INTO {TABLE_NAME} (\"{nameof(Leaderboard.Id)}\", \"{nameof(Leaderboard.GameSeasonId)}\", \"{nameof(Leaderboard.Score)}\", \"{nameof(Leaderboard.Rank)}\") VALUES (@{nameof(Leaderboard.Id)}, @{nameof(Leaderboard.GameSeasonId)}, @{nameof(Leaderboard.Score)}, @{nameof(Leaderboard.Rank)});";
+            string addQuery = $"INSERT INTO {TABLE_NAME} (\"{nameof(Leaderboard.Id)}\", \"{nameof(Leaderboard.GameSessionId)}\", \"{nameof(Leaderboard.Score)}\", \"{nameof(Leaderboard.Rank)}\") VALUES (@{nameof(Leaderboard.Id)}, @{nameof(Leaderboard.GameSessionId)}, @{nameof(Leaderboard.Score)}, @{nameof(Leaderboard.Rank)});";
 
             string updateQuery = $"UPDATE {TABLE_NAME} SET \"{nameof(Leaderboard.Score)}\" = @{nameof(Leaderboard.Score)}, \"{nameof(Leaderboard.Rank)}\" = @{nameof(Leaderboard.Rank)} WHERE \"{nameof(Leaderboard.Id)}\" = @{nameof(Leaderboard.Id)};";
 
@@ -83,7 +83,7 @@ namespace Core.Dapper
                     int count = connection.QuerySingleOrDefault<int>(selectQuery, new { Id = leaderboard.Id });
                     if (count == 0)
                     {
-                        connection.Query(addQuery, new { Id = leaderboard.Id, GameSeasonId = leaderboard.GameSeasonId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
+                        connection.Query(addQuery, new { Id = leaderboard.Id, GameSessionId = leaderboard.GameSessionId, Score = leaderboard.Score, Rank = leaderboard.Rank }, transaction);
                     }
                     else
                     {

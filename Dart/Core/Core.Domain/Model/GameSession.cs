@@ -1,6 +1,6 @@
 ﻿namespace Core.Domain.Model
 {
-    public class GameSeason
+    public class GameSession
     {
         #region Fields
         private Guid _id;

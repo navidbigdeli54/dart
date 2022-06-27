@@ -42,44 +42,44 @@ namespace Core.BL
             return _leaderboardCache.GetAll().Select(x => new ImmutableLeaderboard(x)).ToList();
         }
 
-        public IResult<Guid> Add(Guid gameSeasonId)
+        public IResult<Guid> Add(Guid gameSessionId)
         {
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
-            if (gameSeason.IsValid)
+            GameSessionBL gameSessionBL = new GameSessionBL(_applicationContext);
+            ImmutableGameSession gameSession = gameSessionBL.Get(gameSessionId);
+            if (gameSession.IsValid)
             {
-                Leaderboard? existedLeaderbaord = _leaderboardCache.GetByGameSeasonId(gameSeasonId);
+                Leaderboard? existedLeaderbaord = _leaderboardCache.GetByGameSessionId(gameSessionId);
                 if (existedLeaderbaord == null)
                 {
                     Leaderboard leaderBoardEntry = new Leaderboard
                     {
-                        GameSeasonId = gameSeason.Id
+                        GameSessionId = gameSession.Id
                     };
 
                     return _leaderboardCache.Add(leaderBoardEntry);
                 }
 
-                return new ErrorResult<Guid>($"A leaderboard for the `{gameSeasonId}` game season is already exist!");
+                return new ErrorResult<Guid>($"A leaderboard for the `{gameSessionId}` game season is already exist!");
             }
             else
             {
-                return new ErrorResult<Guid>($"Can't find a GameSeason by `{gameSeasonId}` id.");
+                return new ErrorResult<Guid>($"Can't find a GameSession by `{gameSessionId}` id.");
             }
         }
 
         public IResult AddScore(Guid userId, int point)
         {
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            IResult result = gameSeasonBL.AddNewScore(userId, point);
+            GameSessionBL gameSessionBL = new GameSessionBL(_applicationContext);
+            IResult result = gameSessionBL.AddNewScore(userId, point);
             if (result.IsSuccessful)
             {
-                ImmutableGameSeason gameSeason = gameSeasonBL.GetByUserId(userId);
+                ImmutableGameSession gameSession = gameSessionBL.GetByUserId(userId);
 
                 ScoreBL scoreBL = new ScoreBL(_applicationContext);
 
-                IReadOnlyList<ImmutableScore> scores = scoreBL.GetByGameSeasonId(gameSeason.Id);
+                IReadOnlyList<ImmutableScore> scores = scoreBL.GetByGameSessionId(gameSession.Id);
 
-                _leaderboardCache.UpdateScore(gameSeason.Id, scores.Select(x => x.Point).Sum());
+                _leaderboardCache.UpdateScore(gameSession.Id, scores.Select(x => x.Point).Sum());
 
                 return new Result<object>();
             }

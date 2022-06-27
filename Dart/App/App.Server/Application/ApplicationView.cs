@@ -25,16 +25,16 @@ namespace App.Server.Application
         {
             UserBL userBL = new UserBL(Program.ApplicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(Program.ApplicationContext);
 
             IReadOnlyList<ImmutableLeaderboard> allEntries = leaderboadBL.GetAll();
             for (int i = 0; i < allEntries.Count; i++)
             {
                 ImmutableLeaderboard leaderboardEntry = allEntries[i];
 
-                ImmutableGameSeason gameSeason = gameSeasonBL.Get(leaderboardEntry.GameSeasonId);
+                ImmutableGameSession gameSession = gameSessionBL.Get(leaderboardEntry.GameSessionId);
 
-                ImmutableUser user = userBL.Get(gameSeason.UserId);
+                ImmutableUser user = userBL.Get(gameSession.UserId);
 
                 Console.WriteLine($"{leaderboardEntry.Rank}\t {user.Username}\t {leaderboardEntry.Score}");
             }

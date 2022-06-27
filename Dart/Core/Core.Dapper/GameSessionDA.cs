@@ -5,29 +5,29 @@ using Core.Domain.Model;
 
 namespace Core.Dapper
 {
-    public class GameSeasonDA : BaseDA
+    public class GameSessionDA : BaseDA
     {
         #region Fields
-        private const string TABLE_NAME = "public.\"tblGameSeason\"";
+        private const string TABLE_NAME = "public.\"tblGameSession\"";
 
         private IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public GameSeasonDA(IApplicationContext applicationContext)
+        public GameSessionDA(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
         #endregion
 
         #region Public Methods
-        public GameSeason Get(Guid id)
+        public GameSession Get(Guid id)
         {
-            string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(GameSeason.Id)}\" = @{nameof(GameSeason.Id)};";
+            string query = $"SELECT * FROM {TABLE_NAME} where \"{nameof(GameSession.Id)}\" = @{nameof(GameSession.Id)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.QuerySingleOrDefault<GameSeason>(query, new { Id = id });
+                return connection.QuerySingleOrDefault<GameSession>(query, new { Id = id });
             }
         }
 
@@ -35,26 +35,26 @@ namespace Core.Dapper
             TODO:
             Paging needed here!
         */
-        public IReadOnlyList<GameSeason> GetAll()
+        public IReadOnlyList<GameSession> GetAll()
         {
             string query = $"SELECT * FROM {TABLE_NAME};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<GameSeason>(query).ToList();
+                return connection.Query<GameSession>(query).ToList();
             }
         }
 
-        public IResult Add(GameSeason gameSeason)
+        public IResult Add(GameSession gameSession)
         {
-            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(GameSeason.Id)}\", \"{nameof(GameSeason.CreationDate)}\", \"{nameof(GameSeason.UserId)}\") VALUES (@{nameof(GameSeason.Id)}, @{nameof(GameSeason.CreationDate)}, @{nameof(GameSeason.UserId)});";
+            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(GameSession.Id)}\", \"{nameof(GameSession.CreationDate)}\", \"{nameof(GameSession.UserId)}\") VALUES (@{nameof(GameSession.Id)}, @{nameof(GameSession.CreationDate)}, @{nameof(GameSession.UserId)});";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = gameSeason.Id, CreationDate = gameSeason.CreationDate, UserId = gameSeason.UserId }, transaction);
+                    connection.Query(query, new { Id = gameSession.Id, CreationDate = gameSession.CreationDate, UserId = gameSession.UserId }, transaction);
 
                     transaction.Commit();
 

@@ -32,9 +32,9 @@ namespace Core.Cache
             return _aplicationContext.ApplicationCache.Leaderboard;
         }
 
-        public Leaderboard? GetByGameSeasonId(Guid gameSeasonId)
+        public Leaderboard? GetByGameSessionId(Guid gameSessionId)
         {
-            return _aplicationContext.ApplicationCache.Leaderboard.Where(x => x.GameSeasonId == gameSeasonId).SingleOrDefault();
+            return _aplicationContext.ApplicationCache.Leaderboard.Where(x => x.GameSessionId == gameSessionId).SingleOrDefault();
         }
 
         public IResult<Guid> Add(Leaderboard entry)
@@ -60,13 +60,13 @@ namespace Core.Cache
             }
         }
 
-        public IResult UpdateScore(Guid gameSeasonId, int score)
+        public IResult UpdateScore(Guid gameSessionId, int score)
         {
             try
             {
-                Leaderboard? entry = GetByGameSeasonId(gameSeasonId);
+                Leaderboard? entry = GetByGameSessionId(gameSessionId);
 
-                if (entry == null) throw new Exception($"Can't find GameSeason by `{gameSeasonId}` id!");
+                if (entry == null) throw new Exception($"Can't find GameSession by `{gameSessionId}` id!");
 
                 entry.Score = score;
 

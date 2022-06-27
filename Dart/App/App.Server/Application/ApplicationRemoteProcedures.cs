@@ -20,17 +20,17 @@ namespace App.Server.Application
         {
             UserBL userBL = new UserBL(Program.ApplicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(Program.ApplicationContext);
 
             IPEndPoint clientEndPoint = IPEndPoint.Parse(remoteEndPoint);
 
             IResult<Guid> addUserResult = userBL.Add(username, remoteEndPoint);
             if (addUserResult.IsSuccessful)
             {
-                IResult<Guid> gameSeasonResult = gameSeasonBL.Add(addUserResult.Message);
-                if (gameSeasonResult.IsSuccessful)
+                IResult<Guid> gameSessionResult = gameSessionBL.Add(addUserResult.Message);
+                if (gameSessionResult.IsSuccessful)
                 {
-                    IResult addLeaderboardResult = leaderboadBL.Add(gameSeasonResult.Message);
+                    IResult addLeaderboardResult = leaderboadBL.Add(gameSessionResult.Message);
                     if (addLeaderboardResult.IsSuccessful)
                     {
                         Procedure userRegisteredProcedure = new Procedure("UserRegistered", new Parameter[] { new Parameter("userId", addUserResult.Message.ToString()) });
@@ -46,9 +46,9 @@ namespace App.Server.Application
             {
                 ImmutableLeaderboard leaderBoardEntry = top3[i];
 
-                ImmutableGameSeason gameSeason = gameSeasonBL.Get(leaderBoardEntry.GameSeasonId);
+                ImmutableGameSession gameSession = gameSessionBL.Get(leaderBoardEntry.GameSessionId);
 
-                ImmutableUser user = userBL.Get(gameSeason.UserId);
+                ImmutableUser user = userBL.Get(gameSession.UserId);
 
                 leaderboardEntries.Add(new ImmutableUserLeaderboard(user, leaderBoardEntry));
             }
@@ -82,14 +82,14 @@ namespace App.Server.Application
         private static void UpdateClient(IReadOnlyList<ImmutableLeaderboard> previousTop3)
         {
             UserBL userBL = new UserBL(Program.ApplicationContext);
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(Program.ApplicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(Program.ApplicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(Program.ApplicationContext);
 
             IReadOnlyList<ImmutableLeaderboard> currentTop3 = leaderboadBL.GetAll().Take(3).ToList();
             bool hasChanged = false;
             for (int i = 0; i < 3; ++i)
             {
-                if (previousTop3[i].GameSeasonId != currentTop3[i].GameSeasonId || previousTop3[i].Score != currentTop3[i].Score)
+                if (previousTop3[i].GameSessionId != currentTop3[i].GameSessionId || previousTop3[i].Score != currentTop3[i].Score)
                 {
                     hasChanged = true;
 
@@ -105,9 +105,9 @@ namespace App.Server.Application
                 {
                     ImmutableLeaderboard leaderBoardEntry = currentTop3[i];
 
-                    ImmutableGameSeason gameSeason = gameSeasonBL.Get(leaderBoardEntry.GameSeasonId);
+                    ImmutableGameSession gameSession = gameSessionBL.Get(leaderBoardEntry.GameSessionId);
 
-                    ImmutableUser user = userBL.Get(gameSeason.UserId);
+                    ImmutableUser user = userBL.Get(gameSession.UserId);
 
                     leaderboardEntries.Add(new ImmutableUserLeaderboard(user, leaderBoardEntry));
                 }

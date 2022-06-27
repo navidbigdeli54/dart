@@ -12,11 +12,11 @@ namespace Test.BL
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+            ImmutableGameSession gameSession = TestHelper.AddGameSession(applicationContext, user);
 
             ScoreBL scoreBL = new ScoreBL(applicationContext);
             int randomPoint = Random.Shared.Next(0, int.MaxValue);
-            IResult<Guid> result = scoreBL.Add(gameSeason.Id, randomPoint);
+            IResult<Guid> result = scoreBL.Add(gameSession.Id, randomPoint);
             Assert.That(result.IsSuccessful, Is.True);
 
             ImmutableScore score = scoreBL.Get(result.Message);
@@ -24,7 +24,7 @@ namespace Test.BL
             {
                 Assert.That(score.Id, Is.EqualTo(result.Message));
                 Assert.That(score.Point, Is.EqualTo(randomPoint));
-                Assert.That(score.GameSeasonId, Is.EqualTo(gameSeason.Id));
+                Assert.That(score.GameSessionId, Is.EqualTo(gameSession.Id));
             });
         }
 
@@ -40,25 +40,25 @@ namespace Test.BL
         }
 
         [Test]
-        public void GetByGameSeasonIdTest()
+        public void GetByGameSessionIdTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason1 = TestHelper.AddGameSeason(applicationContext, user1);
+            ImmutableGameSession gameSession1 = TestHelper.AddGameSession(applicationContext, user1);
 
-            ImmutableScore score1 = TestHelper.AddScore(applicationContext, gameSeason1, Random.Shared.Next(0, int.MaxValue));
-            ImmutableScore score2 = TestHelper.AddScore(applicationContext, gameSeason1, Random.Shared.Next(0, int.MaxValue));
-            ImmutableScore score3 = TestHelper.AddScore(applicationContext, gameSeason1, Random.Shared.Next(0, int.MaxValue));
+            ImmutableScore score1 = TestHelper.AddScore(applicationContext, gameSession1, Random.Shared.Next(0, int.MaxValue));
+            ImmutableScore score2 = TestHelper.AddScore(applicationContext, gameSession1, Random.Shared.Next(0, int.MaxValue));
+            ImmutableScore score3 = TestHelper.AddScore(applicationContext, gameSession1, Random.Shared.Next(0, int.MaxValue));
 
             ImmutableUser user2 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason2 = TestHelper.AddGameSeason(applicationContext, user2);
+            ImmutableGameSession gameSession2 = TestHelper.AddGameSession(applicationContext, user2);
 
-            ImmutableScore score4 = TestHelper.AddScore(applicationContext, gameSeason2, Random.Shared.Next(0, int.MaxValue));
+            ImmutableScore score4 = TestHelper.AddScore(applicationContext, gameSession2, Random.Shared.Next(0, int.MaxValue));
 
             ScoreBL scoreBL = new ScoreBL(applicationContext);
 
-            IReadOnlyList<ImmutableScore> user1Scores = scoreBL.GetByGameSeasonId(gameSeason1.Id);
+            IReadOnlyList<ImmutableScore> user1Scores = scoreBL.GetByGameSessionId(gameSession1.Id);
             Assert.Multiple(() =>
             {
                 Assert.That(user1Scores, Has.Count.EqualTo(3));
@@ -67,7 +67,7 @@ namespace Test.BL
                 Assert.That(user1Scores.Any(x => x.Id == score3.Id), Is.True);
             });
 
-            IReadOnlyList<ImmutableScore> user2Scores = scoreBL.GetByGameSeasonId(gameSeason2.Id);
+            IReadOnlyList<ImmutableScore> user2Scores = scoreBL.GetByGameSessionId(gameSession2.Id);
             Assert.Multiple(() =>
             {
                 Assert.That(user2Scores.Count, Is.EqualTo(1));

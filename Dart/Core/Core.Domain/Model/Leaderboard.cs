@@ -5,7 +5,7 @@
         #region Fields
         private Guid _id;
 
-        private Guid _gameSeasonId;
+        private Guid _gameSessionId;
 
         private int _rank;
 
@@ -23,12 +23,12 @@
             }
         }
 
-        public Guid GameSeasonId
+        public Guid GameSessionId
         {
-            get => _gameSeasonId;
+            get => _gameSessionId;
             set
             {
-                _gameSeasonId = value;
+                _gameSessionId = value;
                 IsDirty = true;
             }
         }

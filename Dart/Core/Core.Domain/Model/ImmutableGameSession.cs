@@ -2,7 +2,7 @@
 
 namespace Core.Domain.Model
 {
-    public struct ImmutableGameSeason
+    public struct ImmutableGameSession
     {
         #region Fields
         public const int MAX_SCORE_NUMBER = 10;
@@ -23,15 +23,15 @@ namespace Core.Domain.Model
         #endregion
 
         #region Constructors
-        public ImmutableGameSeason(GameSeason gameSeason, IReadOnlyList<ImmutableScore> scores)
+        public ImmutableGameSession(GameSession gameSession, IReadOnlyList<ImmutableScore> scores)
         {
-            Id = gameSeason.Id;
-            CreationDate = gameSeason.CreationDate;
-            UserId = gameSeason.UserId;
+            Id = gameSession.Id;
+            CreationDate = gameSession.CreationDate;
+            UserId = gameSession.UserId;
             Scores = scores;
         }
 
-        public ImmutableGameSeason(JsonObject jsonObject)
+        public ImmutableGameSession(JsonObject jsonObject)
         {
             Id = Guid.Parse(jsonObject["Id"].ToString());
             CreationDate = DateTime.Parse(jsonObject["CreationDate"].ToString());

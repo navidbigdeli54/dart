@@ -35,28 +35,28 @@ namespace Test.Dapper
             return user;
         }
 
-        public static GameSeason AddGameSeason(IApplicationContext applicationContext, User user)
+        public static GameSession AddGameSession(IApplicationContext applicationContext, User user)
         {
-            GameSeason gameSeason = new GameSeason
+            GameSession gameSession = new GameSession
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 CreationDate = DateTime.UtcNow
             };
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(applicationContext);
-            IResult result = gameSeasonDA.Add(gameSeason);
+            GameSessionDA gameSessionDA = new GameSessionDA(applicationContext);
+            IResult result = gameSessionDA.Add(gameSession);
             Assert.That(result.IsSuccessful, Is.True);
 
-            return gameSeason;
+            return gameSession;
         }
 
-        public static Score AddScore(IApplicationContext applicationContext, GameSeason gameSeason)
+        public static Score AddScore(IApplicationContext applicationContext, GameSession gameSession)
         {
             Score score = new Score
             {
                 Id = Guid.NewGuid(),
                 CreationDate = DateTime.UtcNow,
-                GameSeasonId = gameSeason.Id,
+                GameSessionId = gameSession.Id,
                 Point = Random.Shared.Next(0, int.MaxValue)
             };
             ScoreDA scoreDA = new ScoreDA(applicationContext);
@@ -66,12 +66,12 @@ namespace Test.Dapper
             return score;
         }
 
-        public static Leaderboard AddLeaderboard(IApplicationContext applicationContext, GameSeason gameSeason)
+        public static Leaderboard AddLeaderboard(IApplicationContext applicationContext, GameSession gameSession)
         {
             Leaderboard leaderboard = new Leaderboard
             {
                 Id = Guid.NewGuid(),
-                GameSeasonId = gameSeason.Id,
+                GameSessionId = gameSession.Id,
                 Rank = Random.Shared.Next(0, int.MaxValue),
                 Score = Random.Shared.Next(0, int.MaxValue)
             };

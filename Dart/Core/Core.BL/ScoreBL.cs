@@ -32,21 +32,21 @@ namespace Core.BL
             return default;
         }
 
-        public IReadOnlyList<ImmutableScore> GetByGameSeasonId(Guid gameSeasonId)
+        public IReadOnlyList<ImmutableScore> GetByGameSessionId(Guid gameSessionId)
         {
-            return _scoreCache.GetByGameSeasonId(gameSeasonId).Select(x => new ImmutableScore(x)).ToList();
+            return _scoreCache.GetByGameSessionId(gameSessionId).Select(x => new ImmutableScore(x)).ToList();
         }
 
-        public IResult<Guid> Add(Guid gameSeasonId, int point)
+        public IResult<Guid> Add(Guid gameSessionId, int point)
         {
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
-            ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
-            if (gameSeason.IsValid)
+            GameSessionBL gameSessionBL = new GameSessionBL(_applicationContext);
+            ImmutableGameSession gameSession = gameSessionBL.Get(gameSessionId);
+            if (gameSession.IsValid)
             {
                 Score score = new Score
                 {
                     CreationDate = DateTime.UtcNow,
-                    GameSeasonId = gameSeasonId,
+                    GameSessionId = gameSessionId,
                     Point = point
                 };
 
@@ -54,7 +54,7 @@ namespace Core.BL
             }
             else
             {
-                return new ErrorResult<Guid>($"Can't find {gameSeasonId} game season.");
+                return new ErrorResult<Guid>($"Can't find {gameSessionId} game season.");
             }
         }
         #endregion

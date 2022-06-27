@@ -19,7 +19,7 @@ namespace App.Server.Application
             _databaseSynchronizer = new DatabaseSynchronizer(new List<IDbSynchronizer>
             {
                 new UserDbSynchronizer(this),
-                new GameSeasonDbSynchronizer(this),
+                new GameSessionDbSynchronizer(this),
                 new LeaderboardDbSynchronizer(this),
                 new ScoreDbSynchronizer(this),
             });

@@ -7,7 +7,7 @@ namespace Core.Domain.Model
         #region Properties
         public Guid Id { get; }
 
-        public Guid GameSeasonId { get; }
+        public Guid GameSessionId { get; }
 
         public int Score { get; }
 
@@ -22,13 +22,13 @@ namespace Core.Domain.Model
             Id = entry.Id;
             Score = entry.Score;
             Rank = entry.Rank;
-            GameSeasonId = entry.GameSeasonId;
+            GameSessionId = entry.GameSessionId;
         }
 
         public ImmutableLeaderboard(JsonObject jsonObject)
         {
             Id = Guid.Parse(jsonObject["Id"].ToString());
-            GameSeasonId = Guid.Parse(jsonObject["GameSeasonId"].ToString());
+            GameSessionId = Guid.Parse(jsonObject["GameSessionId"].ToString());
             Score = int.Parse(jsonObject["Score"].ToString());
             Rank = int.Parse(jsonObject["Rank"].ToString());
         }
@@ -39,7 +39,7 @@ namespace Core.Domain.Model
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject["Id"] = Id;
-            jsonObject["GameSeasonId"] = GameSeasonId;
+            jsonObject["GameSessionId"] = GameSessionId;
             jsonObject["Score"] = Score;
             jsonObject["Rank"] = Rank;
             return jsonObject;

@@ -4,14 +4,14 @@ using Core.Domain.Model;
 
 namespace Core.Cache
 {
-    public class GameSeasonDbSynchronizer : IDbSynchronizer
+    public class GameSessionDbSynchronizer : IDbSynchronizer
     {
         #region Fields
         private readonly IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public GameSeasonDbSynchronizer(IApplicationContext applicationContext)
+        public GameSessionDbSynchronizer(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
@@ -20,26 +20,26 @@ namespace Core.Cache
         #region IDbSynchronizable Implementation
         void IDbSynchronizer.Load()
         {
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            IReadOnlyList<GameSeason> gameSeasons = gameSeasonDA.GetAll();
-            for (int i = 0; i < gameSeasons.Count; ++i)
+            GameSessionDA gameSessionDA = new GameSessionDA(_applicationContext);
+            IReadOnlyList<GameSession> gameSessions = gameSessionDA.GetAll();
+            for (int i = 0; i < gameSessions.Count; ++i)
             {
-                GameSeason gameSeason = gameSeasons[i];
-                _applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
-                gameSeason.IsDirty = false;
+                GameSession gameSession = gameSessions[i];
+                _applicationContext.ApplicationCache.GameSession.Add(gameSession);
+                gameSession.IsDirty = false;
             }
         }
 
         void IDbSynchronizer.Save()
         {
-            GameSeasonDA gameSeasonDA = new GameSeasonDA(_applicationContext);
-            for (int i = 0; i < _applicationContext.ApplicationCache.GameSeason.Count; ++i)
+            GameSessionDA gameSessionDA = new GameSessionDA(_applicationContext);
+            for (int i = 0; i < _applicationContext.ApplicationCache.GameSession.Count; ++i)
             {
-                GameSeason gameSeason = _applicationContext.ApplicationCache.GameSeason[i];
-                if (gameSeason.IsDirty)
+                GameSession gameSession = _applicationContext.ApplicationCache.GameSession[i];
+                if (gameSession.IsDirty)
                 {
-                    gameSeasonDA.Add(gameSeason);
-                    gameSeason.IsDirty = false;
+                    gameSessionDA.Add(gameSession);
+                    gameSession.IsDirty = false;
                 }
             }
         }

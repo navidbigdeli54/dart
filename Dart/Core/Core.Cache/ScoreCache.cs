@@ -33,9 +33,9 @@ namespace Core.Cache
             return null;
         }
 
-        public IReadOnlyList<Score> GetByGameSeasonId(Guid gameSeasonId)
+        public IReadOnlyList<Score> GetByGameSessionId(Guid gameSessionId)
         {
-            if (_applicationContext.ApplicationCache.Score.TryGetValue(gameSeasonId, out List<Score>? scores))
+            if (_applicationContext.ApplicationCache.Score.TryGetValue(gameSessionId, out List<Score>? scores))
             {
                 return scores;
             }
@@ -49,14 +49,14 @@ namespace Core.Cache
             {
                 score.Id = Guid.NewGuid();
 
-                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSeasonId, out List<Score>? scores))
+                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSessionId, out List<Score>? scores))
                 {
                     scores.Add(score);
                 }
                 else
                 {
                     scores = new List<Score> { score };
-                    _applicationContext.ApplicationCache.Score.Add(score.GameSeasonId, scores);
+                    _applicationContext.ApplicationCache.Score.Add(score.GameSessionId, scores);
                 }
 
                 return new Result<Guid>(score.Id);

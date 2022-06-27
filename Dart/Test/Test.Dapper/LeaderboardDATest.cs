@@ -18,7 +18,7 @@ namespace Test.Dapper
             Leaderboard leaderboard = new Leaderboard
             {
                 Id = Guid.NewGuid(),
-                GameSeasonId = TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
+                GameSessionId = TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
                 Rank = Random.Shared.Next(0, int.MaxValue),
                 Score = Random.Shared.Next(0, int.MaxValue)
             };
@@ -28,7 +28,7 @@ namespace Test.Dapper
 
             Leaderboard retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
             Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
-            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.GameSessionId, Is.EqualTo(retrivedLeaderboard.GameSessionId));
             Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
             Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
 
@@ -38,8 +38,8 @@ namespace Test.Dapper
         public void UpdateLeaderboardTest()
         {
             User user = TestHelper.AddUser(_applicationContext);
-            GameSeason gameSeason = TestHelper.AddGameSeason(_applicationContext, user);
-            Leaderboard leaderboard = TestHelper.AddLeaderboard(_applicationContext, gameSeason);
+            GameSession gameSession = TestHelper.AddGameSession(_applicationContext, user);
+            Leaderboard leaderboard = TestHelper.AddLeaderboard(_applicationContext, gameSession);
 
             leaderboard.Score = Random.Shared.Next(0, int.MaxValue);
             leaderboard.Rank = Random.Shared.Next(0, int.MaxValue);
@@ -50,7 +50,7 @@ namespace Test.Dapper
 
             Leaderboard retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
             Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
-            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.GameSessionId, Is.EqualTo(retrivedLeaderboard.GameSessionId));
             Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
             Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
         }
@@ -60,9 +60,9 @@ namespace Test.Dapper
         {
             TestHelper.ClearTable(_applicationContext, nameof(Leaderboard));
 
-            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
-            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
-            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)));
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)));
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)));
+            TestHelper.AddLeaderboard(_applicationContext, TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)));
 
             LeaderboardDA leaderboardDA = new LeaderboardDA(_applicationContext);
             Assert.That(3, Is.EqualTo(leaderboardDA.GetAll().Count()));
@@ -75,7 +75,7 @@ namespace Test.Dapper
             Leaderboard leaderboard = new Leaderboard
             {
                 Id = Guid.NewGuid(),
-                GameSeasonId = TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
+                GameSessionId = TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
                 Rank = Random.Shared.Next(0, int.MaxValue),
                 Score = Random.Shared.Next(0, int.MaxValue)
             };
@@ -85,7 +85,7 @@ namespace Test.Dapper
 
             Leaderboard retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
             Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
-            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.GameSessionId, Is.EqualTo(retrivedLeaderboard.GameSessionId));
             Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
             Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
 
@@ -96,7 +96,7 @@ namespace Test.Dapper
 
             retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
             Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
-            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.GameSessionId, Is.EqualTo(retrivedLeaderboard.GameSessionId));
             Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
             Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
         }

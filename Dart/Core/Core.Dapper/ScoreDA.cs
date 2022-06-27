@@ -41,26 +41,26 @@ namespace Core.Dapper
             }
         }
 
-        public IReadOnlyList<Score> GetByGameSeasonId(Guid gameSeasonId)
+        public IReadOnlyList<Score> GetByGameSessionId(Guid gameSessionId)
         {
-            string query = $"SELECT * FROM {TABLE_NAME} WHERE \"{nameof(Score.GameSeasonId)}\" = @{nameof(Score.GameSeasonId)};";
+            string query = $"SELECT * FROM {TABLE_NAME} WHERE \"{nameof(Score.GameSessionId)}\" = @{nameof(Score.GameSessionId)};";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
-                return connection.Query<Score>(query, new { GameSeasonId = gameSeasonId }).ToList();
+                return connection.Query<Score>(query, new { GameSessionId = gameSessionId }).ToList();
             }
         }
 
         public IResult Add(Score score)
         {
-            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Score.Id)}\", \"{nameof(Score.CreationDate)}\", \"{nameof(Score.GameSeasonId)}\", \"{nameof(Score.Point)}\") VALUES (@{nameof(Score.Id)}, @{nameof(Score.CreationDate)}, @{nameof(Score.GameSeasonId)}, @{nameof(Score.Point)});";
+            string query = $"INSERT INTO {TABLE_NAME} (\"{nameof(Score.Id)}\", \"{nameof(Score.CreationDate)}\", \"{nameof(Score.GameSessionId)}\", \"{nameof(Score.Point)}\") VALUES (@{nameof(Score.Id)}, @{nameof(Score.CreationDate)}, @{nameof(Score.GameSessionId)}, @{nameof(Score.Point)});";
 
             using (IDbConnection connection = OpenConnection(_applicationContext.DBConnectionString))
             {
                 IDbTransaction transaction = connection.BeginTransaction();
                 try
                 {
-                    connection.Query(query, new { Id = score.Id, CreationDate = score.CreationDate, GameSeasonId = score.GameSeasonId, Point = score.Point }, transaction);
+                    connection.Query(query, new { Id = score.Id, CreationDate = score.CreationDate, GameSessionId = score.GameSessionId, Point = score.Point }, transaction);
 
                     transaction.Commit();
 

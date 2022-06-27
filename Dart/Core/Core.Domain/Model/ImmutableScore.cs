@@ -9,7 +9,7 @@ namespace Core.Domain.Model
 
         public DateTime CreationDate { get; }
 
-        public Guid GameSeasonId { get; }
+        public Guid GameSessionId { get; }
 
         public int Point { get; }
         #endregion
@@ -19,7 +19,7 @@ namespace Core.Domain.Model
         {
             Id = score.Id;
             CreationDate = score.CreationDate;
-            GameSeasonId = score.GameSeasonId;
+            GameSessionId = score.GameSessionId;
             Point = score.Point;
         }
 
@@ -27,7 +27,7 @@ namespace Core.Domain.Model
         {
             Id = Guid.Parse(jsonObject[nameof(Id)].ToString());
             CreationDate = DateTime.Parse(jsonObject[nameof(CreationDate)].ToString());
-            GameSeasonId = Guid.Parse(jsonObject[nameof(GameSeasonId)].ToString());
+            GameSessionId = Guid.Parse(jsonObject[nameof(GameSessionId)].ToString());
             Point = int.Parse(nameof(Point));
         }
         #endregion
@@ -38,7 +38,7 @@ namespace Core.Domain.Model
             JsonObject jsonObject = new JsonObject();
             jsonObject[nameof(Id)] = Id.ToString();
             jsonObject[nameof(CreationDate)] = CreationDate.ToString();
-            jsonObject[nameof(GameSeasonId)] = GameSeasonId.ToString();
+            jsonObject[nameof(GameSessionId)] = GameSessionId.ToString();
             jsonObject[nameof(Point)] = Point.ToString();
             return jsonObject;
         }

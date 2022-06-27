@@ -5,7 +5,7 @@ namespace Core.Cache
 {
     public class UserCache
     {
-        #region FieldsGameSeasonCacheDAL
+        #region Fields
         private IApplicationContext _applicationContext;
         #endregion
 

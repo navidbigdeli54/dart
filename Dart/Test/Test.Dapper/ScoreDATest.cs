@@ -19,7 +19,7 @@ namespace Test.Dapper
             {
                 Id = Guid.NewGuid(),
                 CreationDate = DateTime.UtcNow,
-                GameSeasonId = TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
+                GameSessionId = TestHelper.AddGameSession(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
                 Point = Random.Shared.Next(0, int.MaxValue)
             };
             ScoreDA scoreDA = new ScoreDA(_applicationContext);
@@ -28,7 +28,7 @@ namespace Test.Dapper
 
             Score retrivedScore = scoreDA.Get(score.Id);
             Assert.That(score.Id, Is.EqualTo(retrivedScore.Id));
-            Assert.That(score.GameSeasonId, Is.EqualTo(retrivedScore.GameSeasonId));
+            Assert.That(score.GameSessionId, Is.EqualTo(retrivedScore.GameSessionId));
             Assert.That(score.Point, Is.EqualTo(retrivedScore.Point));
         }
 
@@ -36,12 +36,12 @@ namespace Test.Dapper
         public void AddMultipleScoreTest()
         {
             User user = TestHelper.AddUser(_applicationContext);
-            GameSeason gameSeason = TestHelper.AddGameSeason(_applicationContext, user);
-            Score score1 = TestHelper.AddScore(_applicationContext, gameSeason);
-            Score score2 = TestHelper.AddScore(_applicationContext, gameSeason);
+            GameSession gameSession = TestHelper.AddGameSession(_applicationContext, user);
+            Score score1 = TestHelper.AddScore(_applicationContext, gameSession);
+            Score score2 = TestHelper.AddScore(_applicationContext, gameSession);
 
             ScoreDA scoreDA = new ScoreDA(_applicationContext);
-            Assert.That(2, Is.EqualTo(scoreDA.GetByGameSeasonId(gameSeason.Id).Count()));
+            Assert.That(2, Is.EqualTo(scoreDA.GetByGameSessionId(gameSession.Id).Count()));
         }
         #endregion
     }

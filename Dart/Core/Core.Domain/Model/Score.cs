@@ -7,7 +7,7 @@
 
         private DateTime _creationDate;
 
-        public Guid _gameSeasonId;
+        public Guid _gameSessionId;
 
         private int _point;
         #endregion
@@ -33,12 +33,12 @@
             }
         }
 
-        public Guid GameSeasonId
+        public Guid GameSessionId
         {
-            get => _gameSeasonId;
+            get => _gameSessionId;
             set
             {
-                _gameSeasonId = value;
+                _gameSessionId = value;
                 IsDirty = true;
             }
         }

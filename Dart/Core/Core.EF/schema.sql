@@ -13,37 +13,37 @@ CREATE TABLE "tblUser" (
     CONSTRAINT "PK_tblUser" PRIMARY KEY ("Id")
 );
 
-CREATE TABLE "tblGameSeason" (
+CREATE TABLE "tblGameSession" (
     "Id" uuid NOT NULL,
     "CreationDate" timestamp with time zone NOT NULL,
     "UserId" uuid NOT NULL,
-    CONSTRAINT "PK_tblGameSeason" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_tblGameSeason_tblUser_UserId" FOREIGN KEY ("UserId") REFERENCES "tblUser" ("Id") ON DELETE CASCADE
+    CONSTRAINT "PK_tblGameSession" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_tblGameSession_tblUser_UserId" FOREIGN KEY ("UserId") REFERENCES "tblUser" ("Id") ON DELETE CASCADE
 );
 
 CREATE TABLE "tblLeaderboard" (
     "Id" uuid NOT NULL,
-    "GameSeasonId" uuid NOT NULL,
+    "GameSessionId" uuid NOT NULL,
     "Rank" integer NOT NULL,
     "Score" integer NOT NULL,
     CONSTRAINT "PK_tblLeaderboard" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_tblLeaderboard_tblGameSeason_GameSeasonId" FOREIGN KEY ("GameSeasonId") REFERENCES "tblGameSeason" ("Id") ON DELETE CASCADE
+    CONSTRAINT "FK_tblLeaderboard_tblGameSession_GameSessionId" FOREIGN KEY ("GameSessionId") REFERENCES "tblGameSession" ("Id") ON DELETE CASCADE
 );
 
 CREATE TABLE "tblScore" (
     "Id" uuid NOT NULL,
     "CreationDate" timestamp with time zone NOT NULL,
-    "GameSeasonId" uuid NOT NULL,
+    "GameSessionId" uuid NOT NULL,
     "Point" integer NOT NULL,
     CONSTRAINT "PK_tblScore" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_tblScore_tblGameSeason_GameSeasonId" FOREIGN KEY ("GameSeasonId") REFERENCES "tblGameSeason" ("Id") ON DELETE CASCADE
+    CONSTRAINT "FK_tblScore_tblGameSession_GameSessionId" FOREIGN KEY ("GameSessionId") REFERENCES "tblGameSession" ("Id") ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX "IX_tblGameSeason_UserId" ON "tblGameSeason" ("UserId");
+CREATE UNIQUE INDEX "IX_tblGameSession_UserId" ON "tblGameSession" ("UserId");
 
-CREATE UNIQUE INDEX "IX_tblLeaderboard_GameSeasonId" ON "tblLeaderboard" ("GameSeasonId");
+CREATE UNIQUE INDEX "IX_tblLeaderboard_GameSessionId" ON "tblLeaderboard" ("GameSessionId");
 
-CREATE INDEX "IX_tblScore_GameSeasonId" ON "tblScore" ("GameSeasonId");
+CREATE INDEX "IX_tblScore_GameSessionId" ON "tblScore" ("GameSessionId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20220626183529_InitialCreate', '6.0.6');

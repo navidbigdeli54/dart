@@ -11,48 +11,48 @@ namespace Test.BL
         {
             ApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+            ImmutableGameSession gameSession = TestHelper.AddGameSession(applicationContext, user);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
-            IResult<Guid> result = leaderboadBL.Add(gameSeason.Id);
+            IResult<Guid> result = leaderboadBL.Add(gameSession.Id);
             Assert.That(result.IsSuccessful, Is.True);
 
             ImmutableLeaderboard leaderboard = leaderboadBL.Get(result.Message);
             Assert.Multiple(() =>
             {
                 Assert.That(leaderboard.Id, Is.EqualTo(result.Message));
-                Assert.That(leaderboard.GameSeasonId, Is.EqualTo(gameSeason.Id));
+                Assert.That(leaderboard.GameSessionId, Is.EqualTo(gameSession.Id));
                 Assert.That(leaderboard.Rank, Is.EqualTo(1));
                 Assert.That(leaderboard.Score, Is.EqualTo(0));
             });
         }
 
         [Test]
-        public void AddLeaderboardTwiceForAGameSeasonTest()
+        public void AddLeaderboardTwiceForAGameSessionTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+            ImmutableGameSession gameSession = TestHelper.AddGameSession(applicationContext, user);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
-            IResult<Guid> result = leaderboadBL.Add(gameSeason.Id);
+            IResult<Guid> result = leaderboadBL.Add(gameSession.Id);
             Assert.That(result.IsSuccessful, Is.True);
 
             ImmutableLeaderboard leaderboard = leaderboadBL.Get(result.Message);
             Assert.Multiple(() =>
             {
                 Assert.That(leaderboard.Id, Is.EqualTo(result.Message));
-                Assert.That(leaderboard.GameSeasonId, Is.EqualTo(gameSeason.Id));
+                Assert.That(leaderboard.GameSessionId, Is.EqualTo(gameSession.Id));
                 Assert.That(leaderboard.Rank, Is.EqualTo(1));
                 Assert.That(leaderboard.Score, Is.EqualTo(0));
             });
 
-            result = leaderboadBL.Add(gameSeason.Id);
+            result = leaderboadBL.Add(gameSession.Id);
             Assert.That(result.IsSuccessful, Is.False);
         }
 
         [Test]
-        public void AddLeaderboardWithoutGameSeasonTest()
+        public void AddLeaderboardWithoutGameSessionTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
 
@@ -67,32 +67,32 @@ namespace Test.BL
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason1 = TestHelper.AddGameSeason(applicationContext, user1);
-            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSeason1);
+            ImmutableGameSession gameSession1 = TestHelper.AddGameSession(applicationContext, user1);
+            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSession1);
 
             ImmutableUser user2 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:101");
-            ImmutableGameSeason gameSeason2 = TestHelper.AddGameSeason(applicationContext, user2);
-            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSeason2);
+            ImmutableGameSession gameSession2 = TestHelper.AddGameSession(applicationContext, user2);
+            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSession2);
 
             ImmutableUser user3 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:102");
-            ImmutableGameSeason gameSeason3 = TestHelper.AddGameSeason(applicationContext, user3);
-            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSeason3);
+            ImmutableGameSession gameSession3 = TestHelper.AddGameSession(applicationContext, user3);
+            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSession3);
 
             ImmutableUser user4 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:102");
-            ImmutableGameSeason gameSeason4 = TestHelper.AddGameSeason(applicationContext, user4);
-            ImmutableLeaderboard leaderboard4 = TestHelper.AddLeaderboard(applicationContext, gameSeason4);
+            ImmutableGameSession gameSession4 = TestHelper.AddGameSession(applicationContext, user4);
+            ImmutableLeaderboard leaderboard4 = TestHelper.AddLeaderboard(applicationContext, gameSession4);
 
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(applicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
             IReadOnlyList<ImmutableLeaderboard> leaderBoardEntries = leaderboadBL.Get(3);
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
 
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user1.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user3.Id));
 
                 Assert.That(leaderBoardEntries[0].Rank, Is.EqualTo(1));
                 Assert.That(leaderBoardEntries[1].Rank, Is.EqualTo(2));
@@ -105,20 +105,20 @@ namespace Test.BL
         {
             ApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
-            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSeason);
+            ImmutableGameSession gameSession = TestHelper.AddGameSession(applicationContext, user);
+            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSession);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
             int point = Random.Shared.Next(0, int.MaxValue);
             leaderboadBL.AddScore(user.Id, point);
 
-            ImmutableLeaderboard retrivedGameSeason = leaderboadBL.Get(leaderboard.Id);
+            ImmutableLeaderboard retrivedGameSession = leaderboadBL.Get(leaderboard.Id);
             Assert.Multiple(() =>
             {
-                Assert.That(retrivedGameSeason.Id, Is.EqualTo(leaderboard.Id));
-                Assert.That(retrivedGameSeason.GameSeasonId, Is.EqualTo(leaderboard.GameSeasonId));
-                Assert.That(retrivedGameSeason.Rank, Is.EqualTo(1));
-                Assert.That(retrivedGameSeason.Score, Is.EqualTo(point));
+                Assert.That(retrivedGameSession.Id, Is.EqualTo(leaderboard.Id));
+                Assert.That(retrivedGameSession.GameSessionId, Is.EqualTo(leaderboard.GameSessionId));
+                Assert.That(retrivedGameSession.Rank, Is.EqualTo(1));
+                Assert.That(retrivedGameSession.Score, Is.EqualTo(point));
             });
         }
 
@@ -127,14 +127,14 @@ namespace Test.BL
         {
             ApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
-            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSeason);
+            ImmutableGameSession gameSession = TestHelper.AddGameSession(applicationContext, user);
+            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSession);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
 
-            for (int i = 0; i < ImmutableGameSeason.MAX_SCORE_NUMBER; ++i)
+            for (int i = 0; i < ImmutableGameSession.MAX_SCORE_NUMBER; ++i)
             {
-                int point = Random.Shared.Next(0, int.MaxValue / ImmutableGameSeason.MAX_SCORE_NUMBER);
+                int point = Random.Shared.Next(0, int.MaxValue / ImmutableGameSession.MAX_SCORE_NUMBER);
                 IResult result = leaderboadBL.AddScore(user.Id, point);
                 Assert.That(result.IsSuccessful, Is.True);
             }
@@ -149,14 +149,14 @@ namespace Test.BL
             IApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
 
-            GameSeason gameSeason = new GameSeason
+            GameSession gameSession = new GameSession
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 CreationDate = DateTime.UtcNow.AddMinutes(-10)
             };
 
-            applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
+            applicationContext.ApplicationCache.GameSession.Add(gameSession);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
             IResult error = leaderboadBL.AddScore(user.Id, Random.Shared.Next(0, int.MaxValue));
@@ -169,28 +169,28 @@ namespace Test.BL
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason1 = TestHelper.AddGameSeason(applicationContext, user1);
-            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSeason1);
+            ImmutableGameSession gameSession1 = TestHelper.AddGameSession(applicationContext, user1);
+            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSession1);
 
             ImmutableUser user2 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:101");
-            ImmutableGameSeason gameSeason2 = TestHelper.AddGameSeason(applicationContext, user2);
-            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSeason2);
+            ImmutableGameSession gameSession2 = TestHelper.AddGameSession(applicationContext, user2);
+            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSession2);
 
             ImmutableUser user3 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:102");
-            ImmutableGameSeason gameSeason3 = TestHelper.AddGameSeason(applicationContext, user3);
-            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSeason3);
+            ImmutableGameSession gameSession3 = TestHelper.AddGameSession(applicationContext, user3);
+            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSession3);
 
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(applicationContext);
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
             IReadOnlyList<ImmutableLeaderboard> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
 
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user1.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user3.Id));
 
                 Assert.That(leaderBoardEntries[0].Rank, Is.EqualTo(1));
                 Assert.That(leaderBoardEntries[1].Rank, Is.EqualTo(2));
@@ -204,16 +204,16 @@ namespace Test.BL
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason1 = TestHelper.AddGameSeason(applicationContext, user1);
-            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSeason1);
+            ImmutableGameSession gameSession1 = TestHelper.AddGameSession(applicationContext, user1);
+            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSession1);
 
             ImmutableUser user2 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:101");
-            ImmutableGameSeason gameSeason2 = TestHelper.AddGameSeason(applicationContext, user2);
-            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSeason2);
+            ImmutableGameSession gameSession2 = TestHelper.AddGameSession(applicationContext, user2);
+            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSession2);
 
             ImmutableUser user3 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:102");
-            ImmutableGameSeason gameSeason3 = TestHelper.AddGameSeason(applicationContext, user3);
-            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSeason3);
+            ImmutableGameSession gameSession3 = TestHelper.AddGameSession(applicationContext, user3);
+            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSession3);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
 
@@ -221,15 +221,15 @@ namespace Test.BL
             leaderboadBL.AddScore(user2.Id, 25);
             leaderboadBL.AddScore(user3.Id, 15);
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(applicationContext);
 
             IReadOnlyList<ImmutableLeaderboard> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user3.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user1.Id));
 
                 Assert.That(leaderBoardEntries[0].Rank, Is.EqualTo(1));
                 Assert.That(leaderBoardEntries[1].Rank, Is.EqualTo(2));
@@ -243,16 +243,16 @@ namespace Test.BL
             ApplicationContext applicationContext = new ApplicationContext();
 
             ImmutableUser user1 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
-            ImmutableGameSeason gameSeason1 = TestHelper.AddGameSeason(applicationContext, user1);
-            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSeason1);
+            ImmutableGameSession gameSession1 = TestHelper.AddGameSession(applicationContext, user1);
+            ImmutableLeaderboard leaderboard1 = TestHelper.AddLeaderboard(applicationContext, gameSession1);
 
             ImmutableUser user2 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:101");
-            ImmutableGameSeason gameSeason2 = TestHelper.AddGameSeason(applicationContext, user2);
-            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSeason2);
+            ImmutableGameSession gameSession2 = TestHelper.AddGameSession(applicationContext, user2);
+            ImmutableLeaderboard leaderboard2 = TestHelper.AddLeaderboard(applicationContext, gameSession2);
 
             ImmutableUser user3 = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:102");
-            ImmutableGameSeason gameSeason3 = TestHelper.AddGameSeason(applicationContext, user3);
-            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSeason3);
+            ImmutableGameSession gameSession3 = TestHelper.AddGameSession(applicationContext, user3);
+            ImmutableLeaderboard leaderboard3 = TestHelper.AddLeaderboard(applicationContext, gameSession3);
 
             LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
 
@@ -260,15 +260,15 @@ namespace Test.BL
             leaderboadBL.AddScore(user2.Id, 25);
             leaderboadBL.AddScore(user3.Id, 15);
 
-            GameSeasonBL gameSeasonBL = new GameSeasonBL(applicationContext);
+            GameSessionBL gameSessionBL = new GameSessionBL(applicationContext);
 
             IReadOnlyList<ImmutableLeaderboard> leaderBoardEntries = leaderboadBL.GetAll();
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user3.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user1.Id));
             });
 
             leaderboadBL.AddScore(user1.Id, -5); // 5
@@ -279,9 +279,9 @@ namespace Test.BL
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user3.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user1.Id));
             });
 
             leaderboadBL.AddScore(user1.Id, 25); //30
@@ -292,9 +292,9 @@ namespace Test.BL
             Assert.Multiple(() =>
             {
                 Assert.That(leaderBoardEntries, Has.Count.EqualTo(3));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[0].GameSeasonId).UserId, Is.EqualTo(user1.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[1].GameSeasonId).UserId, Is.EqualTo(user2.Id));
-                Assert.That(gameSeasonBL.Get(leaderBoardEntries[2].GameSeasonId).UserId, Is.EqualTo(user3.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[0].GameSessionId).UserId, Is.EqualTo(user1.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[1].GameSessionId).UserId, Is.EqualTo(user2.Id));
+                Assert.That(gameSessionBL.Get(leaderBoardEntries[2].GameSessionId).UserId, Is.EqualTo(user3.Id));
 
                 Assert.That(leaderBoardEntries[0].Rank, Is.EqualTo(1));
                 Assert.That(leaderBoardEntries[1].Rank, Is.EqualTo(2));
