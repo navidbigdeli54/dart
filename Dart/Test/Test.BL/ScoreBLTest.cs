@@ -29,6 +29,17 @@ namespace Test.BL
         }
 
         [Test]
+        public void AddScoreByInvalidGameSessionTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+
+            ScoreBL scoreBL = new ScoreBL(applicationContext);
+            int randomPoint = Random.Shared.Next(0, int.MaxValue);
+            IResult<Guid> result = scoreBL.Add(Guid.NewGuid(), randomPoint);
+            Assert.That(result.IsSuccessful, Is.False);
+        }
+
+        [Test]
         public void GetByGameSeasonIdTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
