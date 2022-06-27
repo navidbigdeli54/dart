@@ -9,21 +9,21 @@ namespace Core.BL
         #region Fields
         private readonly IApplicationContext _applicationContext;
 
-        private readonly GameSeasonCacheDAL _gameSeasonDAL;
+        private readonly GameSeasonCache _gameSeasonCache;
         #endregion
 
         #region Constructors
         public GameSeasonBL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
-            _gameSeasonDAL = new GameSeasonCacheDAL(applicationContext);
+            _gameSeasonCache = new GameSeasonCache(applicationContext);
         }
         #endregion
 
         #region Public Methods
         public ImmutableGameSeason Get(Guid gameSeasonId)
         {
-            GameSeason? gameSeason = _gameSeasonDAL.Get(gameSeasonId);
+            GameSeason? gameSeason = _gameSeasonCache.Get(gameSeasonId);
             if (gameSeason != null)
             {
                 ScoreBL scoreBL = new ScoreBL(_applicationContext);
@@ -37,7 +37,7 @@ namespace Core.BL
 
         public ImmutableGameSeason GetByUserId(Guid userId)
         {
-            GameSeason? gameSeason = _gameSeasonDAL.GetByUserId(userId);
+            GameSeason? gameSeason = _gameSeasonCache.GetByUserId(userId);
             if (gameSeason != null)
             {
                 ScoreBL scoreBL = new ScoreBL(_applicationContext);
@@ -62,7 +62,7 @@ namespace Core.BL
                     UserId = user.Id
                 };
 
-                return _gameSeasonDAL.Add(gameSeason);
+                return _gameSeasonCache.Add(gameSeason);
             }
 
             return new ErrorResult<Guid>($"Can't find User by `{userId}` id!");

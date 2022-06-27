@@ -3,14 +3,14 @@ using Core.Domain.Model;
 
 namespace Core.Cache
 {
-    public class UserCacheDAL
+    public class UserCache
     {
-        #region Fields
+        #region FieldsGameSeasonCacheDAL
         private IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public UserCacheDAL(IApplicationContext applicationContext)
+        public UserCache(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }

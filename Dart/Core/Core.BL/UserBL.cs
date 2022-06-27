@@ -7,20 +7,20 @@ namespace Core.BL
     public class UserBL
     {
         #region Fields
-        private readonly UserCacheDAL _userDAL;
+        private readonly UserCache _userCache;
         #endregion
 
         #region Constructors
         public UserBL(IApplicationContext applicationContext)
         {
-            _userDAL = new UserCacheDAL(applicationContext);
+            _userCache = new UserCache(applicationContext);
         }
         #endregion
 
         #region Public Methods
         public ImmutableUser Get(Guid userId)
         {
-            User? user = _userDAL.Get(userId);
+            User? user = _userCache.Get(userId);
             if (user != null)
             {
                 return new ImmutableUser(user);
@@ -37,7 +37,7 @@ namespace Core.BL
                 EndPoint = endPoint
             };
 
-            return _userDAL.Add(user);
+            return _userCache.Add(user);
         }
         #endregion
     }

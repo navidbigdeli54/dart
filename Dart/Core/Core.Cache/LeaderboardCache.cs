@@ -3,14 +3,14 @@ using Core.Domain.Model;
 
 namespace Core.Cache
 {
-    public class LeaderboardCacheDAL
+    public class LeaderboardCache
     {
         #region Fields
         private readonly IApplicationContext _aplicationContext;
         #endregion
 
         #region Constructors
-        public LeaderboardCacheDAL(IApplicationContext applicationContext)
+        public LeaderboardCache(IApplicationContext applicationContext)
         {
             _aplicationContext = applicationContext;
         }

@@ -3,14 +3,14 @@ using Core.Domain.Model;
 
 namespace Core.Cache
 {
-    public class ScoreCacheDAL
+    public class ScoreCache
     {
         #region Fields
         private readonly IApplicationContext _applicationContext;
         #endregion
 
         #region Constructors
-        public ScoreCacheDAL(IApplicationContext applicationContext)
+        public ScoreCache(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }

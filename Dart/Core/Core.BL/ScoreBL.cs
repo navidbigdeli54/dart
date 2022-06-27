@@ -7,20 +7,20 @@ namespace Core.BL
     public class ScoreBL
     {
         #region Fields
-        private readonly ScoreCacheDAL _scoreCacheDAL;
+        private readonly ScoreCache _scoreCache;
         #endregion
 
         #region Constructors
         public ScoreBL(IApplicationContext applicationContext)
         {
-            _scoreCacheDAL = new ScoreCacheDAL(applicationContext);
+            _scoreCache = new ScoreCache(applicationContext);
         }
         #endregion
 
         #region Public Methods
         public IReadOnlyList<ImmutableScore> GetByGameSeasonId(Guid gameSeasonId)
         {
-            return _scoreCacheDAL.GetByGameSeasonId(gameSeasonId);
+            return _scoreCache.GetByGameSeasonId(gameSeasonId);
         }
 
         public IResult<Guid> Add(Guid gameSeasonId, int point)
@@ -32,7 +32,7 @@ namespace Core.BL
                 Point = point
             };
 
-            return _scoreCacheDAL.Add(score);
+            return _scoreCache.Add(score);
         }
         #endregion
     }

@@ -9,26 +9,26 @@ namespace Core.BL
         #region Fields
         private readonly IApplicationContext _applicationContext;
 
-        private readonly LeaderboardCacheDAL _leaderboardCacheDAL;
+        private readonly LeaderboardCache _leaderboardCache;
         #endregion
 
         #region Constructors
         public LeaderboadBL(IApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
-            _leaderboardCacheDAL = new LeaderboardCacheDAL(applicationContext);
+            _leaderboardCache = new LeaderboardCache(applicationContext);
         }
         #endregion
 
         #region Public Methods
         public IReadOnlyList<ImmutableLeaderboard> Get(int count)
         {
-            return _leaderboardCacheDAL.Get(count).Select(x => new ImmutableLeaderboard(x)).ToList();
+            return _leaderboardCache.Get(count).Select(x => new ImmutableLeaderboard(x)).ToList();
         }
 
         public IReadOnlyList<ImmutableLeaderboard> GetAll()
         {
-            return _leaderboardCacheDAL.GetAll().Select(x => new ImmutableLeaderboard(x)).ToList();
+            return _leaderboardCache.GetAll().Select(x => new ImmutableLeaderboard(x)).ToList();
         }
 
         public IResult<Guid> Add(Guid gameSeasonId)
@@ -42,7 +42,7 @@ namespace Core.BL
                     GameSeasonId = gameSeason.Id
                 };
 
-                return _leaderboardCacheDAL.Add(leaderBoardEntry);
+                return _leaderboardCache.Add(leaderBoardEntry);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Core.BL
 
                 ScoreBL scoreBL = new ScoreBL(_applicationContext);
 
-                _leaderboardCacheDAL.UpdateScore(gameSeason.Id, scoreBL.GetByGameSeasonId(gameSeason.Id).Select(x => x.Point).Sum());
+                _leaderboardCache.UpdateScore(gameSeason.Id, scoreBL.GetByGameSeasonId(gameSeason.Id).Select(x => x.Point).Sum());
 
                 return new Result<object>();
             }
