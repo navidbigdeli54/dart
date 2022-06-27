@@ -83,7 +83,8 @@ namespace Core.BL
             {
                 if (gameSeason.Scores.Count < ImmutableGameSeason.MAX_SCORE_NUMBER)
                 {
-                    if (gameSeason.CreationDate - DateTime.UtcNow <= ImmutableGameSeason.MAX_PLAY_DURATION)
+                    TimeSpan difference = DateTime.UtcNow - gameSeason.CreationDate;
+                    if (difference <= ImmutableGameSeason.MAX_PLAY_DURATION)
                     {
                         ScoreBL scoreBL = new ScoreBL(_applicationContext);
                         return scoreBL.Add(gameSeason.Id, score);
