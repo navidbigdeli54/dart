@@ -31,7 +31,7 @@ namespace Core.Network
 
             _serverSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            _timer = new Timer(CheckSocketConnection, null, 0, 60000);
+            _timer = new Timer(CheckSocketConnection, null, 0, 5000);
         }
         #endregion
 
@@ -77,7 +77,7 @@ namespace Core.Network
             foreach (var pair in _clientSockets)
             {
                 Socket connection = pair.Value;
-                if (connection.Connected == false)
+                if (connection.Poll(-1, SelectMode.SelectRead) && connection.Available == 0)
                 {
                     disconnectedClients.Add(pair.Key);
                 }
@@ -85,10 +85,17 @@ namespace Core.Network
 
             for (int i = 0; i < disconnectedClients.Count; ++i)
             {
-                if (_clientSockets.Remove(disconnectedClients[i], out Socket? socket))
+                try
                 {
-                    socket.Shutdown(SocketShutdown.Both);
-                    socket.Close();
+                    if (_clientSockets.Remove(disconnectedClients[i], out Socket? socket))
+                    {
+                        socket.Shutdown(SocketShutdown.Both);
+                        socket.Close();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
                 }
             }
         }
