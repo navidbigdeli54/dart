@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Dapper", "Test\Test.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.BL", "Core\Core.BL\Core.BL.csproj", "{9663EE28-4F03-4388-92E6-FE08EBCA02BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "Core.Cache\Core.Cache.csproj", "{A7F7217D-F8E9-4689-8D3A-C84774432BB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Cache", "Core\Core.Cache\Core.Cache.csproj", "{A7F7217D-F8E9-4689-8D3A-C84774432BB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
-﻿using Core.Domain.Core;
+﻿using Core.Cache;
+using Core.Domain.Core;
 using Core.Domain.Model;
-using Core.Cache;
 
 namespace Core.BL
 {
