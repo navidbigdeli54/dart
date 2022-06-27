@@ -23,7 +23,7 @@ namespace Core.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblGameSeason",
+                name: "tblGameSession",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -32,9 +32,9 @@ namespace Core.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblGameSeason", x => x.Id);
+                    table.PrimaryKey("PK_tblGameSession", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tblGameSeason_tblUser_UserId",
+                        name: "FK_tblGameSession_tblUser_UserId",
                         column: x => x.UserId,
                         principalTable: "tblUser",
                         principalColumn: "Id",
@@ -46,7 +46,7 @@ namespace Core.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    GameSeasonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rank = table.Column<int>(type: "integer", nullable: false),
                     Score = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -54,9 +54,9 @@ namespace Core.EF.Migrations
                 {
                     table.PrimaryKey("PK_tblLeaderboard", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tblLeaderboard_tblGameSeason_GameSeasonId",
-                        column: x => x.GameSeasonId,
-                        principalTable: "tblGameSeason",
+                        name: "FK_tblLeaderboard_tblGameSession_GameSessionId",
+                        column: x => x.GameSessionId,
+                        principalTable: "tblGameSession",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -67,36 +67,36 @@ namespace Core.EF.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    GameSeasonId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GameSessionId = table.Column<Guid>(type: "uuid", nullable: false),
                     Point = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tblScore", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tblScore_tblGameSeason_GameSeasonId",
-                        column: x => x.GameSeasonId,
-                        principalTable: "tblGameSeason",
+                        name: "FK_tblScore_tblGameSession_GameSessionId",
+                        column: x => x.GameSessionId,
+                        principalTable: "tblGameSession",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblGameSeason_UserId",
-                table: "tblGameSeason",
+                name: "IX_tblGameSession_UserId",
+                table: "tblGameSession",
                 column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblLeaderboard_GameSeasonId",
+                name: "IX_tblLeaderboard_GameSessionId",
                 table: "tblLeaderboard",
-                column: "GameSeasonId",
+                column: "GameSessionId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblScore_GameSeasonId",
+                name: "IX_tblScore_GameSessionId",
                 table: "tblScore",
-                column: "GameSeasonId");
+                column: "GameSessionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -108,7 +108,7 @@ namespace Core.EF.Migrations
                 name: "tblScore");
 
             migrationBuilder.DropTable(
-                name: "tblGameSeason");
+                name: "tblGameSession");
 
             migrationBuilder.DropTable(
                 name: "tblUser");

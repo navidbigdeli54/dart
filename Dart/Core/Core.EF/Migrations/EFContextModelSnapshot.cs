@@ -22,7 +22,7 @@ namespace Core.EF.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Domain.Model.GameSeason", b =>
+            modelBuilder.Entity("Core.Domain.Model.GameSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace Core.EF.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("tblGameSeason", (string)null);
+                    b.ToTable("tblGameSession", (string)null);
                 });
 
             modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
@@ -48,7 +48,7 @@ namespace Core.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GameSeasonId")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Rank")
@@ -59,7 +59,7 @@ namespace Core.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameSeasonId")
+                    b.HasIndex("GameSessionId")
                         .IsUnique();
 
                     b.ToTable("tblLeaderboard", (string)null);
@@ -74,7 +74,7 @@ namespace Core.EF.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("GameSeasonId")
+                    b.Property<Guid>("GameSessionId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Point")
@@ -82,7 +82,7 @@ namespace Core.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameSeasonId");
+                    b.HasIndex("GameSessionId");
 
                     b.ToTable("tblScore", (string)null);
                 });
@@ -106,29 +106,29 @@ namespace Core.EF.Migrations
                     b.ToTable("tblUser", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Domain.Model.GameSeason", b =>
+            modelBuilder.Entity("Core.Domain.Model.GameSession", b =>
                 {
                     b.HasOne("Core.Domain.Model.User", null)
                         .WithOne()
-                        .HasForeignKey("Core.Domain.Model.GameSeason", "UserId")
+                        .HasForeignKey("Core.Domain.Model.GameSession", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Domain.Model.Leaderboard", b =>
                 {
-                    b.HasOne("Core.Domain.Model.GameSeason", null)
+                    b.HasOne("Core.Domain.Model.GameSession", null)
                         .WithOne()
-                        .HasForeignKey("Core.Domain.Model.Leaderboard", "GameSeasonId")
+                        .HasForeignKey("Core.Domain.Model.Leaderboard", "GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Domain.Model.Score", b =>
                 {
-                    b.HasOne("Core.Domain.Model.GameSeason", null)
+                    b.HasOne("Core.Domain.Model.GameSession", null)
                         .WithMany()
-                        .HasForeignKey("GameSeasonId")
+                        .HasForeignKey("GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
