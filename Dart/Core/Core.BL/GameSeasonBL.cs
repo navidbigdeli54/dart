@@ -71,14 +71,28 @@ namespace Core.BL
         public IResult AddNewScore(Guid userId, int score)
         {
             ImmutableGameSeason gameSeason = GetByUserId(userId);
-            if (gameSeason.IsValid && gameSeason.Scores.Count < 10 && gameSeason.CreationDate - DateTime.UtcNow < TimeSpan.FromMinutes(2))
+            if (gameSeason.IsValid)
             {
-                ScoreBL scoreBL = new ScoreBL(_applicationContext);
-                return scoreBL.Add(gameSeason.Id, score);
+                if (gameSeason.Scores.Count < ImmutableGameSeason.MAX_SCORE_NUMBER)
+                {
+                    if (gameSeason.CreationDate - DateTime.UtcNow <= ImmutableGameSeason.MAX_PLAY_DURATION)
+                    {
+                        ScoreBL scoreBL = new ScoreBL(_applicationContext);
+                        return scoreBL.Add(gameSeason.Id, score);
+                    }
+                    else
+                    {
+                        return new ErrorResult<object>($"Can't play more than {ImmutableGameSeason.MAX_PLAY_DURATION.TotalMinutes} minutes.");
+                    }
+                }
+                else
+                {
+                    return new ErrorResult<object>($"Can't add more than {ImmutableGameSeason.MAX_SCORE_NUMBER} scores.");
+                }
             }
             else
             {
-                return new ErrorResult<object>("Can't add new score!");
+                return new ErrorResult<object>("Can't find game season!");
             }
         }
         #endregion
