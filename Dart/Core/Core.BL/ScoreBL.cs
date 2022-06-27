@@ -7,12 +7,15 @@ namespace Core.BL
     public class ScoreBL
     {
         #region Fields
+        private readonly IApplicationContext _applicationContext;
+
         private readonly ScoreCache _scoreCache;
         #endregion
 
         #region Constructors
         public ScoreBL(IApplicationContext applicationContext)
         {
+            _applicationContext = applicationContext;
             _scoreCache = new ScoreCache(applicationContext);
         }
         #endregion
@@ -21,7 +24,7 @@ namespace Core.BL
         public ImmutableScore Get(Guid id)
         {
             Score? score = _scoreCache.Get(id);
-            if(score != null)
+            if (score != null)
             {
                 return new ImmutableScore(score);
             }
@@ -36,14 +39,23 @@ namespace Core.BL
 
         public IResult<Guid> Add(Guid gameSeasonId, int point)
         {
-            Score score = new Score
+            GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
+            ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
+            if (gameSeason.IsValid)
             {
-                CreationDate = DateTime.UtcNow,
-                GameSeasonId = gameSeasonId,
-                Point = point
-            };
+                Score score = new Score
+                {
+                    CreationDate = DateTime.UtcNow,
+                    GameSeasonId = gameSeasonId,
+                    Point = point
+                };
 
-            return _scoreCache.Add(score);
+                return _scoreCache.Add(score);
+            }
+            else
+            {
+                return new ErrorResult<Guid>($"Can't find {gameSeasonId} game season.");
+            }
         }
         #endregion
     }
