@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Core.Domain.Core;
+﻿using Core.Domain.Core;
 using Core.Domain.Model;
 
 namespace Core.Cache
