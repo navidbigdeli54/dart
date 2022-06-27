@@ -68,5 +68,37 @@ namespace Test.Dapper
             Assert.That(3, Is.EqualTo(leaderboardDA.GetAll().Count()));
         }
         #endregion
+
+        [Test]
+        public void AddOrUpdateTest()
+        {
+            Leaderboard leaderboard = new Leaderboard
+            {
+                Id = Guid.NewGuid(),
+                GameSeasonId = TestHelper.AddGameSeason(_applicationContext, TestHelper.AddUser(_applicationContext)).Id,
+                Rank = Random.Shared.Next(0, int.MaxValue),
+                Score = Random.Shared.Next(0, int.MaxValue)
+            };
+            LeaderboardDA leaderboardDA = new LeaderboardDA(_applicationContext);
+            IResult result = leaderboardDA.UpdateOrAdd(leaderboard);
+            Assert.That(result.IsSuccessful, Is.True);
+
+            Leaderboard retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
+            Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
+            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
+            Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
+
+            leaderboard.Score = Random.Shared.Next(0, int.MaxValue);
+            leaderboard.Rank = Random.Shared.Next(0, int.MaxValue);
+            result = leaderboardDA.UpdateOrAdd(leaderboard);
+            Assert.That(result.IsSuccessful, Is.True);
+
+            retrivedLeaderboard = leaderboardDA.Get(leaderboard.Id);
+            Assert.That(leaderboard.Id, Is.EqualTo(retrivedLeaderboard.Id));
+            Assert.That(leaderboard.GameSeasonId, Is.EqualTo(retrivedLeaderboard.GameSeasonId));
+            Assert.That(leaderboard.Rank, Is.EqualTo(retrivedLeaderboard.Rank));
+            Assert.That(leaderboard.Score, Is.EqualTo(retrivedLeaderboard.Score));
+        }
     }
 }
