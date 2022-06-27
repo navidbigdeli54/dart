@@ -4,6 +4,12 @@ namespace Core.Domain.Model
 {
     public struct ImmutableGameSeason
     {
+        #region Fields
+        public const int MAX_SCORE_NUMBER = 10;
+
+        public static readonly TimeSpan MAX_PLAY_DURATION = new TimeSpan(0, 2, 0);
+        #endregion
+
         #region Public Methods
         public Guid Id { get; }
 
