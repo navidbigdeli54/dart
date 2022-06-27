@@ -20,7 +20,7 @@ namespace Core.BL
         #region Public Methods
         public IReadOnlyList<ImmutableScore> GetByGameSeasonId(Guid gameSeasonId)
         {
-            return _scoreCache.GetByGameSeasonId(gameSeasonId);
+            return _scoreCache.GetByGameSeasonId(gameSeasonId).Select(x => new ImmutableScore(x)).ToList();
         }
 
         public IResult<Guid> Add(Guid gameSeasonId, int point)

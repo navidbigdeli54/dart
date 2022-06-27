@@ -1,4 +1,5 @@
-﻿using Core.Domain.Core;
+﻿using System.Runtime.CompilerServices;
+using Core.Domain.Core;
 using Core.Domain.Model;
 
 namespace Core.Cache
@@ -17,14 +18,14 @@ namespace Core.Cache
         #endregion
 
         #region Public Methods
-        public IReadOnlyList<ImmutableScore> GetByGameSeasonId(Guid gameSeasonId)
+        public IReadOnlyList<Score> GetByGameSeasonId(Guid gameSeasonId)
         {
-            if (_applicationContext.ApplicationCache.Score.TryGetValue(gameSeasonId, out List<Score> scores))
+            if (_applicationContext.ApplicationCache.Score.TryGetValue(gameSeasonId, out List<Score>? scores))
             {
-                return scores.Select(x => new ImmutableScore(x)).ToList();
+                return scores;
             }
 
-            return new List<ImmutableScore>();
+            return new List<Score>();
         }
 
         public IResult<Guid> Add(Score score)
@@ -33,7 +34,7 @@ namespace Core.Cache
             {
                 score.Id = Guid.NewGuid();
 
-                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSeasonId, out List<Score> scores))
+                if (_applicationContext.ApplicationCache.Score.TryGetValue(score.GameSeasonId, out List<Score>? scores))
                 {
                     scores.Add(score);
                 }
