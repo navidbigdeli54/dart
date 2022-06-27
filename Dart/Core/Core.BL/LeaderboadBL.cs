@@ -24,11 +24,11 @@ namespace Core.BL
         public ImmutableLeaderboard Get(Guid id)
         {
             Leaderboard? leaderboard = _leaderboardCache.Get(id);
-            if(leaderboard != null)
+            if (leaderboard != null)
             {
                 return new ImmutableLeaderboard(leaderboard);
             }
-            
+
             return default;
         }
 
@@ -48,12 +48,18 @@ namespace Core.BL
             ImmutableGameSeason gameSeason = gameSeasonBL.Get(gameSeasonId);
             if (gameSeason.IsValid)
             {
-                Leaderboard leaderBoardEntry = new Leaderboard
+                Leaderboard? existedLeaderbaord = _leaderboardCache.GetByGameSeasonId(gameSeasonId);
+                if (existedLeaderbaord == null)
                 {
-                    GameSeasonId = gameSeason.Id
-                };
+                    Leaderboard leaderBoardEntry = new Leaderboard
+                    {
+                        GameSeasonId = gameSeason.Id
+                    };
 
-                return _leaderboardCache.Add(leaderBoardEntry);
+                    return _leaderboardCache.Add(leaderBoardEntry);
+                }
+
+                return new ErrorResult<Guid>($"A leaderboard for the `{gameSeasonId}` game season is already exist!");
             }
             else
             {
