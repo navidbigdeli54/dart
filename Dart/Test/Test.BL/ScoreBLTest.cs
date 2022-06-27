@@ -51,16 +51,16 @@ namespace Test.BL
             Assert.Multiple(() =>
             {
                 Assert.That(user1Scores, Has.Count.EqualTo(3));
-                Assert.That(user1Scores.Any(x=>x.Id == score1.Id), Is.True);
-                Assert.That(user1Scores.Any(x=>x.Id == score2.Id), Is.True);
-                Assert.That(user1Scores.Any(x=>x.Id == score3.Id), Is.True);
+                Assert.That(user1Scores.Any(x => x.Id == score1.Id), Is.True);
+                Assert.That(user1Scores.Any(x => x.Id == score2.Id), Is.True);
+                Assert.That(user1Scores.Any(x => x.Id == score3.Id), Is.True);
             });
 
             IReadOnlyList<ImmutableScore> user2Scores = scoreBL.GetByGameSeasonId(gameSeason2.Id);
             Assert.Multiple(() =>
             {
                 Assert.That(user2Scores.Count, Is.EqualTo(1));
-                Assert.That(user2Scores.Any(x=>x.Id == score4.Id), Is.True);
+                Assert.That(user2Scores.Any(x => x.Id == score4.Id), Is.True);
             });
         }
     }
