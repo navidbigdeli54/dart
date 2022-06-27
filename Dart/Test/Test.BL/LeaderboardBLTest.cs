@@ -101,7 +101,7 @@ namespace Test.BL
         }
 
         [Test]
-        public void AddPointTest()
+        public void AddScoreTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
             ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
@@ -120,6 +120,27 @@ namespace Test.BL
                 Assert.That(retrivedGameSeason.Rank, Is.EqualTo(1));
                 Assert.That(retrivedGameSeason.Score, Is.EqualTo(point));
             });
+        }
+
+        [Test]
+        public void AddMoreThanAllowedScoreTest()
+        {
+            ApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+            ImmutableGameSeason gameSeason = TestHelper.AddGameSeason(applicationContext, user);
+            ImmutableLeaderboard leaderboard = TestHelper.AddLeaderboard(applicationContext, gameSeason);
+
+            LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
+
+            for (int i = 0; i < ImmutableGameSeason.MAX_SCORE_NUMBER; ++i)
+            {
+                int point = Random.Shared.Next(0, int.MaxValue / ImmutableGameSeason.MAX_SCORE_NUMBER);
+                IResult result = leaderboadBL.AddScore(user.Id, point);
+                Assert.That(result.IsSuccessful, Is.True);
+            }
+
+            IResult error = leaderboadBL.AddScore(user.Id, Random.Shared.Next(0, int.MaxValue));
+            Assert.That(error.IsSuccessful, Is.False);
         }
 
         [Test]
@@ -158,7 +179,7 @@ namespace Test.BL
         }
 
         [Test]
-        public void AddScoreTest()
+        public void RankingTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
 
@@ -197,7 +218,7 @@ namespace Test.BL
         }
 
         [Test]
-        public void AddScoreMultipleTimeTest()
+        public void RankingWithMultipleScoreTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
 

@@ -1,6 +1,6 @@
-﻿using Core.Domain.Core;
+﻿using Core.Cache;
+using Core.Domain.Core;
 using Core.Domain.Model;
-using Core.Cache;
 
 namespace Core.BL
 {
@@ -71,14 +71,15 @@ namespace Core.BL
         {
             GameSeasonBL gameSeasonBL = new GameSeasonBL(_applicationContext);
             IResult result = gameSeasonBL.AddNewScore(userId, point);
-
             if (result.IsSuccessful)
             {
                 ImmutableGameSeason gameSeason = gameSeasonBL.GetByUserId(userId);
 
                 ScoreBL scoreBL = new ScoreBL(_applicationContext);
 
-                _leaderboardCache.UpdateScore(gameSeason.Id, scoreBL.GetByGameSeasonId(gameSeason.Id).Select(x => x.Point).Sum());
+                IReadOnlyList<ImmutableScore> scores = scoreBL.GetByGameSeasonId(gameSeason.Id);
+
+                _leaderboardCache.UpdateScore(gameSeason.Id, scores.Select(x => x.Point).Sum());
 
                 return new Result<object>();
             }
