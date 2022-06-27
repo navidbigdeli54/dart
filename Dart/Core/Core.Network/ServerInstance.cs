@@ -18,6 +18,8 @@ namespace Core.Network
         private readonly IPEndPoint _endpoint;
 
         private readonly ConcurrentDictionary<EndPoint, Socket> _clientSockets = new ConcurrentDictionary<EndPoint, Socket>();
+
+        private readonly Timer _timer;
         #endregion
 
         #region Constructors
@@ -28,6 +30,8 @@ namespace Core.Network
             _endpoint = new IPEndPoint(ipAddress, port);
 
             _serverSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            _timer = new Timer(CheckSocketConnection, null, 0, 60000);
         }
         #endregion
 
@@ -66,6 +70,29 @@ namespace Core.Network
         #endregion
 
         #region Private Methods
+        private void CheckSocketConnection(object _)
+        {
+            List<EndPoint> disconnectedClients = new List<EndPoint>();
+
+            foreach (var pair in _clientSockets)
+            {
+                Socket connection = pair.Value;
+                if (connection.Connected == false)
+                {
+                    disconnectedClients.Add(pair.Key);
+                }
+            }
+
+            for (int i = 0; i < disconnectedClients.Count; ++i)
+            {
+                if (_clientSockets.Remove(disconnectedClients[i], out Socket? socket))
+                {
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
+                }
+            }
+        }
+
         private void AcceptCallback(IAsyncResult asyncResult)
         {
             Socket? serverSocket = asyncResult.AsyncState as Socket;
