@@ -1,9 +1,9 @@
-﻿using System.Net;
+﻿using Core.BL;
+using System.Net;
 using Core.Network;
 using Core.Domain.Core;
 using Core.Domain.Model;
 using System.Text.Json.Nodes;
-using Core.BL;
 
 namespace App.Server.Application
 {
