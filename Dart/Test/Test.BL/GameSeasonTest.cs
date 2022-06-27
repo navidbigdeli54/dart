@@ -27,7 +27,7 @@ namespace Test.BL
         }
 
         [Test]
-        public void AddGameSeasonWithoutUserTest()
+        public void AddGameSeasonWittInvalidUserTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
 
