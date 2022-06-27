@@ -144,6 +144,26 @@ namespace Test.BL
         }
 
         [Test]
+        public void AddScoreAfterMaxAllowedTimeTest()
+        {
+            IApplicationContext applicationContext = new ApplicationContext();
+            ImmutableUser user = TestHelper.AddUser(applicationContext, string.Empty, "[::1]:100");
+
+            GameSeason gameSeason = new GameSeason
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                CreationDate = DateTime.UtcNow.AddMinutes(-10)
+            };
+
+            applicationContext.ApplicationCache.GameSeason.Add(gameSeason);
+
+            LeaderboadBL leaderboadBL = new LeaderboadBL(applicationContext);
+            IResult error = leaderboadBL.AddScore(user.Id, Random.Shared.Next(0, int.MaxValue));
+            Assert.That(error.IsSuccessful, Is.False);
+        }
+
+        [Test]
         public void AddEntriesThatHasSameScoreTest()
         {
             ApplicationContext applicationContext = new ApplicationContext();
